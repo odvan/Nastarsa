@@ -1,0 +1,336 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C3480C831F37B5E100AEE088 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3480C821F37B5E100AEE088 /* main.m */; };
+		C3480C861F37B5E100AEE088 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C3480C851F37B5E100AEE088 /* AppDelegate.m */; };
+		C3480C891F37B5E100AEE088 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3480C881F37B5E100AEE088 /* ViewController.m */; };
+		C3480C8C1F37B5E100AEE088 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3480C8A1F37B5E100AEE088 /* Main.storyboard */; };
+		C3480C8F1F37B5E100AEE088 /* Nastarsa.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C3480C8D1F37B5E100AEE088 /* Nastarsa.xcdatamodeld */; };
+		C3480C911F37B5E100AEE088 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3480C901F37B5E100AEE088 /* Assets.xcassets */; };
+		C3480C941F37B5E100AEE088 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3480C921F37B5E100AEE088 /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		C3480C7E1F37B5E100AEE088 /* Nastarsa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nastarsa.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3480C821F37B5E100AEE088 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C3480C841F37B5E100AEE088 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		C3480C851F37B5E100AEE088 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		C3480C871F37B5E100AEE088 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		C3480C881F37B5E100AEE088 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		C3480C8B1F37B5E100AEE088 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C3480C8E1F37B5E100AEE088 /* Nastarsa.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Nastarsa.xcdatamodel; sourceTree = "<group>"; };
+		C3480C901F37B5E100AEE088 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C3480C931F37B5E100AEE088 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		C3480C951F37B5E100AEE088 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C3480C7B1F37B5E100AEE088 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C3480C751F37B5E100AEE088 = {
+			isa = PBXGroup;
+			children = (
+				C3480C801F37B5E100AEE088 /* Nastarsa */,
+				C3480C7F1F37B5E100AEE088 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C3480C7F1F37B5E100AEE088 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C3480C7E1F37B5E100AEE088 /* Nastarsa.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C3480C801F37B5E100AEE088 /* Nastarsa */ = {
+			isa = PBXGroup;
+			children = (
+				C3480C841F37B5E100AEE088 /* AppDelegate.h */,
+				C3480C851F37B5E100AEE088 /* AppDelegate.m */,
+				C3480C871F37B5E100AEE088 /* ViewController.h */,
+				C3480C881F37B5E100AEE088 /* ViewController.m */,
+				C3480C8A1F37B5E100AEE088 /* Main.storyboard */,
+				C3480C901F37B5E100AEE088 /* Assets.xcassets */,
+				C3480C921F37B5E100AEE088 /* LaunchScreen.storyboard */,
+				C3480C951F37B5E100AEE088 /* Info.plist */,
+				C3480C8D1F37B5E100AEE088 /* Nastarsa.xcdatamodeld */,
+				C3480C811F37B5E100AEE088 /* Supporting Files */,
+			);
+			path = Nastarsa;
+			sourceTree = "<group>";
+		};
+		C3480C811F37B5E100AEE088 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C3480C821F37B5E100AEE088 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C3480C7D1F37B5E100AEE088 /* Nastarsa */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C3480C981F37B5E100AEE088 /* Build configuration list for PBXNativeTarget "Nastarsa" */;
+			buildPhases = (
+				C3480C7A1F37B5E100AEE088 /* Sources */,
+				C3480C7B1F37B5E100AEE088 /* Frameworks */,
+				C3480C7C1F37B5E100AEE088 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Nastarsa;
+			productName = Nastarsa;
+			productReference = C3480C7E1F37B5E100AEE088 /* Nastarsa.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C3480C761F37B5E100AEE088 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = "Artur Kablak";
+				TargetAttributes = {
+					C3480C7D1F37B5E100AEE088 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 3B4HYH3EL8;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = C3480C791F37B5E100AEE088 /* Build configuration list for PBXProject "Nastarsa" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C3480C751F37B5E100AEE088;
+			productRefGroup = C3480C7F1F37B5E100AEE088 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C3480C7D1F37B5E100AEE088 /* Nastarsa */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C3480C7C1F37B5E100AEE088 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3480C941F37B5E100AEE088 /* LaunchScreen.storyboard in Resources */,
+				C3480C911F37B5E100AEE088 /* Assets.xcassets in Resources */,
+				C3480C8C1F37B5E100AEE088 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C3480C7A1F37B5E100AEE088 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3480C891F37B5E100AEE088 /* ViewController.m in Sources */,
+				C3480C861F37B5E100AEE088 /* AppDelegate.m in Sources */,
+				C3480C8F1F37B5E100AEE088 /* Nastarsa.xcdatamodeld in Sources */,
+				C3480C831F37B5E100AEE088 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		C3480C8A1F37B5E100AEE088 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C3480C8B1F37B5E100AEE088 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		C3480C921F37B5E100AEE088 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C3480C931F37B5E100AEE088 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C3480C961F37B5E100AEE088 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C3480C971F37B5E100AEE088 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C3480C991F37B5E100AEE088 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 3B4HYH3EL8;
+				INFOPLIST_FILE = Nastarsa/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.odvan.Nastarsa;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C3480C9A1F37B5E100AEE088 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 3B4HYH3EL8;
+				INFOPLIST_FILE = Nastarsa/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.odvan.Nastarsa;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C3480C791F37B5E100AEE088 /* Build configuration list for PBXProject "Nastarsa" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3480C961F37B5E100AEE088 /* Debug */,
+				C3480C971F37B5E100AEE088 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C3480C981F37B5E100AEE088 /* Build configuration list for PBXNativeTarget "Nastarsa" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3480C991F37B5E100AEE088 /* Debug */,
+				C3480C9A1F37B5E100AEE088 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		C3480C8D1F37B5E100AEE088 /* Nastarsa.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C3480C8E1F37B5E100AEE088 /* Nastarsa.xcdatamodel */,
+			);
+			currentVersion = C3480C8E1F37B5E100AEE088 /* Nastarsa.xcdatamodel */;
+			path = Nastarsa.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = C3480C761F37B5E100AEE088 /* Project object */;
+}
