@@ -7,27 +7,42 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C334C56C1F535BFA00CD599E /* ImagesCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C334C56B1F535BFA00CD599E /* ImagesCache.m */; };
+		C335B23C1F439A200030A22E /* NasaFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = C335B23B1F439A200030A22E /* NasaFetcher.m */; };
 		C3480C831F37B5E100AEE088 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3480C821F37B5E100AEE088 /* main.m */; };
 		C3480C861F37B5E100AEE088 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C3480C851F37B5E100AEE088 /* AppDelegate.m */; };
-		C3480C891F37B5E100AEE088 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3480C881F37B5E100AEE088 /* ViewController.m */; };
 		C3480C8C1F37B5E100AEE088 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3480C8A1F37B5E100AEE088 /* Main.storyboard */; };
 		C3480C8F1F37B5E100AEE088 /* Nastarsa.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C3480C8D1F37B5E100AEE088 /* Nastarsa.xcdatamodeld */; };
 		C3480C911F37B5E100AEE088 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3480C901F37B5E100AEE088 /* Assets.xcassets */; };
 		C3480C941F37B5E100AEE088 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3480C921F37B5E100AEE088 /* LaunchScreen.storyboard */; };
+		C3480C9E1F37BB5800AEE088 /* ImageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C3480C9D1F37BB5800AEE088 /* ImageModel.m */; };
+		C3E2C0B01F44874D00A474F2 /* ImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = C3E2C0AF1F44874D00A474F2 /* ImageDownloader.m */; };
+		C3F132DE1F41DDA100AA392D /* MainCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F132DD1F41DDA100AA392D /* MainCollectionViewCell.m */; };
+		C3F132E51F41E21200AA392D /* NastarsaCollectionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F132E41F41E21200AA392D /* NastarsaCollectionVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C334C56A1F535BFA00CD599E /* ImagesCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImagesCache.h; path = Helpers/ImagesCache.h; sourceTree = "<group>"; };
+		C334C56B1F535BFA00CD599E /* ImagesCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImagesCache.m; path = Helpers/ImagesCache.m; sourceTree = "<group>"; };
+		C335B23A1F439A200030A22E /* NasaFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NasaFetcher.h; path = NASAFetcher/NasaFetcher.h; sourceTree = "<group>"; };
+		C335B23B1F439A200030A22E /* NasaFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NasaFetcher.m; path = NASAFetcher/NasaFetcher.m; sourceTree = "<group>"; };
 		C3480C7E1F37B5E100AEE088 /* Nastarsa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nastarsa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3480C821F37B5E100AEE088 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C3480C841F37B5E100AEE088 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C3480C851F37B5E100AEE088 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		C3480C871F37B5E100AEE088 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		C3480C881F37B5E100AEE088 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		C3480C8B1F37B5E100AEE088 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C3480C8E1F37B5E100AEE088 /* Nastarsa.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Nastarsa.xcdatamodel; sourceTree = "<group>"; };
 		C3480C901F37B5E100AEE088 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C3480C931F37B5E100AEE088 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C3480C951F37B5E100AEE088 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C3480C9C1F37BB5800AEE088 /* ImageModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageModel.h; path = Model/ImageModel.h; sourceTree = "<group>"; };
+		C3480C9D1F37BB5800AEE088 /* ImageModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageModel.m; path = Model/ImageModel.m; sourceTree = "<group>"; };
+		C3E2C0AE1F44874D00A474F2 /* ImageDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDownloader.h; sourceTree = "<group>"; };
+		C3E2C0AF1F44874D00A474F2 /* ImageDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloader.m; sourceTree = "<group>"; };
+		C3F132DC1F41DDA100AA392D /* MainCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainCollectionViewCell.h; path = CustomCells/MainCollectionViewCell.h; sourceTree = "<group>"; };
+		C3F132DD1F41DDA100AA392D /* MainCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainCollectionViewCell.m; path = CustomCells/MainCollectionViewCell.m; sourceTree = "<group>"; };
+		C3F132E31F41E21200AA392D /* NastarsaCollectionVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NastarsaCollectionVC.h; path = ViewControllers/NastarsaCollectionVC.h; sourceTree = "<group>"; };
+		C3F132E41F41E21200AA392D /* NastarsaCollectionVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NastarsaCollectionVC.m; path = ViewControllers/NastarsaCollectionVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +56,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C334C5691F535BBA00CD599E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				C3E2C0AE1F44874D00A474F2 /* ImageDownloader.h */,
+				C3E2C0AF1F44874D00A474F2 /* ImageDownloader.m */,
+				C334C56A1F535BFA00CD599E /* ImagesCache.h */,
+				C334C56B1F535BFA00CD599E /* ImagesCache.m */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
+		C335B2391F4399F10030A22E /* NASA Fetcher */ = {
+			isa = PBXGroup;
+			children = (
+				C335B23A1F439A200030A22E /* NasaFetcher.h */,
+				C335B23B1F439A200030A22E /* NasaFetcher.m */,
+			);
+			name = "NASA Fetcher";
+			sourceTree = "<group>";
+		};
 		C3480C751F37B5E100AEE088 = {
 			isa = PBXGroup;
 			children = (
@@ -62,8 +97,11 @@
 			children = (
 				C3480C841F37B5E100AEE088 /* AppDelegate.h */,
 				C3480C851F37B5E100AEE088 /* AppDelegate.m */,
-				C3480C871F37B5E100AEE088 /* ViewController.h */,
-				C3480C881F37B5E100AEE088 /* ViewController.m */,
+				C335B2391F4399F10030A22E /* NASA Fetcher */,
+				C3F132E21F41E1CA00AA392D /* ViewControllers */,
+				C3F132DB1F41DD5900AA392D /* CustomCells */,
+				C3480C9B1F37BB2B00AEE088 /* Model */,
+				C334C5691F535BBA00CD599E /* Helpers */,
 				C3480C8A1F37B5E100AEE088 /* Main.storyboard */,
 				C3480C901F37B5E100AEE088 /* Assets.xcassets */,
 				C3480C921F37B5E100AEE088 /* LaunchScreen.storyboard */,
@@ -80,6 +118,33 @@
 				C3480C821F37B5E100AEE088 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C3480C9B1F37BB2B00AEE088 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C3480C9C1F37BB5800AEE088 /* ImageModel.h */,
+				C3480C9D1F37BB5800AEE088 /* ImageModel.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		C3F132DB1F41DD5900AA392D /* CustomCells */ = {
+			isa = PBXGroup;
+			children = (
+				C3F132DC1F41DDA100AA392D /* MainCollectionViewCell.h */,
+				C3F132DD1F41DDA100AA392D /* MainCollectionViewCell.m */,
+			);
+			name = CustomCells;
+			sourceTree = "<group>";
+		};
+		C3F132E21F41E1CA00AA392D /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				C3F132E31F41E21200AA392D /* NastarsaCollectionVC.h */,
+				C3F132E41F41E21200AA392D /* NastarsaCollectionVC.m */,
+			);
+			name = ViewControllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -154,10 +219,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3480C891F37B5E100AEE088 /* ViewController.m in Sources */,
+				C3480C9E1F37BB5800AEE088 /* ImageModel.m in Sources */,
 				C3480C861F37B5E100AEE088 /* AppDelegate.m in Sources */,
 				C3480C8F1F37B5E100AEE088 /* Nastarsa.xcdatamodeld in Sources */,
+				C3F132E51F41E21200AA392D /* NastarsaCollectionVC.m in Sources */,
 				C3480C831F37B5E100AEE088 /* main.m in Sources */,
+				C335B23C1F439A200030A22E /* NasaFetcher.m in Sources */,
+				C3E2C0B01F44874D00A474F2 /* ImageDownloader.m in Sources */,
+				C3F132DE1F41DDA100AA392D /* MainCollectionViewCell.m in Sources */,
+				C334C56C1F535BFA00CD599E /* ImagesCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,6 +386,7 @@
 				C3480C9A1F37B5E100AEE088 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
