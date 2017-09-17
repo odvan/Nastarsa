@@ -17,7 +17,6 @@
 
 @implementation ImageDownloader
 
-
 - (void)setImageURL:(NSURL *)imageURL {
     _imageURL = imageURL;
     //    self.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:self.imageURL]]; // blocks main queue!
@@ -26,6 +25,7 @@
 }
 
 - (void)startDownloadingImage {
+    
     self.image = nil;
     
     if (self.imageURL) {
@@ -35,10 +35,12 @@
         if (image) {
             
             NSLog(@"This is cached");
-            dispatch_async(dispatch_get_main_queue(), ^{ self.image = image; });
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.image = image;
+            });
             
         } else {
-            
+            [self spinner];
             NSURLRequest *request = [NSURLRequest requestWithURL:self.imageURL];
             
             // another configuration option is backgroundSessionConfiguration (multitasking API required though)
@@ -60,7 +62,11 @@
                                                                         if (image) {
                                                                             NSLog(@"Caching %@", self.imageURL);
                                                                             [[ImagesCache sharedInstance] cacheImage:image forKey:self.imageURL];
-                                                                            dispatch_async(dispatch_get_main_queue(), ^{ self.image = image; });
+                                                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                [_indicator stopAnimating];
+                                                                                [_indicator removeFromSuperview];
+                                                                                self.image = image;
+                                                                            });
                                                                         }
                                                                     }
                                                                 }
@@ -69,6 +75,14 @@
             
         }
     }
+}
+
+- (void)spinner {
+    _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [_indicator setOpaque:YES];
+    _indicator.center = self.center;// it will display in center of image view
+    [self addSubview:_indicator];
+    [_indicator startAnimating];
 }
 
 

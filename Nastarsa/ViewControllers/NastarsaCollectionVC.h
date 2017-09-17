@@ -9,12 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "ImageModel.h"
 
-@interface NastarsaCollectionVC : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource>
+@interface NastarsaCollectionVC : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *layout;
 @property (weak, nonatomic) IBOutlet UICollectionView *nasaCollectionView;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinnerWhenNextPageDownload;
 
 // Model of this MVC (it can be publicly set)
-@property (nonatomic, strong) NSArray <ImageModel *> *photos; // of ImageModel objects
+@property (nonatomic, strong) NSMutableArray <ImageModel *> *photos; // of ImageModel objects
 
 @end

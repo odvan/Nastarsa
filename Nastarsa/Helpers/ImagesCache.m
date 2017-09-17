@@ -33,6 +33,7 @@ static ImagesCache *sharedInstance;
     self = [super init];
     if (self) {
         self.imagesCache = [[NSCache alloc] init];
+        [self.imagesCache setCountLimit:100];
     }
     return self;
 }

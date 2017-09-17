@@ -7,20 +7,10 @@
 //
 
 #import "NasaFetcher.h"
+#import <UIKit/UIKit.h>
 
 @implementation NasaFetcher
 
-
-//+ (NSURL *)URLForQuery:(NSString *)query
-//{
-//    query = [NSString stringWithFormat:@"%@&format=json&nojsoncallback=1&api_key=%@", query, FlickrAPIKey];
-//    query = [query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//    return [NSURL URLWithString:query];
-//}
-
-//+ (UIImage *)imageFrom:(NSURL *)link {
-    
-//}
 
 + (NSString *)urlStringForPhoto:(NSString *)link format:(NasaPhotoFormat)format {
     
@@ -30,12 +20,110 @@
         case NasaPhotoFormatLarge:     formatString = [NSString stringWithFormat:@"%@~large", link]; break;
         case NasaPhotoFormatOriginal:  formatString = [NSString stringWithFormat:@"%@~orig", link]; break;
     }
-    
     return [NSString stringWithFormat:@"http://images-assets.nasa.gov/image/%@/%@.jpg", link, formatString];
 }
 
 + (NSURL *)URLforPhoto:(NSString *)link format:(NasaPhotoFormat)format {
+    return [NSURL URLWithString:[NasaFetcher urlStringForPhoto:link format:format]];
+}
+
++ (void)pageNumbers:(void (^)(int numbers))completion {
     
-    return [NSURL URLWithString:[self urlStringForPhoto:link format:format]];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    
+    NSURL *url = [[NSURL alloc] initWithString: BASE_URL];
+    dispatch_queue_t fetchQ = dispatch_queue_create("base fetcher", NULL);
+    dispatch_async(fetchQ, ^{
+        // fetch the JSON data from Nasa
+        NSData *jsonResults = [NSData dataWithContentsOfURL: url];
+        NSError *error;
+        int numberOfPages = 0;
+        
+        // convert it to a Property List (NSArray and NSDictionary)
+        NSDictionary *results = [NSJSONSerialization JSONObjectWithData:jsonResults
+                                                                options:0
+                                                                  error:&error];
+        
+        if (error) {
+            NSLog(@"Error parsing JSON: %@", error);
+        }
+        else {
+            if ([results isKindOfClass:[NSDictionary class]]) {
+                NSLog(@"it is a dictionary!");
+                
+                int photoCount = [[results valueForKeyPath: NASA_PHOTOS_NUMBER] intValue];
+                NSLog(@"numbers of photo: %d", photoCount);
+                
+                if (photoCount) {
+                    int page = photoCount % 100;
+                    if (page > 0) {
+                        numberOfPages = photoCount/100 + 1;
+                    } else {
+                        numberOfPages = photoCount/100;
+                    }
+                }
+            }
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            completion(numberOfPages);
+        });
+        
+    });
+}
+
++ (void)fetchPhotos:(int)pageNumber withCompletion:(void (^)(NSMutableArray <ImageModel *> *photos))completion {
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
+    NSLog(@"page number: %d", pageNumber);
+    NSString *urlWithPage = [NSString stringWithFormat:BASE_URL@"&page=%d", pageNumber];
+    NSMutableArray <ImageModel *> *tempPhotosArray = [NSMutableArray array];
+    NSURL *url = [[NSURL alloc] initWithString: urlWithPage];
+    // create a (non-main) queue to do fetch on
+    dispatch_queue_t fetchQ = dispatch_queue_create("nasa fetcher", NULL);
+    // put a block to do the fetch onto that queue
+    dispatch_async(fetchQ, ^{
+        // fetch the JSON data from Nasa
+        NSData *jsonResults = [NSData dataWithContentsOfURL: url];
+        NSError *error;
+        
+        // convert it to a Property List (NSArray and NSDictionary)
+        NSDictionary *propertyListResults = [NSJSONSerialization JSONObjectWithData:jsonResults
+                                                                            options:0
+                                                                              error:&error];
+        
+        if (error) {
+            NSLog(@"Error parsing JSON: %@", error);
+        }
+        else {
+            if ([propertyListResults isKindOfClass:[NSDictionary class]]) {
+                NSLog(@"it is an array!");
+                
+                // get the NSArray of photo NSDictionarys out of the results
+                NSArray *photosData = [propertyListResults valueForKeyPath: NASA_PHOTOS_ARRAY];
+                
+                if (photosData) {
+                    for (NSMutableDictionary *item in photosData) {
+                        if (item) {
+                            NSArray *photoData = [item objectForKey: NASA_PHOTO_DATA];
+                            if (photoData) {
+                                ImageModel *photo = [[ImageModel alloc] initWithJSONDictionary: photoData.firstObject];
+                                [tempPhotosArray addObject: photo];
+                                NSLog(@"%@", [photo title]);
+                                NSLog(@"%@", [photo link]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // update the Model (and thus our UI), but do so back on the main queue
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            completion(tempPhotosArray);
+        });
+    });
 }
 @end

@@ -7,9 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ImageModel.h"
 
+#define NASA_PHOTOS_NUMBER @"collection.metadata.total_hits"
 #define NASA_PHOTOS_ARRAY @"collection.items"
 #define NASA_PHOTO_DATA @"data"
+#define BASE_URL @"https://images-api.nasa.gov/search?year_start=2017&year_end=2017&media_type=image"
 
 
 typedef NS_ENUM(NSInteger, NasaPhotoFormat) {
@@ -23,6 +26,10 @@ typedef NS_ENUM(NSInteger, NasaPhotoFormat) {
 
 @interface NasaFetcher : NSObject
 
+@property (nonatomic, strong) NSMutableArray <ImageModel *> *nasaPhotos; // of ImageModel objects
+
 + (NSURL *)URLforPhoto:(NSString *)link format:(NasaPhotoFormat)format;
++ (void)pageNumbers:(void (^)(int numbers))completion;
++ (void)fetchPhotos:(int)pageNumber withCompletion:(void (^)(NSMutableArray <ImageModel *> *photos))completion;
 
 @end

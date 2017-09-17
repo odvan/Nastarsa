@@ -102,9 +102,8 @@
 				C3F132DB1F41DD5900AA392D /* CustomCells */,
 				C3480C9B1F37BB2B00AEE088 /* Model */,
 				C334C5691F535BBA00CD599E /* Helpers */,
-				C3480C8A1F37B5E100AEE088 /* Main.storyboard */,
+				C38844F31F5EF338001F49A9 /* Layout */,
 				C3480C901F37B5E100AEE088 /* Assets.xcassets */,
-				C3480C921F37B5E100AEE088 /* LaunchScreen.storyboard */,
 				C3480C951F37B5E100AEE088 /* Info.plist */,
 				C3480C8D1F37B5E100AEE088 /* Nastarsa.xcdatamodeld */,
 				C3480C811F37B5E100AEE088 /* Supporting Files */,
@@ -127,6 +126,15 @@
 				C3480C9D1F37BB5800AEE088 /* ImageModel.m */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		C38844F31F5EF338001F49A9 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				C3480C8A1F37B5E100AEE088 /* Main.storyboard */,
+				C3480C921F37B5E100AEE088 /* LaunchScreen.storyboard */,
+			);
+			name = Layout;
 			sourceTree = "<group>";
 		};
 		C3F132DB1F41DD5900AA392D /* CustomCells */ = {
@@ -349,6 +357,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 3B4HYH3EL8;
 				INFOPLIST_FILE = Nastarsa/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.odvan.Nastarsa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -361,6 +370,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 3B4HYH3EL8;
 				INFOPLIST_FILE = Nastarsa/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.odvan.Nastarsa;
 				PRODUCT_NAME = "$(TARGET_NAME)";

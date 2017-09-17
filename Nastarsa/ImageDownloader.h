@@ -11,5 +11,6 @@
 @interface ImageDownloader : UIImageView
 
 @property (strong, nonatomic) NSURL *imageURL;
+@property (strong, nonatomic) UIActivityIndicatorView *indicator;
 
 @end

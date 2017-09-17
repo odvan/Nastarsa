@@ -11,7 +11,6 @@
 
 @implementation ImageModel
 
-//@synthesize description;
 
 - (instancetype)initWithJSONDictionary:(NSDictionary*)dict {
     
@@ -27,11 +26,11 @@
     return self;
 }
 
-+ (NSURL *)URLForPhoto:(NSString *)photoLink {
-    photoLink = [NSString stringWithFormat:@"http://images-assets.nasa.gov/image/%@/%@~thumb.jpg", photoLink, photoLink];
-    //photoLink = [photoLink stringByAddingPercentEncodingWithAllowedCharacters: [NSCharacterSet URLHostAllowedCharacterSet]];
-    return [NSURL URLWithString:photoLink];
-}
+//+ (NSURL *)URLForPhoto:(NSString *)photoLink {
+//    photoLink = [NSString stringWithFormat:@"http://images-assets.nasa.gov/image/%@/%@~thumb.jpg", photoLink, photoLink];
+//    //photoLink = [photoLink stringByAddingPercentEncodingWithAllowedCharacters: [NSCharacterSet URLHostAllowedCharacterSet]];
+//    return [NSURL URLWithString:photoLink];
+//}
 
 
 @end
