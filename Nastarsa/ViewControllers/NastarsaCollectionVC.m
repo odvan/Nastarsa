@@ -227,8 +227,7 @@ static CGFloat inset = 10;
     CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) { // Device is iPad
-        size = CGSizeMake((size.width - paddingBetweenCells)/3 - inset, (estimatedSizeOfTitle.size.height + estimatedSizeOfLabel.size.height + 16 + 16 + (size.width - paddingBetweenLines)/3 - inset));
-        
+        size = CGSizeMake((size.width - paddingBetweenCells)/3 - inset, (size.width - paddingBetweenLines)/3 - inset + 125);
     } else {
         if (imageModel.isExpanded == YES && heightForItem > size.width + 125) {
             NSLog(@"somehow it's triggered 😀");

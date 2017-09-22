@@ -73,6 +73,7 @@
     // next line is necessary in case self.image gets set before self.scrollView does
     // for example, prepareForSegue:sender: is called before outlet-setting phase
     self.scrollView.contentSize = self.imageView.image ? self.imageView.image.size : CGSizeZero;
+    NSLog(@"%f", self.scrollView.contentSize.width);
 }
 
 #pragma mark - UIScrollViewDelegate
