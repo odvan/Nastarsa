@@ -6,6 +6,7 @@
 //  Copyright © 2017 Artur Kablak. All rights reserved.
 //
 
+
 #import "ImageModel.h"
 #import "NasaFetcher.h"
 
@@ -22,6 +23,7 @@
         self.someDescription = [dict objectForKey:@"description"];
         self.link = [NasaFetcher URLforPhoto:self.nasa_id
                                       format:NasaPhotoFormatThumb];
+        self.isExpanded = NO;
     }
     return self;
 }

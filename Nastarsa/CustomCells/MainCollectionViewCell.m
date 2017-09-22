@@ -40,16 +40,28 @@
     
     NSLog(@"prepare %@", _title.text);
     
-    [_title setHidden: NO];
-    [_imageDescription setHidden: NO];
-    [_paddingView setHidden: NO];
+    _title.hidden = NO;
+    _imageDescription.hidden = NO;
+    _readMoreButton.hidden = NO;
+    _buttonHeightConstraint.constant = 15;
+    _buttonHeightConstraint.active = YES;
+}
+
+- (IBAction)readMoreTouched:(id)sender {
+    if ([sender isKindOfClass:[UIButton class]]) {
+        [_delegate readMoreButtonTouched:_indexPath];
+    }
 }
 
 - (void)configure:(ImageModel *)model {
-    
     _title.text = model.title;
     _imageDescription.text = model.someDescription;
     _image.imageURL = model.link;
+    
+    if (model.isExpanded) {
+        _readMoreButton.hidden = YES;
+        _buttonHeightConstraint.constant = 0;
+    }
 }
 
 - (void)settingLargeImage:(ImageModel *)model {

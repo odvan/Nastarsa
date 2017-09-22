@@ -10,7 +10,7 @@
 
 @interface ImageDownloader : UIImageView
 
+@property (strong, nonatomic) UIImage *tempImage;
 @property (strong, nonatomic) NSURL *imageURL;
-@property (strong, nonatomic) UIActivityIndicatorView *indicator;
-
+@property (strong, nonatomic) NSString *ID;
 @end

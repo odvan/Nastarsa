@@ -10,14 +10,27 @@
 #import "ImageModel.h"
 #import "ImageDownloader.h"
 
+@class MainCollectionViewCell;
+
+@protocol ExpandedCellDelegate <NSObject>
+@required
+- (void)readMoreButtonTouched:(NSIndexPath *)indexPath;
+@end
+
 @interface MainCollectionViewCell : UICollectionViewCell
 
 @property (weak, nonatomic) IBOutlet ImageDownloader *image;
 @property (weak, nonatomic) IBOutlet UILabel *title;
 @property (weak, nonatomic) IBOutlet UILabel *imageDescription;
-@property (weak, nonatomic) IBOutlet UIView *paddingView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *buttonHeightConstraint;
+@property (weak, nonatomic) IBOutlet UIButton *readMoreButton;
+@property (weak, nonatomic) id <ExpandedCellDelegate> delegate;
+@property (weak, nonatomic) NSIndexPath *indexPath;
 
+- (IBAction)readMoreTouched:(id)sender;
 - (void)configure:(ImageModel *)model;
 - (void)settingLargeImage:(ImageModel *)model;
 
 @end
+
+

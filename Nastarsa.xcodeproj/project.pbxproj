@@ -16,6 +16,7 @@
 		C3480C911F37B5E100AEE088 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3480C901F37B5E100AEE088 /* Assets.xcassets */; };
 		C3480C941F37B5E100AEE088 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3480C921F37B5E100AEE088 /* LaunchScreen.storyboard */; };
 		C3480C9E1F37BB5800AEE088 /* ImageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C3480C9D1F37BB5800AEE088 /* ImageModel.m */; };
+		C36293731F72D182008DF3F8 /* ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C36293721F72D182008DF3F8 /* ImageViewController.m */; };
 		C3E2C0B01F44874D00A474F2 /* ImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = C3E2C0AF1F44874D00A474F2 /* ImageDownloader.m */; };
 		C3F132DE1F41DDA100AA392D /* MainCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F132DD1F41DDA100AA392D /* MainCollectionViewCell.m */; };
 		C3F132E51F41E21200AA392D /* NastarsaCollectionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F132E41F41E21200AA392D /* NastarsaCollectionVC.m */; };
@@ -37,6 +38,8 @@
 		C3480C951F37B5E100AEE088 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C3480C9C1F37BB5800AEE088 /* ImageModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageModel.h; path = Model/ImageModel.h; sourceTree = "<group>"; };
 		C3480C9D1F37BB5800AEE088 /* ImageModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageModel.m; path = Model/ImageModel.m; sourceTree = "<group>"; };
+		C36293711F72D182008DF3F8 /* ImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageViewController.h; path = ViewControllers/ImageViewController.h; sourceTree = "<group>"; };
+		C36293721F72D182008DF3F8 /* ImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageViewController.m; path = ViewControllers/ImageViewController.m; sourceTree = "<group>"; };
 		C3E2C0AE1F44874D00A474F2 /* ImageDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDownloader.h; sourceTree = "<group>"; };
 		C3E2C0AF1F44874D00A474F2 /* ImageDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloader.m; sourceTree = "<group>"; };
 		C3F132DC1F41DDA100AA392D /* MainCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainCollectionViewCell.h; path = CustomCells/MainCollectionViewCell.h; sourceTree = "<group>"; };
@@ -151,6 +154,8 @@
 			children = (
 				C3F132E31F41E21200AA392D /* NastarsaCollectionVC.h */,
 				C3F132E41F41E21200AA392D /* NastarsaCollectionVC.m */,
+				C36293711F72D182008DF3F8 /* ImageViewController.h */,
+				C36293721F72D182008DF3F8 /* ImageViewController.m */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -227,6 +232,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C36293731F72D182008DF3F8 /* ImageViewController.m in Sources */,
 				C3480C9E1F37BB5800AEE088 /* ImageModel.m in Sources */,
 				C3480C861F37B5E100AEE088 /* AppDelegate.m in Sources */,
 				C3480C8F1F37B5E100AEE088 /* Nastarsa.xcdatamodeld in Sources */,

@@ -14,6 +14,7 @@
 @property (strong, nonatomic) NSString *someDescription;
 @property (strong, nonatomic) NSString *nasa_id;
 @property (strong, nonatomic) NSURL *link;
+@property (assign, nonatomic) BOOL isExpanded;
 
 - (instancetype)initWithJSONDictionary:(NSDictionary *)dict;
 

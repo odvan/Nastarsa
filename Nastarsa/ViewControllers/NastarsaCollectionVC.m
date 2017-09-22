@@ -10,6 +10,7 @@
 #import "MainCollectionViewCell.h"
 #import "ImageModel.h"
 #import "NasaFetcher.h"
+#import "ImageViewController.h"
 
 static NSCache * imagesCache;
 static NSString * const reuseIdentifier = @"imageCell";
@@ -24,7 +25,7 @@ static CGFloat paddingBetweenCells = 10;
 static CGFloat paddingBetweenLines = 10;
 static CGFloat inset = 10;
 
-@interface NastarsaCollectionVC ()
+@interface NastarsaCollectionVC () <ExpandedCellDelegate>
 
 @property (nonatomic, assign) int pageNumber;
 @end
@@ -38,7 +39,7 @@ static CGFloat inset = 10;
     _photos = [[NSMutableArray alloc] init];
     imagesCache = [[NSCache alloc] init];
    
-    _nasaCollectionView.allowsMultipleSelection = YES;
+//    _nasaCollectionView.allowsMultipleSelection = YES;
     
     
 //    _layout.estimatedItemSize = CGSizeMake(100, 100); //UICollectionViewFlowLayoutAutomaticSize;
@@ -62,11 +63,6 @@ static CGFloat inset = 10;
     }];
     
     [self refreshControlSetup];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 // whenever our Model is set, must update our View
@@ -95,17 +91,33 @@ static CGFloat inset = 10;
               }];
 }
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
-#pragma mark <UICollectionViewDataSource>
+    if ([sender isKindOfClass:[UICollectionViewCell class]]) {
+        NSIndexPath *indexPath = [self.nasaCollectionView indexPathForCell:sender];
+        if (indexPath) {
+            // found it ... are we doing the Display Photo segue?
+            if ([segue.identifier isEqualToString:@"showImage"]) {
+                // yes ... is the destination an ImageViewController?
+                if ([segue.destinationViewController isKindOfClass:[ImageViewController class]]) {
+                    // yes ... then we know how to prepare for that segue!
+                    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
+                    ImageViewController *iVC = (ImageViewController *)segue.destinationViewController;
+                    iVC.imageView.tempImage = cell.image.image;
+                    iVC.imageView.imageURL = [NasaFetcher URLforPhoto:_photos[indexPath.row].nasa_id format:NasaPhotoFormatLarge];
+                    iVC.imageView.ID = _photos[indexPath.row].nasa_id;
+                }
+            }
+        }
+    }
+}
+
+
+#pragma mark - <UICollectionViewDataSource>
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
@@ -126,12 +138,15 @@ static CGFloat inset = 10;
     cell.layer.shouldRasterize = YES;
     cell.layer.rasterizationScale = [UIScreen mainScreen].scale;
     
+    cell.delegate = self;
+    cell.indexPath = indexPath;
+    
     ImageModel *imageModel = _photos[indexPath.row];
     if (imageModel) {
         NSLog(@"called");
         [cell configure:imageModel];
     }
-    // Configure the cell
+    NSLog(@"cell for Item called");
     
     return cell;
 }
@@ -181,39 +196,62 @@ static CGFloat inset = 10;
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     NSLog(@"size for Item called");
-
+    
     CGSize size = self.view.frame.size;
     ImageModel *imageModel = _photos[indexPath.row];
-
-    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
     
-    if (cell.isSelected) { // We know that we have to enlarge at least one cell
-        [cell settingLargeImage:imageModel];
-        return CGSizeMake(size.width - 2*inset, size.height);
+//    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
+    
+    //    if (cell.isSelected) { // We know that we have to enlarge at least one cell
+    //        [cell settingLargeImage:imageModel];
+    //        cell.imageBottomConstraint = [cell.image.bottomAnchor constraintEqualToAnchor:cell.bottomAnchor constant:0];
+    //        cell.imageBottomConstraint.active = YES;
+    //        return CGSizeMake(size.width, size.height);
+    //
+    //    } else {
+    
+    CGFloat approximateWidth = size.width - 32;
+    CGSize sizeForLabel = CGSizeMake(approximateWidth, CGFLOAT_MAX);
+    NSDictionary *attributes = @{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Book" size:12.0f] };
+    
+    CGRect estimatedSizeOfLabel = [imageModel.someDescription boundingRectWithSize:sizeForLabel
+                                                                           options:NSStringDrawingUsesLineFragmentOrigin
+                                                                        attributes:attributes
+                                                                           context:nil];
+    
+    CGRect estimatedSizeOfTitle = [imageModel.title boundingRectWithSize:sizeForLabel
+                                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                                              attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Black" size:16.0f] }
+                                                                 context:nil];
+    
+    CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) { // Device is iPad
+        size = CGSizeMake((size.width - paddingBetweenCells)/3 - inset, (estimatedSizeOfTitle.size.height + estimatedSizeOfLabel.size.height + 16 + 16 + (size.width - paddingBetweenLines)/3 - inset));
         
     } else {
-        
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            size = CGSizeMake((size.width - paddingBetweenCells)/3 - inset, (size.width - paddingBetweenLines)/3 - inset); // Device is iPad
-        
+        if (imageModel.isExpanded == YES && heightForItem > size.width + 125) {
+            NSLog(@"somehow it's triggered 😀");
+            size = CGSizeMake(size.width, heightForItem);
         } else {
-            CGFloat approximateWidth = size.width - 32;
-            CGSize sizeForLabel = CGSizeMake(approximateWidth, CGFLOAT_MAX);
-            NSDictionary *attributes = @{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Book" size:8.0f] };
-            
-            CGRect estimatedSizeOfLabel = [imageModel.someDescription boundingRectWithSize:sizeForLabel
-                                                                     options:NSStringDrawingUsesLineFragmentOrigin
-                                                                  attributes:attributes context:nil];
-            
-            size = CGSizeMake(size.width - 2*inset, estimatedSizeOfLabel.size.height + 20 + size.width - 2*inset);
+            if (heightForItem < size.width + 125) {
+                NSLog(@"heightForItem < size.width + 125");
+                imageModel.isExpanded = YES;
+            }
+            size = CGSizeMake(size.width, size.width + 125);
         }
-        return size;
     }
+    return size;
     
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(inset, inset, inset, inset);
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) { // Device is iPad
+        return UIEdgeInsetsMake(inset, inset, inset, inset);
+    } else {
+        return UIEdgeInsetsMake(0, 0, 0, 0);
+        
+    }
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
@@ -235,67 +273,81 @@ static CGFloat inset = 10;
 
 
 // Uncomment this method to specify if the specified item should be selected
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
+//- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
+//
+//    if (cell.isSelected) {        
+//        return NO;
+//    } else {
+//        cell.title.hidden = YES;
+//        [cell.imageDescription setHidden: YES];
+//        NSLog(@"SELECTED");
+//        return YES;
+//    }
+//
+//    return cell.isSelected;
+//}
+//
+//-(BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
+//    
+//    if (cell.isSelected) {
+//        [cell.title setHidden: NO];
+//        [cell.imageDescription setHidden: NO];
+//        NSLog(@"DE-SELECTED");
+//
+//        return YES;
+//    } else {
+//        return NO;
+//    }
+//
+//}
+//
+//
+//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    NSLog(@"when SELECTED");
+//    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
+//
+//    if (cell.isSelected) {
+//        NSArray *indexes = [[NSArray alloc] init];
+//        [indexes arrayByAddingObject:indexPath];
+//        [self.nasaCollectionView reloadItemsAtIndexPaths:indexes];
+//    }
+//}
+//
+//- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    NSLog(@"when DE-SELECTED");
+//
+//    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
+//    
+//    if (!cell.isSelected) {
+//        NSArray *indexes = [[NSArray alloc] init];
+//        [indexes arrayByAddingObject:indexPath];
+//        [self.nasaCollectionView reloadItemsAtIndexPaths:indexes];
+//    }
+//
+//}
+
+#pragma mark <ExpandedCellDelegate>
+
+- (void)readMoreButtonTouched:(NSIndexPath *)indexPath {
+    ImageModel *imageModel = _photos[indexPath.row];
+    imageModel.isExpanded = !imageModel.isExpanded;
     __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
-
-    if (cell.isSelected) {        
-        return NO;
-    } else {
-        [cell.title setHidden: YES];
-        [cell.imageDescription setHidden: YES];
-        [cell.paddingView setHidden: YES];
-        NSLog(@"SELECTED");
-        return YES;
-    }
-
-    return cell.isSelected;
-}
-
--(BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
-    
-    if (cell.isSelected) {
-        [cell.title setHidden: NO];
-        [cell.imageDescription setHidden: NO];
-        [cell.paddingView setHidden: NO];
-        NSLog(@"DE-SELECTED");
-
-        return YES;
-    } else {
-        return NO;
-    }
-
-}
-
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSLog(@"when SELECTED");
-    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
-
-    if (cell.isSelected) {
-        NSArray *indexes = [[NSArray alloc] init];
-        [indexes arrayByAddingObject:indexPath];
+    cell.readMoreButton.hidden = YES;
+    cell.buttonHeightConstraint.constant = 0;
+//    cell.buttonHeightConstraint.active = YES;
+    NSArray *indexes = [[NSArray alloc] init];
+    [indexes arrayByAddingObject:indexPath];
+    [UIView animateWithDuration:0.8 delay:0.0 usingSpringWithDamping:0.9 initialSpringVelocity:0.9 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         [self.nasaCollectionView reloadItemsAtIndexPaths:indexes];
-    }
+    } completion:^(BOOL finished) {
+        nil; }];
 }
-
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSLog(@"when DE-SELECTED");
-
-    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
-    
-    if (!cell.isSelected) {
-        NSArray *indexes = [[NSArray alloc] init];
-        [indexes arrayByAddingObject:indexPath];
-        [self.nasaCollectionView reloadItemsAtIndexPaths:indexes];
-    }
-
-}
-
 /*
 // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
