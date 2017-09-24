@@ -12,8 +12,10 @@
 
 @interface ImageViewController : UIViewController
 
-//@property (nonatomic, strong) NSURL *imageURL;
+@property (nonatomic, strong) NSURL *imageURL;
+@property (nonatomic, strong) NSString *ID;
 @property (nonatomic, strong) ImageModel *model;
-@property (nonatomic, strong) ImageDownloader *imageView;
+@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) UIImageView *imageView;
 
 @end

@@ -17,28 +17,30 @@
 
 @implementation ImageDownloader
 
-- (void)setImageURL:(NSURL *)imageURL {
-    _imageURL = imageURL;
-    [self startDownloadingImage];
-}
+//- (void)setImageURL:(NSURL *)imageURL {
+//    _imageURL = imageURL;
+//    [self downloadingImage:^(UIImage *image) {
+//        self.image = image;
+//    }];
+//}
 
-- (void)startDownloadingImage {
++ (void)DownloadingImageWithURL:(NSURL *)imageURL completion:(void (^)(UIImage *image))completion {
     
-    self.image = nil;
+//    self.image = nil;
     
-    if (self.imageURL) {
-        UIImage *image = [[ImagesCache sharedInstance] getCachedImageForKey:self.imageURL];
+    if (imageURL) {
+        UIImage *image = [[ImagesCache sharedInstance] getCachedImageForKey:imageURL];
 
         if (image) {
             NSLog(@"Picture cached");
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.image = image;
+                completion(image);
             });
         } else {
-            self.image = self.tempImage;
-            [self spinner];
+//            self.image = self.tempImage;
+//            [self spinner];
             
-            NSURLRequest *request = [NSURLRequest requestWithURL:self.imageURL];
+            NSURLRequest *request = [NSURLRequest requestWithURL:imageURL];
             
             // another configuration option is backgroundSessionConfiguration (multitasking API required though)
             NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
@@ -53,44 +55,45 @@
                                                                 NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
                                                                 NSLog(@"response status code: %ld", (long)[httpResponse statusCode]);
                                                                 if (!error && httpResponse.statusCode != 404) {
-                                                                    if ([request.URL isEqual:self.imageURL]) {
+                                                                    if ([request.URL isEqual:imageURL]) {
                                                                         // UIImage is an exception to the "can't do UI here"
                                                                         UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:localfile]];
                                                                         // but calling "self.image =" is definitely not an exception to that!
                                                                         // so we must dispatch this back to the main queue
                                                                         if (image) {
-                                                                            NSLog(@"Caching %@", self.imageURL);
-                                                                            [[ImagesCache sharedInstance] cacheImage:image forKey:self.imageURL];
+                                                                            NSLog(@"Caching %@", imageURL);
+                                                                            [[ImagesCache sharedInstance] cacheImage:image forKey:imageURL];
                                                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                [_indicator stopAnimating];
-                                                                                [_indicator removeFromSuperview];
-                                                                                self.image = image;
-                                                                                NSLog(@"%f", self.image.size.width);
+//                                                                                [_indicator stopAnimating];
+//                                                                                [_indicator removeFromSuperview];
+                                                                                completion(image);
+                                                                                NSLog(@"image size: %f, %f", image.size.width, image.size.height);
                                                                             });
                                                                         }
                                                                     }
-                                                                } else {
-                                                                    NSLog(@"trying another link for %@", self.ID);
-                                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                                        [_indicator stopAnimating];
-                                                                        [_indicator removeFromSuperview];
-                                                                        if (self.ID) {
-                                                                            self.imageURL = [NasaFetcher URLforPhoto:self.ID format:NasaPhotoFormatOriginal];
-                                                                        }
-                                                                    });
                                                                 }
+//                                                                } else {
+//                                                                    NSLog(@"trying another link for %@", self.ID);
+//                                                                    dispatch_async(dispatch_get_main_queue(), ^{
+//                                                                        [_indicator stopAnimating];
+//                                                                        [_indicator removeFromSuperview];
+//                                                                        if (self.ID) {
+//                                                                            self.imageURL = [NasaFetcher URLforPhoto:self.ID format:NasaPhotoFormatOriginal];
+//                                                                        }
+//                                                                    });
+//                                                                }
                                                             }];
             [task resume]; // don't forget that all NSURLSession tasks start out suspended!
         }
     }
 }
 
-- (void)spinner {
-    _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    [_indicator setOpaque:YES];
-    _indicator.center = self.center;// it will display in center of image view
-    [self addSubview:_indicator];
-    [_indicator startAnimating];
-}
+//- (void)spinner {
+//    _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+//    [_indicator setOpaque:YES];
+//    _indicator.center = self.center;// it will display in center of image view
+//    [self addSubview:_indicator];
+//    [_indicator startAnimating];
+//}
 
 @end

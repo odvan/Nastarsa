@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ImageDownloader : UIImageView
+@interface ImageDownloader: NSObject
 
+@property (strong, nonatomic) UIImage *image;
 @property (strong, nonatomic) UIImage *tempImage;
 @property (strong, nonatomic) NSURL *imageURL;
 @property (strong, nonatomic) NSString *ID;
+
++ (void)DownloadingImageWithURL:(NSURL *)imageURL completion:(void (^)(UIImage *image))completion;
+
 @end

@@ -19,7 +19,7 @@
 
 @interface MainCollectionViewCell : UICollectionViewCell
 
-@property (weak, nonatomic) IBOutlet ImageDownloader *image;
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UILabel *title;
 @property (weak, nonatomic) IBOutlet UILabel *imageDescription;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *buttonHeightConstraint;
@@ -29,7 +29,7 @@
 
 - (IBAction)readMoreTouched:(id)sender;
 - (void)configure:(ImageModel *)model;
-- (void)settingLargeImage:(ImageModel *)model;
+//- (void)settingLargeImage:(ImageModel *)model;
 
 @end
 

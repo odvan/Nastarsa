@@ -45,6 +45,7 @@
     _readMoreButton.hidden = NO;
     _buttonHeightConstraint.constant = 15;
     _buttonHeightConstraint.active = YES;
+    _imageView.image = nil;
 }
 
 - (IBAction)readMoreTouched:(id)sender {
@@ -56,7 +57,10 @@
 - (void)configure:(ImageModel *)model {
     _title.text = model.title;
     _imageDescription.text = model.someDescription;
-    _image.imageURL = model.link;
+    
+    [ImageDownloader DownloadingImageWithURL:model.link completion:^(UIImage *image) {
+        _imageView.image = image;
+    }];
     
     if (model.isExpanded) {
         _readMoreButton.hidden = YES;
@@ -64,9 +68,9 @@
     }
 }
 
-- (void)settingLargeImage:(ImageModel *)model {
-    _image.imageURL = [NasaFetcher URLforPhoto:model.nasa_id
-                                        format:NasaPhotoFormatLarge];
-}
+//- (void)settingLargeImage:(ImageModel *)model {
+//    _image.imageURL = [NasaFetcher URLforPhoto:model.nasa_id
+//                                        format:NasaPhotoFormatLarge];
+//}
 
 @end

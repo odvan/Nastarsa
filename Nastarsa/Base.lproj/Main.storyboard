@@ -39,7 +39,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="500"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Wll-hN-48T" customClass="ImageDownloader">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Wll-hN-48T">
                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
                                                     <color key="backgroundColor" red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
@@ -78,7 +78,7 @@
                                                 </button>
                                             </subviews>
                                         </view>
-                                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="Wll-hN-48T" secondAttribute="trailing" id="0ha-o1-rOu"/>
                                             <constraint firstAttribute="bottom" secondItem="h1p-GB-Ewk" secondAttribute="bottom" constant="8" id="3sq-Px-S22"/>
@@ -93,8 +93,8 @@
                                         </constraints>
                                         <connections>
                                             <outlet property="buttonHeightConstraint" destination="4Oz-kC-XAO" id="ZbI-Kq-gU4"/>
-                                            <outlet property="image" destination="Wll-hN-48T" id="xRU-7Y-wAX"/>
                                             <outlet property="imageDescription" destination="8ic-uf-m1s" id="6Qz-61-zGF"/>
+                                            <outlet property="imageView" destination="Wll-hN-48T" id="aqQ-4J-HLY"/>
                                             <outlet property="readMoreButton" destination="h1p-GB-Ewk" id="pow-jb-KdF"/>
                                             <outlet property="title" destination="e5X-QZ-a9K" id="pxr-ZY-OFS"/>
                                             <segue destination="NLZ-F1-nKb" kind="presentation" identifier="showImage" animates="NO" id="ksP-F1-AP5"/>
@@ -153,8 +153,8 @@
                                     <constraint firstAttribute="width" constant="50" id="WS2-TU-9G2"/>
                                     <constraint firstAttribute="height" constant="50" id="rgF-8q-cCk"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="20"/>
-                                <state key="normal" title="x">
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="✖︎">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
