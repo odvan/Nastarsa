@@ -26,6 +26,12 @@
     [super viewDidLoad];
     NSLog(@"we there");
     [self.scrollView addSubview:self.imageView];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(receivingMethodOnListener:)
+     name:@"myNotificationName"
+     object:nil];
 }
 
 #pragma mark - Properties
@@ -36,30 +42,10 @@
         NSLog(@"creating imageView");
         _imageView = [[ImageDownloader alloc] init];
         self.imageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-        CGFloat widthScale = self.view.frame.size.width / self.imageView.bounds.size.width;
-        CGFloat heightScale = self.view.frame.size.height / self.imageView.bounds.size.height;
-        _scrollView.minimumZoomScale = MIN(widthScale, heightScale);//0.2;
-        
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
     return _imageView;
 }
-
-//- (UIImage *)image {
-//    return self.imageView.image;
-//}
-
-//- (void)setModel:(ImageModel *)model {
-//    NSLog(@"we there 2");
-//    self.imageView.imageURL = [NasaFetcher URLforPhoto:model.nasa_id
-//                                                format:NasaPhotoFormatLarge];
-//    self.scrollView.zoomScale = 1.0;
-//
-//    // self.scrollView could be nil on the next line if outlet-setting has not happened yet
-//    self.scrollView.contentSize = self.imageView ? self.imageView.image.size : CGSizeZero;
-//    NSLog(@"scroll view content size: %f", self.scrollView.contentSize.height);
-////    [self.spinner stopAnimating];
-//}
 
 - (void)setScrollView:(UIScrollView *)scrollView {
     NSLog(@"inside scrollView");
@@ -73,7 +59,7 @@
     // next line is necessary in case self.image gets set before self.scrollView does
     // for example, prepareForSegue:sender: is called before outlet-setting phase
     self.scrollView.contentSize = self.imageView.image ? self.imageView.image.size : CGSizeZero;
-    NSLog(@"%f", self.scrollView.contentSize.width);
+    NSLog(@"scrollview content size %f", self.scrollView.contentSize.width);
 }
 
 #pragma mark - UIScrollViewDelegate

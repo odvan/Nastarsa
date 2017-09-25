@@ -33,6 +33,7 @@
             NSLog(@"Picture cached");
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.image = image;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"Image downloaded" object:nil];
             });
         } else {
             self.image = self.tempImage;
@@ -66,6 +67,7 @@
                                                                                 [_indicator removeFromSuperview];
                                                                                 self.image = image;
                                                                                 NSLog(@"%f", self.image.size.width);
+                                                                                [[NSNotificationCenter defaultCenter] postNotificationName:@"Image downloaded" object:nil];
                                                                             });
                                                                         }
                                                                     }
