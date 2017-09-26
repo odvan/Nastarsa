@@ -38,7 +38,6 @@
             });
         } else {
 //            self.image = self.tempImage;
-//            [self spinner];
             
             NSURLRequest *request = [NSURLRequest requestWithURL:imageURL];
             
@@ -64,8 +63,6 @@
                                                                             NSLog(@"Caching %@", imageURL);
                                                                             [[ImagesCache sharedInstance] cacheImage:image forKey:imageURL];
                                                                             dispatch_async(dispatch_get_main_queue(), ^{
-//                                                                                [_indicator stopAnimating];
-//                                                                                [_indicator removeFromSuperview];
                                                                                 completion(image);
                                                                                 NSLog(@"image size: %f, %f", image.size.width, image.size.height);
                                                                             });

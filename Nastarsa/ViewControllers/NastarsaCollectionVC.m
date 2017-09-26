@@ -140,7 +140,7 @@ static CGFloat inset = 10;
     
     cell.delegate = self;
     cell.indexPath = indexPath;
-    
+
     ImageModel *imageModel = _photos[indexPath.row];
     if (imageModel) {
         NSLog(@"called");

@@ -9,12 +9,14 @@
 #import "ImageViewController.h"
 #import "ImageDownloader.h"
 #import "NasaFetcher.h"
+#import "Spinner.h"
 
 @interface ImageViewController () <UIScrollViewDelegate>
 
 //@property (nonatomic, strong) UIImage *image;
 //@property (nonatomic, strong) ImageDownloader *imageView;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (strong, nonatomic) Spinner *indicator;
 @end
 
 
@@ -40,6 +42,11 @@
 }
 
 #pragma mark - Properties
+
+- (Spinner *)indicator {
+    if (!_indicator) _indicator = [[Spinner alloc] init];
+    return _indicator;
+}
 
 // lazy instantiation
 - (UIImageView *)imageView {
@@ -160,9 +167,10 @@
 
 - (void)setImageURL:(NSURL *)imageURL {
     _imageURL = imageURL;
-
+    [self.indicator setupWith:self.view];
     [ImageDownloader DownloadingImageWithURL:imageURL completion:^(UIImage *image) {
-    self.image = image; }];
+        [self.indicator stop];
+        self.image = image; }];
 }
 
 - (IBAction)dismissVC:(id)sender {

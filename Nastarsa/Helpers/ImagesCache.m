@@ -13,11 +13,8 @@
 static ImagesCache *sharedInstance;
 
 @interface ImagesCache ()
-
 @property (nonatomic, strong) NSCache *imagesCache;
-
 @end
-
 
 @implementation ImagesCache
 

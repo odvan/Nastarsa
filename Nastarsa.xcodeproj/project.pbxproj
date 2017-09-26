@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C334A3241F79BFEF00523919 /* Spinner.m in Sources */ = {isa = PBXBuildFile; fileRef = C334A3231F79BFEF00523919 /* Spinner.m */; };
 		C334C56C1F535BFA00CD599E /* ImagesCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C334C56B1F535BFA00CD599E /* ImagesCache.m */; };
 		C335B23C1F439A200030A22E /* NasaFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = C335B23B1F439A200030A22E /* NasaFetcher.m */; };
 		C3480C831F37B5E100AEE088 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3480C821F37B5E100AEE088 /* main.m */; };
@@ -23,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C334A3221F79BFEF00523919 /* Spinner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spinner.h; path = Helpers/Spinner.h; sourceTree = "<group>"; };
+		C334A3231F79BFEF00523919 /* Spinner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Spinner.m; path = Helpers/Spinner.m; sourceTree = "<group>"; };
 		C334C56A1F535BFA00CD599E /* ImagesCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImagesCache.h; path = Helpers/ImagesCache.h; sourceTree = "<group>"; };
 		C334C56B1F535BFA00CD599E /* ImagesCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImagesCache.m; path = Helpers/ImagesCache.m; sourceTree = "<group>"; };
 		C335B23A1F439A200030A22E /* NasaFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NasaFetcher.h; path = NASAFetcher/NasaFetcher.h; sourceTree = "<group>"; };
@@ -66,6 +69,8 @@
 				C3E2C0AF1F44874D00A474F2 /* ImageDownloader.m */,
 				C334C56A1F535BFA00CD599E /* ImagesCache.h */,
 				C334C56B1F535BFA00CD599E /* ImagesCache.m */,
+				C334A3221F79BFEF00523919 /* Spinner.h */,
+				C334A3231F79BFEF00523919 /* Spinner.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -242,6 +247,7 @@
 				C3E2C0B01F44874D00A474F2 /* ImageDownloader.m in Sources */,
 				C3F132DE1F41DDA100AA392D /* MainCollectionViewCell.m in Sources */,
 				C334C56C1F535BFA00CD599E /* ImagesCache.m in Sources */,
+				C334A3241F79BFEF00523919 /* Spinner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

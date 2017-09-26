@@ -8,7 +8,11 @@
 
 #import "MainCollectionViewCell.h"
 #import "NasaFetcher.h"
+#import "Spinner.h"
 
+@interface MainCollectionViewCell()
+@property (strong, nonatomic) Spinner *indicator;
+@end
 
 @implementation MainCollectionViewCell
 
@@ -35,6 +39,11 @@
 //
 //}
 
+- (Spinner *)indicator {
+    if (!_indicator) _indicator = [[Spinner alloc] init];
+    return _indicator;
+}
+
 - (void)prepareForReuse {
     [super prepareForReuse];
     
@@ -57,9 +66,10 @@
 - (void)configure:(ImageModel *)model {
     _title.text = model.title;
     _imageDescription.text = model.someDescription;
-    
+    [self.indicator setupWith:_imageView];
     [ImageDownloader DownloadingImageWithURL:model.link completion:^(UIImage *image) {
         _imageView.image = image;
+        [self.indicator stop];
     }];
     
     if (model.isExpanded) {
@@ -68,6 +78,13 @@
     }
 }
 
+//- (void)spinner {
+//    _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+//    [_indicator setOpaque:YES];
+//    _indicator.center = self.imageView.center;// it will display in center of image view
+//    [self.imageView addSubview:_indicator];
+//    [_indicator startAnimating];
+//}
 //- (void)settingLargeImage:(ImageModel *)model {
 //    _image.imageURL = [NasaFetcher URLforPhoto:model.nasa_id
 //                                        format:NasaPhotoFormatLarge];
