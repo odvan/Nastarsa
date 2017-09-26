@@ -107,7 +107,7 @@ static CGFloat inset = 10;
                     // yes ... then we know how to prepare for that segue!
                     __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
                     ImageViewController *iVC = (ImageViewController *)segue.destinationViewController;
-                    iVC.imageView.image = cell.imageView.image;
+                    iVC.tempImage = cell.imageView.image;
                     iVC.imageURL = [NasaFetcher URLforPhoto:_photos[indexPath.row].nasa_id format:NasaPhotoFormatLarge];
                     iVC.ID = _photos[indexPath.row].nasa_id;
                 }

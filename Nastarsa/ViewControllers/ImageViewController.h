@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSString *ID;
 @property (nonatomic, strong) ImageModel *model;
 @property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) UIImage *tempImage;
 @property (nonatomic, strong) UIImageView *imageView;
 
 @end

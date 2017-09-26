@@ -10,23 +10,9 @@
 #import "ImagesCache.h"
 #import "NasaFetcher.h"
 
-
-@interface ImageDownloader ()
-@property (strong, nonatomic) UIActivityIndicatorView *indicator;
-@end
-
 @implementation ImageDownloader
 
-//- (void)setImageURL:(NSURL *)imageURL {
-//    _imageURL = imageURL;
-//    [self downloadingImage:^(UIImage *image) {
-//        self.image = image;
-//    }];
-//}
-
-+ (void)DownloadingImageWithURL:(NSURL *)imageURL completion:(void (^)(UIImage *image))completion {
-    
-//    self.image = nil;
++ (void)downloadingImageWithURL:(NSURL *)imageURL completion:(void (^)(UIImage *image))completion {
     
     if (imageURL) {
         UIImage *image = [[ImagesCache sharedInstance] getCachedImageForKey:imageURL];
@@ -37,7 +23,6 @@
                 completion(image);
             });
         } else {
-//            self.image = self.tempImage;
             
             NSURLRequest *request = [NSURLRequest requestWithURL:imageURL];
             
@@ -54,7 +39,6 @@
                                                                 NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
                                                                 NSLog(@"response status code: %ld", (long)[httpResponse statusCode]);
                                                                 if (!error && httpResponse.statusCode != 404) {
-                                                                    if ([request.URL isEqual:imageURL]) {
                                                                         // UIImage is an exception to the "can't do UI here"
                                                                         UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:localfile]];
                                                                         // but calling "self.image =" is definitely not an exception to that!
@@ -62,12 +46,16 @@
                                                                         if (image) {
                                                                             NSLog(@"Caching %@", imageURL);
                                                                             [[ImagesCache sharedInstance] cacheImage:image forKey:imageURL];
-                                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                completion(image);
-                                                                                NSLog(@"image size: %f, %f", image.size.width, image.size.height);
-                                                                            });
+                                                                            
+                                                                            if ([request.URL isEqual:imageURL]) {
+                                                                                dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                    completion(image);
+                                                                                    NSLog(@"image size: %f, %f", image.size.width, image.size.height);
+                                                                                });
+                                                                            } else {
+                                                                                NSLog(@"⚠️ wrong picture");
+                                                                            }
                                                                         }
-                                                                    }
                                                                 }
 //                                                                } else {
 //                                                                    NSLog(@"trying another link for %@", self.ID);

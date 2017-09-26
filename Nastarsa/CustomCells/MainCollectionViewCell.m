@@ -67,7 +67,7 @@
     _title.text = model.title;
     _imageDescription.text = model.someDescription;
     [self.indicator setupWith:_imageView];
-    [ImageDownloader DownloadingImageWithURL:model.link completion:^(UIImage *image) {
+    [ImageDownloader downloadingImageWithURL:model.link completion:^(UIImage *image) {
         _imageView.image = image;
         [self.indicator stop];
     }];
