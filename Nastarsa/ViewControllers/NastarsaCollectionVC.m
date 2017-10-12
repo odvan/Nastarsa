@@ -8,15 +8,18 @@
 
 #import "NastarsaCollectionVC.h"
 #import "MainCollectionViewCell.h"
-#import "ImageModel.h"
 #import "NasaFetcher.h"
 #import "ImageViewController.h"
+#import <CoreData/CoreData.h>
+#import "Photo.h"
+#import "Photo+CoreDataProperties.h"
+#import "AppDelegate.h"
 
 static NSCache * imagesCache;
 static NSString * const reuseIdentifier = @"imageCell";
 int lastPage = 0;
 BOOL isPageRefreshing = NO;
-CGSize size;
+CGSize size; //?
 UIRefreshControl *refreshControl;
 NSIndexPath *selectedIndexPath;
 
@@ -25,9 +28,11 @@ static CGFloat paddingBetweenCells = 10;
 static CGFloat paddingBetweenLines = 10;
 static CGFloat inset = 10;
 
-@interface NastarsaCollectionVC () <ExpandedCellDelegate>
+@interface NastarsaCollectionVC () <ExpandedAndButtonsTouchedCellDelegate>
 
 @property (nonatomic, assign) int pageNumber;
+@property (nonatomic, strong) NSManagedObjectContext *context;
+
 @end
 
 @implementation NastarsaCollectionVC
@@ -40,11 +45,6 @@ static CGFloat inset = 10;
     imagesCache = [[NSCache alloc] init];
    
 //    _nasaCollectionView.allowsMultipleSelection = YES;
-    
-    
-//    _layout.estimatedItemSize = CGSizeMake(100, 100); //UICollectionViewFlowLayoutAutomaticSize;
-////    _layout.itemSize = CGSizeMake(300, 300);
-//    _nasaCollectionView.collectionViewLayout = _layout;
     
     // Uncomment the following line to preserve selection between presentations
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -70,6 +70,7 @@ static CGFloat inset = 10;
 - (void)setPhotos:(NSMutableArray *)photos {
     isPageRefreshing = NO;
     [_photos addObjectsFromArray:photos];
+    [self checkingLoadedPhotoWasLiked];
     [self.nasaCollectionView reloadData];
 }
 
@@ -109,7 +110,11 @@ static CGFloat inset = 10;
                     ImageViewController *iVC = (ImageViewController *)segue.destinationViewController;
                     iVC.tempImage = cell.imageView.image;
                     iVC.imageURL = [NasaFetcher URLforPhoto:_photos[indexPath.row].nasa_id format:NasaPhotoFormatLarge];
-                    iVC.ID = _photos[indexPath.row].nasa_id;
+                    iVC.model = _photos[indexPath.row];
+                    iVC.likeButton.selected = _photos[indexPath.row].isLiked;
+                    NSLog(@"🔵 🔵 🔵 %@", iVC.model);
+                    NSLog(@"🔴 model liked %s", iVC.model.isLiked ? "true" : "false");
+
                 }
             }
         }
@@ -224,20 +229,20 @@ static CGFloat inset = 10;
                                                               attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Black" size:16.0f] }
                                                                  context:nil];
     
-    CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width;
+    CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width + 45;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) { // Device is iPad
-        size = CGSizeMake((size.width - paddingBetweenCells)/3 - inset, (size.width - paddingBetweenLines)/3 - inset + 125);
+        size = CGSizeMake((size.width - paddingBetweenCells)/3 - inset, (size.width - paddingBetweenLines)/3 - inset + 125 + 45);
     } else {
-        if (imageModel.isExpanded == YES && heightForItem > size.width + 125) {
+        if (imageModel.isExpanded == YES && heightForItem > size.width + 125 + 45) {
             NSLog(@"somehow it's triggered 😀");
             size = CGSizeMake(size.width, heightForItem);
         } else {
-            if (heightForItem < size.width + 125) {
+            if (heightForItem < size.width + 125 + 45) {
                 NSLog(@"heightForItem < size.width + 125");
                 imageModel.isExpanded = YES;
             }
-            size = CGSizeMake(size.width, size.width + 125);
+            size = CGSizeMake(size.width, size.width + 125 + 45);
         }
     }
     return size;
@@ -249,7 +254,6 @@ static CGFloat inset = 10;
         return UIEdgeInsetsMake(inset, inset, inset, inset);
     } else {
         return UIEdgeInsetsMake(0, 0, 0, 0);
-        
     }
 }
 
@@ -262,6 +266,34 @@ static CGFloat inset = 10;
 }
 
 #pragma mark <UICollectionViewDelegate>
+
+//- (void)collectionView:(UICollectionView *)colView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
+//    UICollectionViewCell* cell = [colView cellForItemAtIndexPath:indexPath];
+//    //set color with animation
+//    [UIView animateWithDuration:0.1
+//                          delay:0
+//                        options:(UIViewAnimationOptionAllowUserInteraction)
+//                     animations:^{
+////                         cell.layer.borderWidth = 4;
+////                         cell.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor colorWithRed:232/255.0f green:232/255.0f blue:232/255.0f alpha:1]);
+//                         [cell setBackgroundColor:[UIColor colorWithRed:232/255.0f green:232/255.0f blue:232/255.0f alpha:1]];
+//                     }
+//                     completion:nil];
+//}
+//
+//- (void)collectionView:(UICollectionView *)colView  didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath {
+//    UICollectionViewCell* cell = [colView cellForItemAtIndexPath:indexPath];
+//    //set color with animation
+//    [UIView animateWithDuration:0.1
+//                          delay:0
+//                        options:(UIViewAnimationOptionAllowUserInteraction)
+//                     animations:^{
+////                         cell.layer.borderWidth = 0;
+////                         cell.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor clearColor]);
+//                         [cell setBackgroundColor:[UIColor clearColor]];
+//                     }
+//                     completion:nil ];
+//}
 
 /*
 // Uncomment this method to specify if the specified item should be highlighted during tracking
@@ -331,22 +363,74 @@ static CGFloat inset = 10;
 //
 //}
 
-#pragma mark <ExpandedCellDelegate>
+#pragma mark <ExpandedAndButtonsTouchedCellDelegate>
 
 - (void)readMoreButtonTouched:(NSIndexPath *)indexPath {
+    
     ImageModel *imageModel = _photos[indexPath.row];
     imageModel.isExpanded = !imageModel.isExpanded;
+    
     __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
     cell.readMoreButton.hidden = YES;
     cell.buttonHeightConstraint.constant = 0;
 //    cell.buttonHeightConstraint.active = YES;
     NSArray *indexes = [[NSArray alloc] init];
     [indexes arrayByAddingObject:indexPath];
-    [UIView animateWithDuration:0.8 delay:0.0 usingSpringWithDamping:0.9 initialSpringVelocity:0.9 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        [self.nasaCollectionView reloadItemsAtIndexPaths:indexes];
-    } completion:^(BOOL finished) {
-        nil; }];
+    [UIView animateWithDuration:0.8
+                          delay:0.0
+         usingSpringWithDamping:0.9
+          initialSpringVelocity:0.9
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         [self.nasaCollectionView reloadItemsAtIndexPaths:indexes];
+                     }
+                     completion:^(BOOL finished) {
+                         nil; }];
 }
+
+
+- (void)likedButtonTouched:(NSIndexPath *)indexPath {
+    
+    ImageModel *imageModel = _photos[indexPath.row];
+    imageModel.isLiked = !imageModel.isLiked;
+    
+    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
+    
+    if (imageModel.isLiked) {
+        cell.likeButton.selected = YES;
+        [Photo saveNewLikedPhotoFrom:imageModel];
+    } else {
+        cell.likeButton.selected = NO;
+        [Photo deleteLikedPhotoFrom:imageModel];
+    }    
+}
+
+- (void)checkingLoadedPhotoWasLiked {
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    if (appDelegate.persistentContainer.viewContext) {
+        _context = appDelegate.persistentContainer.viewContext;
+        NSLog(@"🔶🔷");
+        
+            NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
+            NSError *error = nil;
+            NSArray <Photo *> *likedPhotoArray = [_context executeFetchRequest:fetchRequest error:&error];
+            NSUInteger count = [_context countForFetchRequest:fetchRequest error:&error];
+            NSLog(@"%lu liked images", (unsigned long) count);
+            
+            if (count > 0) {
+                for (Photo *photo in likedPhotoArray) {
+                    for (ImageModel *loadedPhoto in _photos) {
+                        if ([photo.title isEqual:loadedPhoto.title]) { //([objectInArray1 isEqual:objectInArray2])
+                            NSLog(@"🔷");
+                            loadedPhoto.isLiked = YES;
+                            break;
+                        }
+                    }
+                }
+            }
+    }
+}
+
 /*
 // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -361,7 +445,5 @@ static CGFloat inset = 10;
 	
 }
 */
-
-
 
 @end

@@ -31,7 +31,7 @@
     
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
-    NSURL *url = [[NSURL alloc] initWithString: BASE_URL];
+    NSURL *url = [[NSURL alloc] initWithString: DEMO_URL]; // url for pictures
     dispatch_queue_t fetchQ = dispatch_queue_create("base fetcher", NULL);
     dispatch_async(fetchQ, ^{
         // fetch the JSON data from Nasa
@@ -78,7 +78,7 @@
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
     NSLog(@"page number: %d", pageNumber);
-    NSString *urlWithPage = [NSString stringWithFormat:BASE_URL@"&page=%d", pageNumber];
+    NSString *urlWithPage = [NSString stringWithFormat:DEMO_URL@"&page=%d", pageNumber];
     NSMutableArray <ImageModel *> *tempPhotosArray = [NSMutableArray array];
     NSURL *url = [[NSURL alloc] initWithString: urlWithPage];
     // create a (non-main) queue to do fetch on

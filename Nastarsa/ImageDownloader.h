@@ -10,9 +10,8 @@
 
 @interface ImageDownloader: NSObject
 
-@property (strong, nonatomic) UIImage *tempImage;
-@property (strong, nonatomic) NSString *ID;
+@property (strong, nonatomic) NSURL *imageURL;
 
-+ (void)downloadingImageWithURL:(NSURL *)imageURL completion:(void (^)(UIImage *image))completion;
+- (void)downloadingImageWithURL:(NSURL *)imageURL completion:(void (^)(UIImage *image, NSHTTPURLResponse *httpResponse))completion;
 
 @end

@@ -13,6 +13,7 @@
 #define NASA_PHOTOS_ARRAY @"collection.items"
 #define NASA_PHOTO_DATA @"data"
 #define BASE_URL @"https://images-api.nasa.gov/search?year_start=2017&year_end=2017&media_type=image"
+#define DEMO_URL @"https://images-api.nasa.gov/search?q=apollo&media_type=image"
 
 
 typedef NS_ENUM(NSInteger, NasaPhotoFormat) {

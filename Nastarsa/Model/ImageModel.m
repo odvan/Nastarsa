@@ -24,15 +24,9 @@
         self.link = [NasaFetcher URLforPhoto:self.nasa_id
                                       format:NasaPhotoFormatThumb];
         self.isExpanded = NO;
+        self.isLiked = NO;
     }
     return self;
 }
-
-//+ (NSURL *)URLForPhoto:(NSString *)photoLink {
-//    photoLink = [NSString stringWithFormat:@"http://images-assets.nasa.gov/image/%@/%@~thumb.jpg", photoLink, photoLink];
-//    //photoLink = [photoLink stringByAddingPercentEncodingWithAllowedCharacters: [NSCharacterSet URLHostAllowedCharacterSet]];
-//    return [NSURL URLWithString:photoLink];
-//}
-
 
 @end

@@ -13,12 +13,11 @@
 
 @interface ImageViewController () <UIScrollViewDelegate>
 
-//@property (nonatomic, strong) UIImage *image;
-//@property (nonatomic, strong) ImageDownloader *imageView;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic) Spinner *indicator;
+@property (strong, nonatomic) ImageDownloader *downloader;
+@property (weak, nonatomic) IBOutlet UIButton *dismissButton;
 @end
-
 
 @implementation ImageViewController
 
@@ -26,8 +25,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     NSLog(@"we there, scroller bounds size: %f, %f", self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
     [self.scrollView addSubview:self.imageView];
+    [self settingGestures];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -43,6 +44,11 @@
 }
 
 #pragma mark - Properties lazy instantiation
+
+- (ImageDownloader *)downloader {
+    if (!_downloader) _downloader = [[ImageDownloader alloc] init];
+    return _downloader;
+}
 
 - (Spinner *)indicator {
     if (!_indicator) _indicator = [[Spinner alloc] init];
@@ -66,13 +72,13 @@
 }
 
 - (void)setImage:(UIImage *)image {
+    
     self.imageView.image = image; // does not change the frame of the UIImageView
 
     self.imageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
     NSLog(@"image size: width %f, height %f", self.imageView.image.size.width, self.imageView.image.size.height);
     self.scrollView.contentSize = self.image ? self.image.size : CGSizeZero;
     [self updateMinZoomScaleForSize:self.view.bounds.size];
-
     NSLog(@"scrollView contentSize: width %f, height %f", self.scrollView.contentSize.width, self.scrollView.contentSize.height);
     NSLog(@"scrollView bounds: width %f, height %f", self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
 }
@@ -90,6 +96,37 @@
     self.scrollView.contentSize = self.image ? self.image.size : CGSizeZero;
 }
 
+#pragma mark - Setting the Image from the Image's URL
+
+- (void)setImageURL:(NSURL *)imageURL {
+    
+//    self.likeButton.selected = self.model.isLiked;
+//    NSLog(@"button liked selected %s", self.likeButton.selected ? "true" : "false");
+//    NSLog(@"🔴🔵 model liked %s", self.model.isLiked ? "true" : "false");
+    
+    _imageURL = imageURL;
+    [self.indicator setupWith:self.view];
+    [self.downloader downloadingImageWithURL:imageURL completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
+        if (image && httpResponse.statusCode != 404) {
+            [self.indicator stop];
+            self.image = image;
+        } else {
+            NSLog(@"✅ %@", self.model.nasa_id);
+            _imageURL = [NasaFetcher URLforPhoto:self.model.nasa_id format:NasaPhotoFormatOriginal];
+            NSLog(@"⭕️ %@", _imageURL);
+            [self.downloader downloadingImageWithURL:_imageURL completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
+                if (image && httpResponse.statusCode != 404) {
+                    [self.indicator stop];
+                    self.image = image;
+                } else {
+                    [self.indicator stop];
+                    self.imageView.image = nil;
+                }
+            }];
+        }
+    }];
+}
+
 #pragma mark - UIScrollViewDelegate
 
 // mandatory zooming method in UIScrollViewDelegate protocol
@@ -99,17 +136,24 @@
 }
 
 - (void)updateMinZoomScaleForSize:(CGSize)size {
+    
     NSLog(@"previous min zoom called %f", _scrollView.zoomScale);
     CGFloat widthScale = size.width / self.imageView.bounds.size.width;
     CGFloat heightScale = size.height / self.imageView.bounds.size.height;
     NSLog(@"imageView bounds size: width %f, height %f", self.imageView.bounds.size.width, self.imageView.bounds.size.height);
+    
     _scrollView.minimumZoomScale = MIN(widthScale, heightScale);
     _scrollView.zoomScale = _scrollView.minimumZoomScale;
     _scrollView.maximumZoomScale = 1.0;
+    
+    if (_scrollView.minimumZoomScale >= 1.0) {
+        [self centerScrollViewContents];
+    }
     NSLog(@"update min zoom called %f", _scrollView.zoomScale);
 }
 
-- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+- (void)centerScrollViewContents {
+    NSLog(@"centerScrollViewContents called");
     CGSize boundsSize = self.scrollView.bounds.size;
     CGRect contentsFrame = self.imageView.frame;
     
@@ -124,19 +168,64 @@
     } else {
         contentsFrame.origin.y = 0.0f;
     }
-    
     self.imageView.frame = contentsFrame;
 }
 
-#pragma mark - Setting the Image from the Image's URL
-
-- (void)setImageURL:(NSURL *)imageURL {
-    _imageURL = imageURL;
-    [self.indicator setupWith:self.view];
-    [ImageDownloader downloadingImageWithURL:imageURL completion:^(UIImage *image) {
-        [self.indicator stop];
-        self.image = image; }];
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    if (self.scrollView.zoomScale == self.scrollView.minimumZoomScale) {
+        self.dismissButton.hidden = NO;
+        self.likeButton.hidden = NO;
+    } else {
+        self.dismissButton.hidden = YES;
+        self.likeButton.hidden = YES;
+    }
+    [self centerScrollViewContents];
 }
+
+#pragma mark - Gestures setup
+
+- (void)settingGestures {
+    
+    UITapGestureRecognizer *singleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewSingleTapped:)];
+    singleTapRecognizer.numberOfTapsRequired = 1;
+    singleTapRecognizer.numberOfTouchesRequired = 1;
+    [self.scrollView addGestureRecognizer:singleTapRecognizer];
+    
+    UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewDoubleTapped:)];
+    doubleTapRecognizer.numberOfTapsRequired = 2;
+    doubleTapRecognizer.numberOfTouchesRequired = 1;
+    [self.scrollView addGestureRecognizer:doubleTapRecognizer];
+    
+    [singleTapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];
+}
+
+- (void)scrollViewDoubleTapped:(id)sender {
+    
+    CGPoint pointInView = [sender locationInView:self.imageView];
+    
+    CGFloat newZoomScale = self.scrollView.zoomScale == self.scrollView.minimumZoomScale ? self.scrollView.maximumZoomScale : self.scrollView.minimumZoomScale;
+    
+    CGSize scrollViewSize = self.scrollView.bounds.size;
+    CGFloat w = scrollViewSize.width / newZoomScale;
+    CGFloat h = scrollViewSize.height / newZoomScale;
+    CGFloat x = pointInView.x - (w / 2.0);
+    CGFloat y = pointInView.y - (h / 2.0);
+    
+    CGRect rectToZoomTo = CGRectMake(x, y, w, h);
+    [self.scrollView zoomToRect:rectToZoomTo animated:YES];
+}
+
+- (void)scrollViewSingleTapped:(id)sender {
+    if (self.dismissButton.hidden && self.scrollView.zoomScale != self.scrollView.minimumZoomScale) {
+//        self.dismissButton.hidden = NO;
+        [self scrollViewDoubleTapped:sender];
+    } else {
+        self.dismissButton.hidden = !self.dismissButton.hidden;
+        self.likeButton.hidden = !self.likeButton.hidden;
+    }
+}
+
+#pragma mark - Closing ImageViewController
 
 - (IBAction)dismissVC:(id)sender {
     [self dismissViewControllerAnimated:NO

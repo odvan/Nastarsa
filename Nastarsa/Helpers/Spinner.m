@@ -28,5 +28,4 @@
     [_indicator stopAnimating];
     [_indicator removeFromSuperview];
 }
-
 @end

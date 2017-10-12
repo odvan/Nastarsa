@@ -12,6 +12,7 @@
 
 @interface MainCollectionViewCell()
 @property (strong, nonatomic) Spinner *indicator;
+@property (strong, nonatomic) ImageDownloader *downloader;
 @end
 
 @implementation MainCollectionViewCell
@@ -19,6 +20,8 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
+    
+//    _downloader = [[ImageDownloader alloc] init];
     
 //    self.contentView.frame = self.bounds;
 //    self.contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -39,6 +42,11 @@
 //
 //}
 
+- (ImageDownloader *)downloader {
+    if (!_downloader) _downloader = [[ImageDownloader alloc] init];
+    return _downloader;
+}
+
 - (Spinner *)indicator {
     if (!_indicator) _indicator = [[Spinner alloc] init];
     return _indicator;
@@ -47,14 +55,13 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     
-    NSLog(@"prepare %@", _title.text);
-    
     _title.hidden = NO;
     _imageDescription.hidden = NO;
     _readMoreButton.hidden = NO;
     _buttonHeightConstraint.constant = 15;
     _buttonHeightConstraint.active = YES;
     _imageView.image = nil;
+    _likeButton.selected = NO;
 }
 
 - (IBAction)readMoreTouched:(id)sender {
@@ -63,31 +70,31 @@
     }
 }
 
+- (IBAction)likedTouched:(id)sender {
+    if ([sender isKindOfClass:[UIButton class]]) {
+        [_delegate likedButtonTouched:_indexPath];
+    }
+}
+
 - (void)configure:(ImageModel *)model {
     _title.text = model.title;
     _imageDescription.text = model.someDescription;
     [self.indicator setupWith:_imageView];
-    [ImageDownloader downloadingImageWithURL:model.link completion:^(UIImage *image) {
+    [self.downloader downloadingImageWithURL:model.link completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
+        if (image) {
         _imageView.image = image;
         [self.indicator stop];
+        }
     }];
     
     if (model.isExpanded) {
         _readMoreButton.hidden = YES;
         _buttonHeightConstraint.constant = 0;
     }
+    
+    if (model.isLiked) {
+        _likeButton.selected = YES;
+    }
 }
-
-//- (void)spinner {
-//    _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-//    [_indicator setOpaque:YES];
-//    _indicator.center = self.imageView.center;// it will display in center of image view
-//    [self.imageView addSubview:_indicator];
-//    [_indicator startAnimating];
-//}
-//- (void)settingLargeImage:(ImageModel *)model {
-//    _image.imageURL = [NasaFetcher URLforPhoto:model.nasa_id
-//                                        format:NasaPhotoFormatLarge];
-//}
 
 @end
