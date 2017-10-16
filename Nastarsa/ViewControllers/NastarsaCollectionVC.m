@@ -23,6 +23,7 @@ CGSize size; //?
 UIRefreshControl *refreshControl;
 NSIndexPath *selectedIndexPath;
 
+NSManagedObjectContext *moc;
 
 static CGFloat paddingBetweenCells = 10;
 static CGFloat paddingBetweenLines = 10;
@@ -43,6 +44,9 @@ static CGFloat inset = 10;
     
     _photos = [[NSMutableArray alloc] init];
     imagesCache = [[NSCache alloc] init];
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    moc = appDelegate.persistentContainer.newBackgroundContext;
+//[[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
    
 //    _nasaCollectionView.allowsMultipleSelection = YES;
     
@@ -129,7 +133,7 @@ static CGFloat inset = 10;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    if (self.photos.count > 1) {
+    if (self.photos.count > 0) {
         NSLog(@"%lu", (unsigned long)_photos.count);
         return self.photos.count;
     } else {
@@ -229,7 +233,7 @@ static CGFloat inset = 10;
                                                               attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Black" size:16.0f] }
                                                                  context:nil];
     
-    CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width + 45;
+    CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width + 45 - 5;//different inset: delete -5? 
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) { // Device is iPad
         size = CGSizeMake((size.width - paddingBetweenCells)/3 - inset, (size.width - paddingBetweenLines)/3 - inset + 125 + 45);
@@ -398,10 +402,10 @@ static CGFloat inset = 10;
     
     if (imageModel.isLiked) {
         cell.likeButton.selected = YES;
-        [Photo saveNewLikedPhotoFrom:imageModel];
+        [Photo saveNewLikedPhotoFrom:imageModel preview:cell.imageView.image inContext:moc];
     } else {
         cell.likeButton.selected = NO;
-        [Photo deleteLikedPhotoFrom:imageModel];
+        [Photo deleteLikedPhotoFrom:imageModel inContext:moc];
     }    
 }
 
@@ -420,7 +424,7 @@ static CGFloat inset = 10;
             if (count > 0) {
                 for (Photo *photo in likedPhotoArray) {
                     for (ImageModel *loadedPhoto in _photos) {
-                        if ([photo.title isEqual:loadedPhoto.title]) { //([objectInArray1 isEqual:objectInArray2])
+                        if ([photo.title isEqual:loadedPhoto.title]) {
                             NSLog(@"🔷");
                             loadedPhoto.isLiked = YES;
                             break;

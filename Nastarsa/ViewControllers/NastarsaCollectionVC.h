@@ -12,7 +12,7 @@
 @interface NastarsaCollectionVC : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *layout;
-@property (weak, nonatomic) IBOutlet UICollectionView *nasaCollectionView;
+@property (strong, nonatomic) IBOutlet UICollectionView *nasaCollectionView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinnerWhenNextPageDownload;
 
 // Model of this MVC (it can be publicly set)

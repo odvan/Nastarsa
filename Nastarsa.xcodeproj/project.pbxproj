@@ -24,6 +24,7 @@
 		C3E2C0B01F44874D00A474F2 /* ImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = C3E2C0AF1F44874D00A474F2 /* ImageDownloader.m */; };
 		C3F132DE1F41DDA100AA392D /* MainCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F132DD1F41DDA100AA392D /* MainCollectionViewCell.m */; };
 		C3F132E51F41E21200AA392D /* NastarsaCollectionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F132E41F41E21200AA392D /* NastarsaCollectionVC.m */; };
+		C3F7C4B31F91067D00E15AFE /* ImageDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F7C4B21F91067D00E15AFE /* ImageDetailVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,8 @@
 		C3F132DD1F41DDA100AA392D /* MainCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainCollectionViewCell.m; path = CustomCells/MainCollectionViewCell.m; sourceTree = "<group>"; };
 		C3F132E31F41E21200AA392D /* NastarsaCollectionVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NastarsaCollectionVC.h; path = ViewControllers/NastarsaCollectionVC.h; sourceTree = "<group>"; };
 		C3F132E41F41E21200AA392D /* NastarsaCollectionVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NastarsaCollectionVC.m; path = ViewControllers/NastarsaCollectionVC.m; sourceTree = "<group>"; };
+		C3F7C4B11F91067D00E15AFE /* ImageDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageDetailVC.h; path = ViewControllers/ImageDetailVC.h; sourceTree = "<group>"; };
+		C3F7C4B21F91067D00E15AFE /* ImageDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageDetailVC.m; path = ViewControllers/ImageDetailVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,9 +115,9 @@
 		C3480C801F37B5E100AEE088 /* Nastarsa */ = {
 			isa = PBXGroup;
 			children = (
-				C36CE9AA1F8BC6D200438CCC /* CoreData */,
 				C3480C841F37B5E100AEE088 /* AppDelegate.h */,
 				C3480C851F37B5E100AEE088 /* AppDelegate.m */,
+				C36CE9AA1F8BC6D200438CCC /* CoreData */,
 				C335B2391F4399F10030A22E /* NASA Fetcher */,
 				C3F132E21F41E1CA00AA392D /* ViewControllers */,
 				C3F132DB1F41DD5900AA392D /* CustomCells */,
@@ -185,6 +188,8 @@
 				C36293721F72D182008DF3F8 /* ImageViewController.m */,
 				C32709AD1F88187D00FB8F24 /* LikedImagesVC.h */,
 				C32709AE1F88187D00FB8F24 /* LikedImagesVC.m */,
+				C3F7C4B11F91067D00E15AFE /* ImageDetailVC.h */,
+				C3F7C4B21F91067D00E15AFE /* ImageDetailVC.m */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -271,6 +276,7 @@
 				C32709AF1F88187D00FB8F24 /* LikedImagesVC.m in Sources */,
 				C335B23C1F439A200030A22E /* NasaFetcher.m in Sources */,
 				C32709B21F881AC400FB8F24 /* LikedCell.m in Sources */,
+				C3F7C4B31F91067D00E15AFE /* ImageDetailVC.m in Sources */,
 				C3E2C0B01F44874D00A474F2 /* ImageDownloader.m in Sources */,
 				C3F132DE1F41DDA100AA392D /* MainCollectionViewCell.m in Sources */,
 				C334C56C1F535BFA00CD599E /* ImagesCache.m in Sources */,

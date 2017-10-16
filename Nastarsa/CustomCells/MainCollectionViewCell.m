@@ -28,6 +28,9 @@
     //    [self makingRoundCorners:4];
    // _title.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.65f];
   //  _imageDescription.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.65f];
+    
+    [_imageDescription setTextContainerInset:UIEdgeInsetsZero];
+    _imageDescription.textContainer.lineFragmentPadding = 0;
 
 }
 
@@ -55,8 +58,8 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     
-    _title.hidden = NO;
-    _imageDescription.hidden = NO;
+//    _title.hidden = NO;
+//    _imageDescription.hidden = NO;
     _readMoreButton.hidden = NO;
     _buttonHeightConstraint.constant = 15;
     _buttonHeightConstraint.active = YES;

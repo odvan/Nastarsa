@@ -39,6 +39,7 @@ static CGFloat inset = 15;
     if (appDelegate.persistentContainer.viewContext) {
         _context = appDelegate.persistentContainer.viewContext;
         [_context performBlock:^{
+            NSLog(@"Running on %@ thread (liked VC)", [NSThread currentThread]);
             NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
             fetchRequest.predicate = nil;
             NSError *error = nil;
@@ -48,15 +49,19 @@ static CGFloat inset = 15;
             if (count > 0) {
                 [self.likedImagesCollectionView reloadData];
             } else {
-                UILabel *noPhoto = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2-10, self.view.frame.size.width, 20)];
-                noPhoto.text = @"No Liked Photo";
-                [noPhoto setFont:[UIFont boldSystemFontOfSize:16]];
-                [noPhoto setTextColor:[UIColor whiteColor]];
-                [noPhoto setTextAlignment:NSTextAlignmentCenter];
-                [self.view addSubview:noPhoto];
+                [self noPhotoMessage];
             }
         }];
     }
+}
+
+- (void)noPhotoMessage {
+    UILabel *noPhoto = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2-10, self.view.frame.size.width, 20)];
+    noPhoto.text = @"No Liked Photo";
+    [noPhoto setFont:[UIFont boldSystemFontOfSize:16]];
+    [noPhoto setTextColor:[UIColor whiteColor]];
+    [noPhoto setTextAlignment:NSTextAlignmentCenter];
+    [self.view addSubview:noPhoto];
 }
 
 - (void)setLikedPhotosArray:(NSArray <Photo *> *)photos {
