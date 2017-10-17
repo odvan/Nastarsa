@@ -11,12 +11,14 @@
 #import <CoreData/CoreData.h>
 #import "Photo+CoreDataProperties.h"
 #import "AppDelegate.h"
+#import "NastarsaSingleImageVC.h"
 
 static NSString * const reuseIdentifier = @"likedImageCell";
 
 static CGFloat paddingBetweenCells = 15;
 static CGFloat paddingBetweenLines = 15;
 static CGFloat inset = 15;
+UILabel *noPhoto;
 
 @interface LikedImagesVC ()
 
@@ -32,6 +34,12 @@ static CGFloat inset = 15;
     _likedImagesCollectionView.alwaysBounceVertical = YES;
     
     [self loadingLikedPhoto];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(loadingLikedPhoto)
+     name:NSManagedObjectContextDidSaveNotification
+     object:nil];
 }
 
 - (void)loadingLikedPhoto {
@@ -47,16 +55,18 @@ static CGFloat inset = 15;
             NSUInteger count = [_context countForFetchRequest:fetchRequest error:&error];
             NSLog(@"%lu liked images", (unsigned long) count);
             if (count > 0) {
+                [noPhoto removeFromSuperview];
                 [self.likedImagesCollectionView reloadData];
             } else {
                 [self noPhotoMessage];
+                [self.likedImagesCollectionView reloadData];
             }
         }];
     }
 }
 
 - (void)noPhotoMessage {
-    UILabel *noPhoto = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2-10, self.view.frame.size.width, 20)];
+    noPhoto = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2-10, self.view.frame.size.width, 20)];
     noPhoto.text = @"No Liked Photo";
     [noPhoto setFont:[UIFont boldSystemFontOfSize:16]];
     [noPhoto setTextColor:[UIColor whiteColor]];
@@ -64,7 +74,7 @@ static CGFloat inset = 15;
     [self.view addSubview:noPhoto];
 }
 
-- (void)setLikedPhotosArray:(NSArray <Photo *> *)photos {
+- (void)setLikedPhotosArray:(NSArray <Photo *> *)photos { // ??? doen't needed
     NSLog(@"just show something");
     _likedPhotoArray = photos;
     [self.likedImagesCollectionView reloadData];
@@ -119,5 +129,24 @@ static CGFloat inset = 15;
     return paddingBetweenLines;
 }
 
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([sender isKindOfClass:[LikedCell class]]) {
+        NSIndexPath *indexPath = [self.likedImagesCollectionView indexPathForCell:sender];
+        if (indexPath) {
+            // found it ... are we doing the Display Photo segue?
+            if ([segue.identifier isEqualToString:@"showSingleCell"]) {
+                // yes ... is the destination an ImageViewController?
+                if ([segue.destinationViewController isKindOfClass:[NastarsaSingleImageVC class]]) {
+                    NastarsaSingleImageVC *nSIVC = (NastarsaSingleImageVC *)segue.destinationViewController;
+                    nSIVC.photoSetup = _likedPhotoArray[indexPath.row];
+                }
+            }
+        }
+    }
+}
 
 @end

@@ -405,7 +405,7 @@ static CGFloat inset = 10;
         [Photo saveNewLikedPhotoFrom:imageModel preview:cell.imageView.image inContext:moc];
     } else {
         cell.likeButton.selected = NO;
-        [Photo deleteLikedPhotoFrom:imageModel inContext:moc];
+        [Photo deleteLikedPhotoFrom:imageModel.nasa_id inContext:moc];
     }    
 }
 
@@ -435,6 +435,12 @@ static CGFloat inset = 10;
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self checkingLoadedPhotoWasLiked];
+    [self.nasaCollectionView reloadData];
+}
 /*
 // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {

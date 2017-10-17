@@ -78,16 +78,16 @@ NSLog(@"Running on %@ thread (saving)", [NSThread currentThread]);
     }
 }
 
-+ (void)deleteLikedPhotoFrom:(ImageModel *)imageModel inContext:(NSManagedObjectContext *)context {
-//    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
++ (void)deleteLikedPhotoFrom:(NSString *)image_id inContext:(NSManagedObjectContext *)context {
+    //    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     if (context) {//(appDelegate.persistentContainer.viewContext) {
-//        NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
+        //        NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
         NSLog(@"🖕🖕🖕");
-//        [appDelegate.persistentContainer performBackgroundTask:^(NSManagedObjectContext *context) {
+        //        [appDelegate.persistentContainer performBackgroundTask:^(NSManagedObjectContext *context) {
         [context performBlock:^{
- NSLog(@"Running on %@ thread (deleting)", [NSThread currentThread]);
+            NSLog(@"Running on %@ thread (deleting)", [NSThread currentThread]);
             NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
-            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nasa_id == %@", imageModel.nasa_id]];
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nasa_id == %@", image_id]];
             NSError *error = nil;
             NSArray *someArray = [context executeFetchRequest:fetchRequest error:&error];
             if (someArray.count > 0) {

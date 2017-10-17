@@ -14,8 +14,9 @@
 
 @protocol ExpandedAndButtonsTouchedCellDelegate <NSObject>
 @required
-- (void)readMoreButtonTouched:(NSIndexPath *)indexPath;
 - (void)likedButtonTouched:(NSIndexPath *)indexPath;
+@optional
+- (void)readMoreButtonTouched:(NSIndexPath *)indexPath;
 @end
 
 
