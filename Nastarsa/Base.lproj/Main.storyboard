@@ -98,7 +98,7 @@
                                                 </button>
                                             </subviews>
                                         </view>
-                                        <color key="backgroundColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" red="0.11764705882352941" green="0.11764705882352941" blue="0.11764705882352941" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="Wll-hN-48T" secondAttribute="trailing" id="0ha-o1-rOu"/>
                                             <constraint firstAttribute="bottom" secondItem="h1p-GB-Ewk" secondAttribute="bottom" constant="8" id="3sq-Px-S22"/>
@@ -257,6 +257,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="333" height="369"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </view>
+                                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                     </collectionViewCell>
                                 </cells>
                                 <connections>
@@ -276,6 +277,7 @@
                     <connections>
                         <outlet property="layout" destination="mGj-OC-3EG" id="CX8-J2-z0F"/>
                         <outlet property="singleImageCV" destination="ocw-YY-LjZ" id="bEN-cw-Mvx"/>
+                        <segue destination="NLZ-F1-nKb" kind="presentation" identifier="showImageFromLikedVC" animates="NO" id="Qdl-Vu-ceg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ucw-3m-Flb" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -395,4 +397,7 @@
         <image name="heart_liked_navbar" width="27" height="25"/>
         <image name="sharing" width="55" height="46"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="ksP-F1-AP5"/>
+    </inferredMetricsTieBreakers>
 </document>

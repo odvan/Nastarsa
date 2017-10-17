@@ -11,9 +11,9 @@
 #import "AppDelegate.h"
 #import "NastarsaCollectionVC.h"
 
-@interface NastarsaSingleImageVC : NastarsaCollectionVC
+@interface NastarsaSingleImageVC : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
-//@property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *layout;
+@property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *layout;
 @property (weak, nonatomic) IBOutlet UICollectionView *singleImageCV;
 @property (nonatomic, strong) Photo *photoSetup;
 

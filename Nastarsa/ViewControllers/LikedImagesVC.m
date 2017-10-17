@@ -42,6 +42,12 @@ UILabel *noPhoto;
      object:nil];
 }
 
+//- (void)viewWillAppear:(BOOL)animated {
+//    [super viewWillAppear:animated];
+//    
+//    [self loadingLikedPhoto];
+//}
+
 - (void)loadingLikedPhoto {
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     if (appDelegate.persistentContainer.viewContext) {

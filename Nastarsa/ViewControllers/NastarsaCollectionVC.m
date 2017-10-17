@@ -14,6 +14,7 @@
 #import "Photo.h"
 #import "Photo+CoreDataProperties.h"
 #import "AppDelegate.h"
+#import "NastarsaSingleImageVC.h"
 
 static NSCache * imagesCache;
 static NSString * const reuseIdentifier = @"imageCell";
@@ -67,6 +68,12 @@ static CGFloat inset = 10;
     }];
     
     [self refreshControlSetup];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(someReactionFrom:)
+     name:NSManagedObjectContextObjectsDidChangeNotification
+     object:nil];
 }
 
 // whenever our Model is set, must update our View
@@ -101,7 +108,7 @@ static CGFloat inset = 10;
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-
+    
     if ([sender isKindOfClass:[UICollectionViewCell class]]) {
         NSIndexPath *indexPath = [self.nasaCollectionView indexPathForCell:sender];
         if (indexPath) {
@@ -112,13 +119,35 @@ static CGFloat inset = 10;
                     // yes ... then we know how to prepare for that segue!
                     __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
                     ImageViewController *iVC = (ImageViewController *)segue.destinationViewController;
-                    iVC.tempImage = cell.imageView.image;
-                    iVC.imageURL = [NasaFetcher URLforPhoto:_photos[indexPath.row].nasa_id format:NasaPhotoFormatLarge];
-                    iVC.model = _photos[indexPath.row];
-                    iVC.likeButton.selected = _photos[indexPath.row].isLiked;
-                    NSLog(@"🔵 🔵 🔵 %@", iVC.model);
-                    NSLog(@"🔴 model liked %s", iVC.model.isLiked ? "true" : "false");
-
+                    
+                    if (_photos[indexPath.row].isLiked) {
+                        if (moc) {
+                            [moc performBlock:^{
+                                NSLog(@"Running on %@ thread (preparing for segue)", [NSThread currentThread]);
+                                NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
+                                [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nasa_id == %@", _photos[indexPath.row].nasa_id]];
+                                NSError *error = nil;
+                                NSArray <Photo *> *likedPhotoArray = [moc executeFetchRequest:fetchRequest error:&error];
+                                NSUInteger count = [_context countForFetchRequest:fetchRequest error:&error];
+                                NSLog(@"%lu liked images", (unsigned long) count);
+                                if (count > 0) {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        iVC.image = [UIImage imageWithData:likedPhotoArray[0].image_big];
+                                        iVC.likeButton.selected = YES;
+                                        NSLog(@"🔴 model liked %s", iVC.model.isLiked ? "true" : "false");
+                                    });
+                                }
+                            }];
+                        }
+                        
+                    } else {
+                        iVC.tempImage = cell.imageView.image;
+                        iVC.imageURL = [NasaFetcher URLforPhoto:_photos[indexPath.row].nasa_id format:NasaPhotoFormatLarge];
+                        iVC.model = _photos[indexPath.row];
+                        iVC.likeButton.selected = _photos[indexPath.row].isLiked;
+                        NSLog(@"🔵 🔵 🔵 %@", iVC.model);
+                        NSLog(@"🔴 model liked %s", iVC.model.isLiked ? "true" : "false");
+                    }
                 }
             }
         }
@@ -160,7 +189,7 @@ static CGFloat inset = 10;
     return cell;
 }
 
-#pragma mark <UIScrollView>
+#pragma mark - <UIScrollView>
 
 //- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 //    
@@ -269,7 +298,7 @@ static CGFloat inset = 10;
     return paddingBetweenLines;
 }
 
-#pragma mark <UICollectionViewDelegate>
+#pragma mark - <UICollectionViewDelegate>
 
 //- (void)collectionView:(UICollectionView *)colView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
 //    UICollectionViewCell* cell = [colView cellForItemAtIndexPath:indexPath];
@@ -367,7 +396,7 @@ static CGFloat inset = 10;
 //
 //}
 
-#pragma mark <ExpandedAndButtonsTouchedCellDelegate>
+#pragma mark - <ExpandedAndButtonsTouchedCellDelegate>
 
 - (void)readMoreButtonTouched:(NSIndexPath *)indexPath {
     
@@ -435,12 +464,21 @@ static CGFloat inset = 10;
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    [self checkingLoadedPhotoWasLiked];
-    [self.nasaCollectionView reloadData];
+- (void)someReactionFrom:(NSNotification *) notification {
+    NSDictionary *userInfo = notification.userInfo;
+    for(id key in userInfo)
+        NSLog(@"key=%@ value=%@", key, [userInfo objectForKey:key]);
+//    NSLog(@"✅✅✅ @%", userInfo);
+
 }
+
+//- (void)viewWillAppear:(BOOL)animated {
+//    [super viewWillAppear:animated];
+//    NSLog(@"✅ viewWillAppear");
+//    [self checkingLoadedPhotoWasLiked];
+//    [self.nasaCollectionView reloadData];
+//}
+
 /*
 // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {

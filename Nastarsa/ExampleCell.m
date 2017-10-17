@@ -21,7 +21,6 @@
 - (void)configureWith:(Photo *)photo {
     super.title.text = photo.title;
     super.imageDescription.text = photo.someDescription;
-//    [self.indicator setupWith:_imageView];
     if (photo.image_preview && photo.image_big) {
       super.imageView.image = [UIImage imageWithData:photo.image_preview];;
     }

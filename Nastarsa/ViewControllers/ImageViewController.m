@@ -33,8 +33,9 @@
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    NSLog(@"scroller bounds size: %f, %f", self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
+    NSLog(@"scroller bounds size (viewDidLayoutSubviews): %f, %f", self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
     if (self.image) {
+        NSLog(@"🔴🔵🔴");
         [self updateMinZoomScaleForSize:self.view.bounds.size];
     }
 }
@@ -56,10 +57,16 @@
 }
 
 - (UIImageView *)imageView {
-    NSLog(@"🔵 imageView");
     if (!_imageView) {
-        _imageView = [[UIImageView alloc] initWithImage:self.tempImage];
+        if (_tempImage) {
+            NSLog(@"🔵🛑 tempImage imageView");
+            _imageView = [[UIImageView alloc] initWithImage:self.tempImage];
+//            [self updateMinZoomScaleForSize:self.view.bounds.size];
+        } else {
+            _imageView = [[UIImageView alloc] init];
+        }
     }
+    NSLog(@"🔵 imageView");
     return _imageView;
 }
 
@@ -72,11 +79,12 @@
 }
 
 - (void)setImage:(UIImage *)image {
-    
+    NSLog(@"Running on %@ setting image in IVC", [NSThread currentThread]);
+    _scrollView.zoomScale = 1.0;
     self.imageView.image = image; // does not change the frame of the UIImageView
 
     self.imageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
-    NSLog(@"image size: width %f, height %f", self.imageView.image.size.width, self.imageView.image.size.height);
+    NSLog(@"🎱 image size: width %f, height %f", self.imageView.image.size.width, self.imageView.image.size.height);
     self.scrollView.contentSize = self.image ? self.image.size : CGSizeZero;
     [self updateMinZoomScaleForSize:self.view.bounds.size];
     NSLog(@"scrollView contentSize: width %f, height %f", self.scrollView.contentSize.width, self.scrollView.contentSize.height);
@@ -102,7 +110,6 @@
     
 //    self.likeButton.selected = self.model.isLiked;
 //    NSLog(@"button liked selected %s", self.likeButton.selected ? "true" : "false");
-//    NSLog(@"🔴🔵 model liked %s", self.model.isLiked ? "true" : "false");
     
     _imageURL = imageURL;
     [self.indicator setupWith:self.view];
@@ -138,9 +145,10 @@
 - (void)updateMinZoomScaleForSize:(CGSize)size {
     
     NSLog(@"previous min zoom called %f", _scrollView.zoomScale);
-    CGFloat widthScale = size.width / self.imageView.bounds.size.width;
+    CGFloat widthScale = size.width / self.imageView.bounds.size.width; // * _scrollView.zoomScale
     CGFloat heightScale = size.height / self.imageView.bounds.size.height;
-    NSLog(@"imageView bounds size: width %f, height %f", self.imageView.bounds.size.width, self.imageView.bounds.size.height);
+    NSLog(@"self.view.bounds.size: width %f, height %f", self.view.bounds.size.width, self.view.bounds.size.height);
+    NSLog(@"imageView bounds size inside updateZoom: width %f, height %f", self.imageView.bounds.size.width, self.imageView.bounds.size.height);
     
     _scrollView.minimumZoomScale = MIN(widthScale, heightScale);
     _scrollView.zoomScale = _scrollView.minimumZoomScale;
@@ -149,11 +157,11 @@
     if (_scrollView.minimumZoomScale >= 1.0) {
         [self centerScrollViewContents];
     }
-    NSLog(@"update min zoom called %f", _scrollView.zoomScale);
+    NSLog(@"updated min zoom called %f", _scrollView.zoomScale);
 }
 
 - (void)centerScrollViewContents {
-    NSLog(@"centerScrollViewContents called");
+    NSLog(@"🔴🔵");
     CGSize boundsSize = self.scrollView.bounds.size;
     CGRect contentsFrame = self.imageView.frame;
     
@@ -179,6 +187,7 @@
         self.dismissButton.hidden = YES;
         self.likeButton.hidden = YES;
     }
+    NSLog(@"🔴🔵 scrollViewDidZoom 🔴🔵");
     [self centerScrollViewContents];
 }
 
@@ -231,4 +240,5 @@
     [self dismissViewControllerAnimated:NO
                              completion:nil];
 }
+
 @end
