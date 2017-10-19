@@ -38,6 +38,7 @@
         NSLog(@"🔴🔵🔴");
         [self updateMinZoomScaleForSize:self.view.bounds.size];
     }
+//    [self centerScrollViewContents]; // ???
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -145,6 +146,7 @@
 - (void)updateMinZoomScaleForSize:(CGSize)size {
     
     NSLog(@"previous min zoom called %f", _scrollView.zoomScale);
+    CGFloat previousZoomScale = _scrollView.zoomScale;
     CGFloat widthScale = size.width / self.imageView.bounds.size.width; // * _scrollView.zoomScale
     CGFloat heightScale = size.height / self.imageView.bounds.size.height;
     NSLog(@"self.view.bounds.size: width %f, height %f", self.view.bounds.size.width, self.view.bounds.size.height);
@@ -154,7 +156,7 @@
     _scrollView.zoomScale = _scrollView.minimumZoomScale;
     _scrollView.maximumZoomScale = 1.0;
     
-    if (_scrollView.minimumZoomScale >= 1.0) {
+    if (_scrollView.minimumZoomScale >= 1.0 || previousZoomScale == _scrollView.zoomScale) {
         [self centerScrollViewContents];
     }
     NSLog(@"updated min zoom called %f", _scrollView.zoomScale);

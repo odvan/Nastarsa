@@ -49,9 +49,10 @@ UILabel *noPhoto;
 //}
 
 - (void)loadingLikedPhoto {
+    
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    if (appDelegate.persistentContainer.viewContext) {
-        _context = appDelegate.persistentContainer.viewContext;
+    _context = appDelegate.persistentContainer.viewContext;
+    if (_context) {
         [_context performBlock:^{
             NSLog(@"Running on %@ thread (liked VC)", [NSThread currentThread]);
             NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
@@ -80,11 +81,11 @@ UILabel *noPhoto;
     [self.view addSubview:noPhoto];
 }
 
-- (void)setLikedPhotosArray:(NSArray <Photo *> *)photos { // ??? doen't needed
-    NSLog(@"just show something");
-    _likedPhotoArray = photos;
-    [self.likedImagesCollectionView reloadData];
-}
+//- (void)setLikedPhotosArray:(NSArray <Photo *> *)photos { // ??? doen't needed
+//    NSLog(@"just show something");
+//    _likedPhotoArray = photos;
+//    [self.likedImagesCollectionView reloadData];
+//}
 
 #pragma mark - <UICollectionViewDataSource>
 
@@ -119,7 +120,7 @@ UILabel *noPhoto;
 //    NSLog(@"size for Item called");
     
     CGSize size = self.view.frame.size;
-    size = CGSizeMake((size.width - 3*paddingBetweenLines)/2, (size.width - 3*paddingBetweenLines)/2 + 29);
+    size = CGSizeMake((size.width - 3 * paddingBetweenLines)/2, (size.width - 3 * paddingBetweenLines)/2 + 29);
     return size;
 }
 
