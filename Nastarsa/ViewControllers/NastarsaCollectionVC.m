@@ -47,7 +47,8 @@ static CGFloat inset = 10;
     imagesCache = [[NSCache alloc] init];
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     moc = appDelegate.persistentContainer.newBackgroundContext;
-//[[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    _context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    [_context setParentContext:moc];
    
 //    _nasaCollectionView.allowsMultipleSelection = YES;
     
@@ -108,27 +109,27 @@ static CGFloat inset = 10;
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    
-    if ([sender isKindOfClass:[UICollectionViewCell class]]) {
-        NSIndexPath *indexPath = [self.nasaCollectionView indexPathForCell:sender];
-        if (indexPath) {
-            // found it ... are we doing the Display Photo segue?
+
+    if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
+        UITapGestureRecognizer *gesture = (UITapGestureRecognizer *)sender;
+        NSInteger index = gesture.view.tag;
+        if (index > -1) {
+            // found it ... are we doing the show Image segue?
             if ([segue.identifier isEqualToString:@"showImage"]) {
                 // yes ... is the destination an ImageViewController?
                 if ([segue.destinationViewController isKindOfClass:[ImageViewController class]]) {
                     // yes ... then we know how to prepare for that segue!
-                    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
+//                    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
                     ImageViewController *iVC = (ImageViewController *)segue.destinationViewController;
-                    
-                    if (_photos[indexPath.row].isLiked) {
+                    if (_photos[index].isLiked) {
                         if (moc) {
                             [moc performBlock:^{
                                 NSLog(@"Running on %@ thread (preparing for segue)", [NSThread currentThread]);
                                 NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
-                                [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nasa_id == %@", _photos[indexPath.row].nasa_id]];
+                                [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nasa_id == %@", _photos[index].nasa_id]];
                                 NSError *error = nil;
                                 NSArray <Photo *> *likedPhotoArray = [moc executeFetchRequest:fetchRequest error:&error];
-                                NSUInteger count = [_context countForFetchRequest:fetchRequest error:&error];
+                                NSUInteger count = [moc countForFetchRequest:fetchRequest error:&error];
                                 NSLog(@"%lu liked images", (unsigned long) count);
                                 if (count > 0) {
                                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -139,12 +140,12 @@ static CGFloat inset = 10;
                                 }
                             }];
                         }
-                        
                     } else {
-                        iVC.tempImage = cell.imageView.image;
-                        iVC.imageURL = [NasaFetcher URLforPhoto:_photos[indexPath.row].nasa_id format:NasaPhotoFormatLarge];
-                        iVC.model = _photos[indexPath.row];
-                        iVC.likeButton.selected = _photos[indexPath.row].isLiked;
+                        UIImageView *imgView = (UIImageView *)gesture.view;
+                        iVC.tempImage = imgView.image;
+                        iVC.imageURL = [NasaFetcher URLforPhoto:_photos[index].nasa_id format:NasaPhotoFormatLarge];
+                        iVC.model = _photos[index];
+                        iVC.likeButton.selected = _photos[index].isLiked;
                         NSLog(@"🔵 🔵 🔵 %@", iVC.model);
                         NSLog(@"🔴 model liked %s", iVC.model.isLiked ? "true" : "false");
                     }
@@ -152,6 +153,36 @@ static CGFloat inset = 10;
             }
         }
     }
+    
+    if ([sender isKindOfClass:[MainCollectionViewCell class]]) {
+        NSIndexPath *indexPath = [self.nasaCollectionView indexPathForCell:sender];
+        if (indexPath) {
+            // found it ... are we doing the Display Photo segue?
+            if ([segue.identifier isEqualToString:@"showSelectedCell"]) {
+                // yes ... is the destination an ImageViewController?
+                if ([segue.destinationViewController isKindOfClass:[NastarsaSingleImageVC class]]) {
+                    NastarsaSingleImageVC *nSIVC = (NastarsaSingleImageVC *)segue.destinationViewController;
+//                    nSIVC.photoSetup = _likedPhotoArray[indexPath.row];
+                }
+            }
+        }
+    }
+
+}
+
+
+#pragma mark - Gestures setup
+
+- (void)settingGesturesWith:(UIImageView *)imageView {
+    UITapGestureRecognizer *singleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(segueToImageVC:)];
+    singleTapRecognizer.numberOfTapsRequired = 1;
+    singleTapRecognizer.numberOfTouchesRequired = 1;
+    imageView.userInteractionEnabled = YES;
+    [imageView addGestureRecognizer:singleTapRecognizer];
+}
+
+- (void)segueToImageVC:(UITapGestureRecognizer *)gestureRecognizer {
+    [self performSegueWithIdentifier: @"showImage" sender: gestureRecognizer];
 }
 
 
@@ -185,6 +216,8 @@ static CGFloat inset = 10;
         [cell configure:imageModel];
     }
     NSLog(@"cell for Item called");
+    [self settingGesturesWith:cell.imageView];
+    cell.imageView.tag = indexPath.row;
     
     return cell;
 }
@@ -439,9 +472,7 @@ static CGFloat inset = 10;
 }
 
 - (void)checkingLoadedPhotoWasLiked {
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    if (appDelegate.persistentContainer.viewContext) {
-        _context = appDelegate.persistentContainer.viewContext;
+    if (_context) {
         NSLog(@"🔶🔷");
         
             NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
@@ -469,15 +500,7 @@ static CGFloat inset = 10;
     for(id key in userInfo)
         NSLog(@"key=%@ value=%@", key, [userInfo objectForKey:key]);
 //    NSLog(@"✅✅✅ @%", userInfo);
-
 }
-
-//- (void)viewWillAppear:(BOOL)animated {
-//    [super viewWillAppear:animated];
-//    NSLog(@"✅ viewWillAppear");
-//    [self checkingLoadedPhotoWasLiked];
-//    [self.nasaCollectionView reloadData];
-//}
 
 /*
 // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item

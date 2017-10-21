@@ -124,7 +124,7 @@
                                             <outlet property="readMoreButton" destination="h1p-GB-Ewk" id="pow-jb-KdF"/>
                                             <outlet property="shareButton" destination="JXz-qg-GbZ" id="0Eh-iD-M3d"/>
                                             <outlet property="title" destination="e5X-QZ-a9K" id="pxr-ZY-OFS"/>
-                                            <segue destination="NLZ-F1-nKb" kind="presentation" identifier="showImage" animates="NO" id="ksP-F1-AP5"/>
+                                            <segue destination="oRO-VD-l4a" kind="show" identifier="showSelectedCell" id="NWU-ab-eoS"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -160,6 +160,7 @@
                         <outlet property="layout" destination="Pho-im-Way" id="Lba-Tv-gSG"/>
                         <outlet property="nasaCollectionView" destination="LhH-1O-bcN" id="Pb8-J2-fpS"/>
                         <outlet property="spinnerWhenNextPageDownload" destination="Qos-Dw-Vgm" id="rHw-4R-Xpz"/>
+                        <segue destination="NLZ-F1-nKb" kind="presentation" identifier="showImage" animates="NO" id="TXC-VM-7wZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -226,7 +227,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zrF-eE-jjV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1877.5999999999999" y="122.78860569715144"/>
+            <point key="canvasLocation" x="2506" y="147"/>
         </scene>
         <!--Nastarsa Single ImageVC-->
         <scene sceneID="IQB-qH-nN7">
@@ -282,7 +283,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ucw-3m-Flb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1888.8" y="859.52023988005999"/>
+            <point key="canvasLocation" x="1772" y="860"/>
         </scene>
         <!--liked-->
         <scene sceneID="IYH-4E-Qsg">
@@ -398,6 +399,7 @@
         <image name="sharing" width="55" height="46"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="ksP-F1-AP5"/>
+        <segue reference="TXC-VM-7wZ"/>
+        <segue reference="NWU-ab-eoS"/>
     </inferredMetricsTieBreakers>
 </document>

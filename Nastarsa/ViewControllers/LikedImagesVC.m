@@ -15,9 +15,9 @@
 
 static NSString * const reuseIdentifier = @"likedImageCell";
 
-static CGFloat paddingBetweenCells = 15;
-static CGFloat paddingBetweenLines = 15;
-static CGFloat inset = 15;
+static CGFloat paddingBetweenCells = 20;
+static CGFloat paddingBetweenLines = 20;
+static CGFloat inset = 20;
 UILabel *noPhoto;
 
 @interface LikedImagesVC ()
@@ -42,14 +42,31 @@ UILabel *noPhoto;
      object:nil];
 }
 
-//- (void)viewWillAppear:(BOOL)animated {
-//    [super viewWillAppear:animated];
-//    
-//    [self loadingLikedPhoto];
-//}
+/*
+ // Initialize Fetch Request
+ NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"TSPItem"];
+ 
+ // Add Sort Descriptors
+ [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:YES]]];
+ 
+ // Initialize Fetched Results Controller
+ self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+ 
+ // Configure Fetched Results Controller
+ [self.fetchedResultsController setDelegate:self];
+ 
+ // Perform Fetch
+ NSError *error = nil;
+ [self.fetchedResultsController performFetch:&error];
+ 
+ if (error) {
+ NSLog(@"Unable to perform fetch.");
+ NSLog(@"%@, %@", error, error.localizedDescription);
+ }
+ */
 
 - (void)loadingLikedPhoto {
-    
+ 
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     _context = appDelegate.persistentContainer.viewContext;
     if (_context) {
