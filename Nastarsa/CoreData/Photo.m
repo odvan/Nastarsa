@@ -57,7 +57,8 @@
 
 + (void)saveNewLikedPhotoFrom:(ImageModel *)imageModel preview:(UIImage *)image inContext:(NSManagedObjectContext *)context {
     
-//    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    context.parentContext = appDelegate.persistentContainer.viewContext;
     if (context) {//(appDelegate.persistentContainer.viewContext) {
         NSLog(@"🖕💩💩");
 //        [appDelegate.persistentContainer performBackgroundTask:^(NSManagedObjectContext *context) {
@@ -73,6 +74,12 @@ NSLog(@"Running on %@ thread (saving)", [NSThread currentThread]);
                 NSLog(@"Unresolved error %@, %@", error, error.userInfo);
                 abort();
             }
+            [appDelegate.persistentContainer.viewContext performBlock:^{
+                NSError *error;
+                if (![appDelegate.persistentContainer.viewContext save:&error]) {
+                    // handle error
+                }
+            }];
             [Photo printDatabaseStatistics:context];
         }];
     }
@@ -84,6 +91,9 @@ NSLog(@"Running on %@ thread (saving)", [NSThread currentThread]);
         //        NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
         NSLog(@"🖕🖕🖕");
         //        [appDelegate.persistentContainer performBackgroundTask:^(NSManagedObjectContext *context) {
+        
+        AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        context.parentContext = appDelegate.persistentContainer.viewContext;
         [context performBlock:^{
             NSLog(@"Running on %@ thread (deleting)", [NSThread currentThread]);
             NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
@@ -98,6 +108,12 @@ NSLog(@"Running on %@ thread (saving)", [NSThread currentThread]);
                     NSLog(@"Unresolved error %@, %@", error, error.userInfo);
                     abort();
                 }
+                [appDelegate.persistentContainer.viewContext performBlock:^{
+                    NSError *error;
+                    if (![appDelegate.persistentContainer.viewContext save:&error]) {
+                        // handle error
+                    }
+                }];
             }
             [Photo printDatabaseStatistics:context];
         }];

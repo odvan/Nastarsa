@@ -288,7 +288,7 @@
         <!--liked-->
         <scene sceneID="IYH-4E-Qsg">
             <objects>
-                <viewController title="liked" id="yZ6-u9-XbP" customClass="LikedImagesVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="likedImagesVC" title="liked" id="yZ6-u9-XbP" customClass="LikedImagesVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="fAG-Yb-mIX"/>
                         <viewControllerLayoutGuide type="bottom" id="bzq-Ru-8Ao"/>
@@ -400,6 +400,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="TXC-VM-7wZ"/>
-        <segue reference="NWU-ab-eoS"/>
+        <segue reference="cG4-F8-Hc0"/>
     </inferredMetricsTieBreakers>
 </document>

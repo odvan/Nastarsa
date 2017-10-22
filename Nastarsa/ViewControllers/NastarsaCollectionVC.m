@@ -45,10 +45,10 @@ static CGFloat inset = 10;
     
     _photos = [[NSMutableArray alloc] init];
     imagesCache = [[NSCache alloc] init];
+    moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    moc = appDelegate.persistentContainer.newBackgroundContext;
-    _context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-    [_context setParentContext:moc];
+    _context = appDelegate.persistentContainer.viewContext;
+//    [_context setParentContext:moc];
    
 //    _nasaCollectionView.allowsMultipleSelection = YES;
     

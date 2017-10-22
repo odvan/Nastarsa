@@ -20,10 +20,13 @@ static CGFloat paddingBetweenLines = 20;
 static CGFloat inset = 20;
 UILabel *noPhoto;
 
-@interface LikedImagesVC ()
+@interface LikedImagesVC () <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSArray <Photo *> *likedPhotoArray;
-@property (nonatomic, strong) NSManagedObjectContext *context;
+@property (nonatomic, strong) NSFetchedResultsController<Photo *> *frc;
+@property (nonatomic, strong) NSBlockOperation *blockOperation;
+@property (nonatomic, assign) BOOL shouldReloadCollectionView;
+
 @end
 
 @implementation LikedImagesVC
@@ -32,41 +35,62 @@ UILabel *noPhoto;
     [super viewDidLoad];
 
     _likedImagesCollectionView.alwaysBounceVertical = YES;
+
+    [self frc];
     
-    [self loadingLikedPhoto];
+    //[self loadingLikedPhoto];
     
     [[NSNotificationCenter defaultCenter]
      addObserver:self
-     selector:@selector(loadingLikedPhoto)
+     selector:@selector(reload)
      name:NSManagedObjectContextDidSaveNotification
      object:nil];
 }
 
-/*
- // Initialize Fetch Request
- NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"TSPItem"];
- 
- // Add Sort Descriptors
- [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:YES]]];
- 
- // Initialize Fetched Results Controller
- self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
- 
- // Configure Fetched Results Controller
- [self.fetchedResultsController setDelegate:self];
- 
- // Perform Fetch
- NSError *error = nil;
- [self.fetchedResultsController performFetch:&error];
- 
- if (error) {
- NSLog(@"Unable to perform fetch.");
- NSLog(@"%@, %@", error, error.localizedDescription);
- }
- */
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    NSError *error = nil;
+    [_frc performFetch:&error];
+}
+
+- (void) reload {
+    NSLog(@"▶︎ ▶︎ ▶︎ NSManagedObjectContextDidSaveNotification triggered");
+//    NSError *error = nil;
+//    [_frc performFetch:&error];
+}
+
+- (NSFetchedResultsController<Photo *> *)frc {
+    NSLog(@"NSFetchedResultsController triggered");
+
+    if (_frc != nil) {
+        return _frc;
+    }
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    _context = appDelegate.persistentContainer.viewContext;
+    NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
+    // Add Sort Descriptors
+    [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES]]];
+    // Initialize Fetched Results Controller
+    NSFetchedResultsController<Photo *> *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                   managedObjectContext:_context
+                                                     sectionNameKeyPath:nil
+                                                              cacheName:nil];
+    
+    // Configure Fetched Results Controller
+    aFetchedResultsController.delegate = self;
+    // Perform Fetch
+    NSError *error = nil;
+    [aFetchedResultsController performFetch:&error];
+    if (error) {
+        NSLog(@"Unable to perform fetch.");
+        NSLog(@"%@, %@", error, error.localizedDescription);
+    }
+    _frc = aFetchedResultsController;
+    return _frc;
+}
 
 - (void)loadingLikedPhoto {
- 
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     _context = appDelegate.persistentContainer.viewContext;
     if (_context) {
@@ -98,12 +122,6 @@ UILabel *noPhoto;
     [self.view addSubview:noPhoto];
 }
 
-//- (void)setLikedPhotosArray:(NSArray <Photo *> *)photos { // ??? doen't needed
-//    NSLog(@"just show something");
-//    _likedPhotoArray = photos;
-//    [self.likedImagesCollectionView reloadData];
-//}
-
 #pragma mark - <UICollectionViewDataSource>
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -111,7 +129,9 @@ UILabel *noPhoto;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return _likedPhotoArray.count > 0 ? _likedPhotoArray.count : 0;
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][section];
+    return [sectionInfo numberOfObjects];
+    //return _likedPhotoArray.count > 0 ? _likedPhotoArray.count : 0;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -120,7 +140,8 @@ UILabel *noPhoto;
     cell.layer.shouldRasterize = YES;
     cell.layer.rasterizationScale = [UIScreen mainScreen].scale;
     
-    Photo *likedPhoto = _likedPhotoArray[indexPath.row];
+    Photo *likedPhoto = [self.frc objectAtIndexPath:indexPath];//_likedPhotoArray[indexPath.row];
+
     if (likedPhoto != nil) {
         NSLog(@"%@", likedPhoto.title);
         [cell configure:likedPhoto];
@@ -166,11 +187,122 @@ UILabel *noPhoto;
                 // yes ... is the destination an ImageViewController?
                 if ([segue.destinationViewController isKindOfClass:[NastarsaSingleImageVC class]]) {
                     NastarsaSingleImageVC *nSIVC = (NastarsaSingleImageVC *)segue.destinationViewController;
-                    nSIVC.photoSetup = _likedPhotoArray[indexPath.row];
+                    Photo *object = [self.frc objectAtIndexPath:indexPath];
+                    nSIVC.photoSetup = object;
                 }
             }
         }
     }
+}
+
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    self.shouldReloadCollectionView = NO;
+    self.blockOperation = [[NSBlockOperation alloc] init];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+{
+    __weak UICollectionView *collectionView = self.likedImagesCollectionView;
+    switch (type) {
+        case NSFetchedResultsChangeInsert: {
+            [self.blockOperation addExecutionBlock:^{
+                [collectionView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
+            }];
+            break;
+        }
+            
+        case NSFetchedResultsChangeDelete: {
+            [self.blockOperation addExecutionBlock:^{
+                [collectionView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
+            }];
+            break;
+        }
+            
+        case NSFetchedResultsChangeUpdate: {
+            [self.blockOperation addExecutionBlock:^{
+                [collectionView reloadSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
+            }];
+            break;
+        }
+            
+        default:
+            break;
+    }
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
+{
+    __weak UICollectionView *collectionView = self.likedImagesCollectionView;
+    
+    switch (type) {
+        case NSFetchedResultsChangeInsert: {
+            if ([self.likedImagesCollectionView numberOfSections] > 0) {
+                if ([self.likedImagesCollectionView numberOfItemsInSection:indexPath.section] == 0) {
+                    self.shouldReloadCollectionView = YES;
+                } else {
+                    [self.blockOperation addExecutionBlock:^{
+                        [collectionView insertItemsAtIndexPaths:@[newIndexPath]];
+                    }];
+                }
+            } else {
+                self.shouldReloadCollectionView = YES;
+            }
+            break;
+        }
+            
+        case NSFetchedResultsChangeDelete: {
+            if ([self.likedImagesCollectionView numberOfItemsInSection:indexPath.section] == 1) {
+                self.shouldReloadCollectionView = YES;
+            } else {
+                [self.blockOperation addExecutionBlock:^{
+                    [collectionView deleteItemsAtIndexPaths:@[indexPath]];
+                }];
+            }
+            break;
+        }
+            
+        case NSFetchedResultsChangeUpdate: {
+            [self.blockOperation addExecutionBlock:^{
+                [collectionView reloadItemsAtIndexPaths:@[indexPath]];
+            }];
+            break;
+        }
+            
+        case NSFetchedResultsChangeMove: {
+            [self.blockOperation addExecutionBlock:^{
+                [collectionView moveItemAtIndexPath:indexPath toIndexPath:newIndexPath];
+            }];
+            break;
+        }
+            
+        default:
+            break;
+    }
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    
+    // Checks if we should reload the collection view to fix a bug @ http://openradar.appspot.com/12954582
+    if (self.shouldReloadCollectionView) {
+        [self.likedImagesCollectionView reloadData];
+    } else {
+        [self.likedImagesCollectionView performBatchUpdates:^{
+            [self.blockOperation start];
+        } completion:nil];
+    }
+//    // Checks if we should reload the collection view to fix a bug @ http://openradar.appspot.com/12954582
+//    if (self.shouldReloadCollectionView) {
+//        [self.likedImagesCollectionView reloadData];
+//    } else {
+//        [self.likedImagesCollectionView performBatchUpdates:^{
+//            [[NSOperationQueue currentQueue] addOperation:self.blockOperation];
+//        } completion:nil];
+//    }
 }
 
 @end

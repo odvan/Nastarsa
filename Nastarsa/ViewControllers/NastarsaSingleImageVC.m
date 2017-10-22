@@ -31,17 +31,6 @@ static NSString * const reuseIdentifier = @"imageCell";
     
 }
 
-- (NSManagedObjectContext *)context {
-    NSLog(@"setting context obj");
-    if (_context != nil) {
-        return _context;
-    }
-    
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    _context = appDelegate.persistentContainer.newBackgroundContext;
-    return _context;
-}
-
 - (void)setPhotoSetup:(Photo *)photoSetup {
     if (_photoSetup != photoSetup) {
         _photoSetup = photoSetup;
@@ -106,8 +95,8 @@ static NSString * const reuseIdentifier = @"imageCell";
 
 - (void)likedButtonTouched:(NSIndexPath *)indexPath {
     
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    _context = appDelegate.persistentContainer.newBackgroundContext;
+//    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    _context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     
     NSLog(@"tapped liked");
     __weak ExampleCell *cell = (ExampleCell*)[self.singleImageCV cellForItemAtIndexPath:indexPath];
