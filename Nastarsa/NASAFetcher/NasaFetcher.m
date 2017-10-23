@@ -74,8 +74,9 @@
         
     });
 }
+//- (void)someMethodThatTakesABlock:(returnType (^nullability)(parameterTypes))blockName;
 
-+ (void)fetchPhotos:(int)pageNumber {
++ (void)fetchPhotos:(int)pageNumber completion:(void (^)(BOOL success))completion {
     
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
@@ -111,20 +112,21 @@
                         if (item) {
                             NSArray *photoData = [item objectForKey: NASA_PHOTO_DATA];
                             if (photoData) {
-                                [[CoreDataStack importManagedObjectContext] performBlock:^{
-                                    [Photo photoWithInfo:photoData.firstObject inManagedObjectContext:[CoreDataStack importManagedObjectContext]];
+                                NSManagedObjectContext *context = [CoreDataStack importManagedObjectContext];
+                                [context performBlock:^{
+                                    [Photo photoWithInfo:photoData.firstObject inManagedObjectContext:context];
 
                                     NSLog(@"Running on %@ thread (fetching images)", [NSThread currentThread]);
                                     NSError *error = nil;
-                                    if (![[CoreDataStack importManagedObjectContext] save:&error]) {
+                                    if (![context save:&error]) {
+                                        completion(NO);
                                         // Replace this implementation with code to handle the error appropriately.
                                         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                                         NSLog(@"Unresolved error %@, %@", error, error.userInfo);
                                         abort();
                                     }
-                                    [Photo printDatabaseStatistics:[CoreDataStack importManagedObjectContext]];
+                                    [Photo printDatabaseStatistics:context];
                                 }];
-
 //                                NSLog(@"%@", [Photo title]);
 //                                NSLog(@"%@", [photo link]);
                             }
@@ -136,7 +138,7 @@
         // update the Model (and thus our UI), but do so back on the main queue
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-//            completion(tempPhotosArray);
+            completion(YES);
         });
     });
 }

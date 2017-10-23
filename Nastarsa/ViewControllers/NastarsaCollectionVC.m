@@ -57,7 +57,11 @@ static CGFloat inset = 10;
         lastPage = numbers;
         _pageNumber = numbers;
         NSLog(@"fuck it");
-        [NasaFetcher fetchPhotos: lastPage];
+        [NasaFetcher fetchPhotos:lastPage completion:^(BOOL success){
+            if (success) {
+                [self frc];
+            }
+        }];
     }];
     
     [self refreshControlSetup];
@@ -68,16 +72,16 @@ static CGFloat inset = 10;
 //     name:NSManagedObjectContextObjectsDidChangeNotification
 //     object:nil];
     
-    [self frc];
+//    [self frc];
 
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    NSError *error = nil;
-    [_frc performFetch:&error];
-}
+//- (void)viewWillAppear:(BOOL)animated {
+//    [super viewWillAppear:animated];
+//    
+//    NSError *error = nil;
+//    [_frc performFetch:&error];
+//}
 
 - (NSFetchedResultsController<Photo *> *)frc {
     NSLog(@"NSFetchedResultsController triggered");
@@ -127,7 +131,11 @@ static CGFloat inset = 10;
 - (IBAction)refreshControlAction {
     _pageNumber = lastPage;
     [self.nasaCollectionView.refreshControl beginRefreshing];
-    [NasaFetcher fetchPhotos: lastPage];
+    [NasaFetcher fetchPhotos:lastPage completion:^(BOOL success){
+        if (success) {
+            [self frc];
+        }
+    }];
 }
 
 
