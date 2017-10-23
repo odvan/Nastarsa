@@ -9,9 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "ImageModel.h"
 #import "ImageDownloader.h"
-#import "Photo.h"
-#import "Photo+CoreDataProperties.h"
-#import "AppDelegate.h"
 
 @class MainCollectionViewCell;
 
@@ -40,7 +37,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *shareButton;
 
 - (IBAction)readMoreTouched:(id)sender;
-- (void)configure:(Photo *)model;
+- (void)configure:(ImageModel *)model;
 //- (void)settingLargeImage:(ImageModel *)model;
 
 @end

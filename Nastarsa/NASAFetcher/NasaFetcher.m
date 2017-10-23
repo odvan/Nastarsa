@@ -8,8 +8,6 @@
 
 #import "NasaFetcher.h"
 #import <UIKit/UIKit.h>
-#import "Photo.h"
-#import "Photo+CoreDataProperties.h"
 
 @implementation NasaFetcher
 
@@ -74,15 +72,14 @@
         
     });
 }
-//- (void)someMethodThatTakesABlock:(returnType (^nullability)(parameterTypes))blockName;
 
-+ (void)fetchPhotos:(int)pageNumber completion:(void (^)(BOOL success))completion {
++ (void)fetchPhotos:(int)pageNumber withCompletion:(void (^)(NSMutableArray <ImageModel *> *photos))completion {
     
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
     NSLog(@"page number: %d", pageNumber);
     NSString *urlWithPage = [NSString stringWithFormat:BASE_URL@"&page=%d", pageNumber];
-//    NSMutableArray <ImageModel *> *tempPhotosArray = [NSMutableArray array];
+    NSMutableArray <ImageModel *> *tempPhotosArray = [NSMutableArray array];
     NSURL *url = [[NSURL alloc] initWithString: urlWithPage];
     // create a (non-main) queue to do fetch on
     dispatch_queue_t fetchQ = dispatch_queue_create("nasa fetcher", NULL);
@@ -112,33 +109,20 @@
                         if (item) {
                             NSArray *photoData = [item objectForKey: NASA_PHOTO_DATA];
                             if (photoData) {
-                                NSManagedObjectContext *context = [CoreDataStack importManagedObjectContext];
-                                [context performBlock:^{
-                                    [Photo photoWithInfo:photoData.firstObject inManagedObjectContext:context];
-
-                                    NSLog(@"Running on %@ thread (fetching images)", [NSThread currentThread]);
-                                    NSError *error = nil;
-                                    if (![context save:&error]) {
-                                        completion(NO);
-                                        // Replace this implementation with code to handle the error appropriately.
-                                        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                                        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-                                        abort();
-                                    }
-                                    [Photo printDatabaseStatistics:context];
-                                }];
-//                                NSLog(@"%@", [Photo title]);
-//                                NSLog(@"%@", [photo link]);
+                                ImageModel *photo = [[ImageModel alloc] initWithJSONDictionary: photoData.firstObject];
+                                [tempPhotosArray addObject: photo];
+                                NSLog(@"%@", [photo title]);
+                                NSLog(@"%@", [photo link]);
                             }
                         }
                     }
-                                   }
+                }
             }
         }
         // update the Model (and thus our UI), but do so back on the main queue
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-            completion(YES);
+            completion(tempPhotosArray);
         });
     });
 }

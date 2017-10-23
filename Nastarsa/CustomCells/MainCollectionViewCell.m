@@ -79,11 +79,11 @@
     }
 }
 
-- (void)configure:(Photo *)model {
+- (void)configure:(ImageModel *)model {
     _title.text = model.title;
     _imageDescription.text = model.someDescription;
     [self.indicator setupWith:_imageView];
-    [self.downloader downloadingImageWithURL:[NasaFetcher URLforPhoto:model.nasa_id format:NasaPhotoFormatThumb] completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
+    [self.downloader downloadingImageWithURL:model.link completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
         if (image) {
         _imageView.image = image;
         [self.indicator stop];
