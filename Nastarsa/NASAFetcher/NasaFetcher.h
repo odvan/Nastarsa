@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ImageModel.h"
+#import "CoreDataStack.h"
 
 #define NASA_PHOTOS_NUMBER @"collection.metadata.total_hits"
 #define NASA_PHOTOS_ARRAY @"collection.items"
@@ -27,8 +28,9 @@ typedef NS_ENUM(NSInteger, NasaPhotoFormat) {
 
 @interface NasaFetcher : NSObject
 
++ (NSString *)urlStringForPhoto:(NSString *)link format:(NasaPhotoFormat)format;
 + (NSURL *)URLforPhoto:(NSString *)link format:(NasaPhotoFormat)format;
 + (void)pageNumbers:(void (^)(int numbers))completion;
-+ (void)fetchPhotos:(int)pageNumber withCompletion:(void (^)(NSMutableArray <ImageModel *> *photos))completion;
++ (void)fetchPhotos:(int)pageNumber;
 
 @end

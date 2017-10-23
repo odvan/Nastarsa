@@ -10,12 +10,7 @@
 #import <CoreData/CoreData.h>
 #import "AppDelegate.h"
 
-NSManagedObjectContext *privateManagedObjectContext;
-NSManagedObjectContext *mainUIManagedObjectContext;
-NSManagedObjectContext *importManagedObjectContext;
 
-id privateContextSaveObserver;
-id mainUIContextSaveObserver;
 
 @interface CoreDataStack : NSObject
 

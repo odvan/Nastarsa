@@ -12,7 +12,7 @@
 
 @interface Photo : NSManagedObject
 
-+ (Photo *)photoWithInfo:(ImageModel *)imageModel preview:(UIImage *)image inManagedObjectContext:(NSManagedObjectContext *)context;
++ (Photo *)photoWithInfo:(NSDictionary *)dictionary inManagedObjectContext:(NSManagedObjectContext *)context;
 + (void)printDatabaseStatistics:(NSManagedObjectContext *)context;
 + (void)saveNewLikedPhotoFrom:(ImageModel *)imageModel preview:(UIImage *)image inContext:(NSManagedObjectContext *)context;
 + (void)deleteLikedPhotoFrom:(NSString *)image_id inContext:(NSManagedObjectContext *)context;
