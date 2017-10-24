@@ -27,6 +27,7 @@ typedef NS_ENUM(NSInteger, NasaPhotoFormat) {
 
 @interface NasaFetcher : NSObject
 
++ (NSString *)URLStringForPhoto:(NSString *)link format:(NasaPhotoFormat)format;
 + (NSURL *)URLforPhoto:(NSString *)link format:(NasaPhotoFormat)format;
 + (void)pageNumbers:(void (^)(int numbers))completion;
 + (void)fetchPhotos:(int)pageNumber withCompletion:(void (^)(BOOL success, NSMutableArray *photosData))completion;

@@ -12,7 +12,7 @@
 @implementation NasaFetcher
 
 
-+ (NSString *)urlStringForPhoto:(NSString *)link format:(NasaPhotoFormat)format {
++ (NSString *)URLStringForPhoto:(NSString *)link format:(NasaPhotoFormat)format {
     
     NSString *formatString = link;
     switch (format) {
@@ -24,7 +24,7 @@
 }
 
 + (NSURL *)URLforPhoto:(NSString *)link format:(NasaPhotoFormat)format {
-    return [NSURL URLWithString:[NasaFetcher urlStringForPhoto:link format:format]];
+    return [NSURL URLWithString:[NasaFetcher URLStringForPhoto:link format:format]];
 }
 
 + (void)pageNumbers:(void (^)(int numbers))completion {

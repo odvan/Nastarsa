@@ -12,41 +12,45 @@
 
 @implementation Photo
 
-+ (Photo *)photoWithInfo:(ImageModel *)imageModel preview:(UIImage *)image inManagedObjectContext:(NSManagedObjectContext *)context {
++ (Photo *)photoWithInfoFrom:(NSDictionary *)dictionary inManagedObjectContext:(NSManagedObjectContext *)context {
     Photo *photo = nil;
     photo = [NSEntityDescription insertNewObjectForEntityForName:@"Photo"
                                           inManagedObjectContext:context];
-    NSLog(@"⚽️");
-    photo.title = imageModel.title;
-    photo.link = imageModel.link.absoluteString;
-    photo.nasa_id = imageModel.nasa_id;
-    photo.someDescription = imageModel.someDescription;
-    photo.image_preview = UIImageJPEGRepresentation(image, 1.0);//[NSData dataWithContentsOfURL:imageModel.link];
+    NSLog(@"⚽️ creating managed obj");
     
-    NSData *bigSizeImage = [[NSData alloc] initWithContentsOfURL:[NasaFetcher URLforPhoto:imageModel.nasa_id format:NasaPhotoFormatLarge]];
-    if (bigSizeImage) {
-        photo.image_big = bigSizeImage;
-    } else {
-        bigSizeImage = [[NSData alloc] initWithContentsOfURL:[NasaFetcher URLforPhoto:imageModel.nasa_id format:NasaPhotoFormatOriginal]];
-        if (bigSizeImage) {
-            photo.image_big = bigSizeImage;
-        } else {
-            photo.image_big = nil;
-        }
-    }
+    photo.title = [dictionary objectForKey:@"title"];
+    photo.nasa_id = [dictionary objectForKey:@"nasa_id"];
+    photo.someDescription = [dictionary objectForKey:@"description"];
+    photo.isExpanded = NO;
+    photo.isLiked = NO;
+    photo.link = [NasaFetcher URLStringForPhoto:photo.nasa_id format:NasaPhotoFormatThumb];
+    
+    //    photo.image_preview = [NSData dataWithContentsOfURL:[NSURL URLWithString:photo.link]]; // UIImageJPEGRepresentation(image, 1.0);//
+    //
+    //    NSData *bigSizeImage = [[NSData alloc] initWithContentsOfURL:[NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatLarge]];
+    //    if (bigSizeImage) {
+    //        photo.image_big = bigSizeImage;
+    //    } else {
+    //        bigSizeImage = [[NSData alloc] initWithContentsOfURL:[NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatOriginal]];
+    //        if (bigSizeImage) {
+    //            photo.image_big = bigSizeImage;
+    //        } else {
+    //            photo.image_big = nil;
+    //        }
+    //    }
     NSLog(@"%@ photo entity", photo.title);
     return photo;
 }
 
 + (void)printDatabaseStatistics:(NSManagedObjectContext *)context {
     if (context) {
-        NSLog(@"⚽️⚽️");
+        NSLog(@"⚽️⚽️ printDatabaseStatistics");
         [context performBlock:^{
             NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
             fetchRequest.predicate = nil;
             NSError *error = nil;
             NSUInteger count = [context countForFetchRequest:fetchRequest error:&error];
-            NSLog(@"%lu liked images", (unsigned long)count);
+            NSLog(@"%lu fetched/liked images", (unsigned long)count);
             NSLog(@"Running on %@ thread (statistics)", [NSThread currentThread]);
 //            NSLog(@"%lu registeredObjects count", [[context registeredObjects] count]);
         }];
@@ -60,12 +64,12 @@
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     context.parentContext = appDelegate.persistentContainer.viewContext;
     if (context) {//(appDelegate.persistentContainer.viewContext) {
-        NSLog(@"🖕💩💩");
+        NSLog(@"👍🏼 saving liked photo");
 //        [appDelegate.persistentContainer performBackgroundTask:^(NSManagedObjectContext *context) {
         [context performBlock:^{
 NSLog(@"Running on %@ thread (saving)", [NSThread currentThread]);
             
-            [Photo photoWithInfo:imageModel preview:image inManagedObjectContext:context];
+//            [Photo photoWithInfo:imageModel preview:image inManagedObjectContext:context];
             
             NSError *error = nil;
             if (![context save:&error]) {
@@ -122,55 +126,27 @@ NSLog(@"Running on %@ thread (saving)", [NSThread currentThread]);
 
 + (void)findOrCreatePhotosFrom:(NSMutableArray *)photosData inContext:(NSManagedObjectContext *)context {
     
-    for (NSDictionary *photoDictionary in photosData) {
-        
-        // [dict objectForKey:@"nasa_id"];
-        NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nasa_id == %@", photoDictionary.nasa_id]];
-        NSError *error = nil;
-        NSArray <Photo *> *photoExisted = [context executeFetchRequest:fetchRequest error:&error];
-        
-        if (photoExisted.count > 0 && photoExisted.count < 2) {
-            break;
-        } else {
-            
+    for (NSMutableDictionary *photoDictionary in photosData) {
+        if (photoDictionary) {
+            NSArray *photo = [photoDictionary objectForKey: NASA_PHOTO_DATA];
+            if (photo) {
+                NSDictionary *dictionary = photo.firstObject;
+                NSString *nasa_id = [dictionary objectForKey:@"nasa_id"];
+                NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
+                [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nasa_id == %@", nasa_id]];
+                NSError *error = nil;
+                NSArray <Photo *> *photoExisted = [context executeFetchRequest:fetchRequest error:&error];
+                
+                if (photoExisted.count > 0 && photoExisted.count < 2) {
+                    break;
+                } else {
+                    // some mistake
+                }
+                
+                [self photoWithInfoFrom:dictionary inManagedObjectContext:context];
+            }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @end

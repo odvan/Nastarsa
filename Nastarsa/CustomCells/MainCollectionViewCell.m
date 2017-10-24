@@ -79,23 +79,23 @@
     }
 }
 
-- (void)configure:(ImageModel *)model {
-    _title.text = model.title;
-    _imageDescription.text = model.someDescription;
+- (void)configure:(Photo *)photoModel {
+    _title.text = photoModel.title;
+    _imageDescription.text = photoModel.someDescription;
     [self.indicator setupWith:_imageView];
-    [self.downloader downloadingImageWithURL:model.link completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
+    [self.downloader downloadingImageWithURL:[NSURL URLWithString:photoModel.link] completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
         if (image) {
         _imageView.image = image;
         [self.indicator stop];
         }
     }];
     
-    if (model.isExpanded) {
+    if (photoModel.isExpanded) {
         _readMoreButton.hidden = YES;
         _buttonHeightConstraint.constant = 0;
     }
     
-    if (model.isLiked) {
+    if (photoModel.isLiked) {
         _likeButton.selected = YES;
     }
 }
