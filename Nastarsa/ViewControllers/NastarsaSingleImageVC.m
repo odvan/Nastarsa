@@ -28,7 +28,6 @@ static NSString * const reuseIdentifier = @"imageCell";
     _singleImageCV.alwaysBounceVertical = YES;
     [self.singleImageCV registerNib:[UINib nibWithNibName:@"ExampleCell" bundle:nil] forCellWithReuseIdentifier:reuseIdentifier];
     
-    
 }
 
 - (void)setPhotoSetup:(Photo *)photoSetup {
@@ -107,14 +106,15 @@ static NSString * const reuseIdentifier = @"imageCell";
         [_context performBlock:^{
             NSLog(@"Running on %@ thread (saving)", [NSThread currentThread]);
             
-            Photo *photo = [NSEntityDescription insertNewObjectForEntityForName:@"Photo"
-                                                         inManagedObjectContext:_context];
-            photo.title = _photoSetup.title;
-            photo.link = _photoSetup.link;
-            photo.nasa_id = _photoSetup.nasa_id;
-            photo.someDescription = _photoSetup.someDescription;
-            photo.image_preview = _photoSetup.image_preview;
-            photo.image_big = _photoSetup.image_big;
+//            Photo *photo = [NSEntityDescription insertNewObjectForEntityForName:@"Photo"
+//                                                         inManagedObjectContext:_context];
+//            photo.title = _photoSetup.title;
+//            photo.link = _photoSetup.link;
+//            photo.nasa_id = _photoSetup.nasa_id;
+//            photo.someDescription = _photoSetup.someDescription;
+//            photo.image_preview = _photoSetup.image_preview;
+//            photo.image_big = _photoSetup.image_big;
+            _photoSetup.isLiked = YES;
             NSLog(@"photoSetup obj: %@", _photoSetup);
             NSError *error = nil;
             if (![_context save:&error]) {
@@ -126,7 +126,8 @@ static NSString * const reuseIdentifier = @"imageCell";
             [Photo printDatabaseStatistics:_context];
         }];
     } else {
-        [Photo deleteLikedPhotoFrom:_photoSetup.nasa_id inContext:_context];
+        _photoSetup.isLiked = NO;
+//        [Photo deleteLikedPhotoFrom:_photoSetup.nasa_id inContext:_context];
         NSLog(@"photoSetup obj after deleting: %@", _photoSetup);
     }
 }

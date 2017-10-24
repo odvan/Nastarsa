@@ -15,14 +15,15 @@
     // Initialization code
     super.readMoreButton.hidden = YES;
     super.buttonHeightConstraint.constant = 0;
-    super.likeButton.selected = YES;
+    super.likeButton.selected = NO;
 }
 
 - (void)configureWith:(Photo *)photo {
     super.title.text = photo.title;
     super.imageDescription.text = photo.someDescription;
-    if (photo.image_preview && photo.image_big) {
-      super.imageView.image = [UIImage imageWithData:photo.image_preview];;
+    super.likeButton.selected = photo.isLiked;
+    if (photo.image_preview) { //  && photo.image_big
+      super.imageView.image = [UIImage imageWithData:photo.image_preview];
     }
 }
 

@@ -19,6 +19,7 @@
 + (void)deleteLikedPhotoFrom:(NSString *)image_id inContext:(NSManagedObjectContext *)context;
 
 + (void)findOrCreatePhotosFrom:(NSMutableArray *)photosData inContext:(NSManagedObjectContext *)context;
++ (void)deletePhotoObjects:(NSManagedObjectContext *)context;
 
 
 @end

@@ -17,7 +17,7 @@
     photo = [NSEntityDescription insertNewObjectForEntityForName:@"Photo"
                                           inManagedObjectContext:context];
     NSLog(@"⚽️ creating managed obj");
-    
+    photo.uniqueID = [NSDate date].timeIntervalSince1970;
     photo.title = [dictionary objectForKey:@"title"];
     photo.nasa_id = [dictionary objectForKey:@"nasa_id"];
     photo.someDescription = [dictionary objectForKey:@"description"];
@@ -147,6 +147,28 @@ NSLog(@"Running on %@ thread (saving)", [NSThread currentThread]);
             }
         }
     }
+}
+
++ (void)deletePhotoObjects:(NSManagedObjectContext *)context {
+    
+        NSLog(@"Running on %@ thread (deleting all obj)", [NSThread currentThread]);
+        NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
+        fetchRequest.predicate = nil;
+        
+        NSError *error = nil;
+        NSArray *photoObjects = [context executeFetchRequest:fetchRequest error:&error];
+        if (photoObjects.count > 0) {
+            for (Photo *photo in photoObjects) {
+                [context deleteObject:photo];
+            }
+        }
+        if (![context save:&error]) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+            abort();
+        }
+    [Photo printDatabaseStatistics:context];
 }
 
 @end

@@ -9,12 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "ImageModel.h"
 #import "ImageDownloader.h"
+#import "Photo.h"
+#import "Photo+CoreDataProperties.h"
+
 
 @interface ImageViewController : UIViewController
 
 @property (nonatomic, strong) NSURL *imageURL;
 //@property (nonatomic, strong) NSString *ID;
-@property (nonatomic, strong) ImageModel *model;
+@property (nonatomic, strong) Photo *model;
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) UIImage *tempImage;
 @property (nonatomic, strong) UIImageView *imageView;

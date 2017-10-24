@@ -71,6 +71,8 @@ UILabel *noPhoto;
     NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
     // Add Sort Descriptors
     [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isLiked == YES"]];
+
     // Initialize Fetched Results Controller
     NSFetchedResultsController<Photo *> *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                    managedObjectContext:_context
@@ -130,6 +132,11 @@ UILabel *noPhoto;
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][section];
+    if ([sectionInfo numberOfObjects] == 0) {
+        [self noPhotoMessage];
+    } else {
+        [noPhoto removeFromSuperview];
+    }
     return [sectionInfo numberOfObjects];
     //return _likedPhotoArray.count > 0 ? _likedPhotoArray.count : 0;
 }
