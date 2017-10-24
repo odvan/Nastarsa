@@ -36,7 +36,7 @@ UILabel *noPhoto;
 
     _likedImagesCollectionView.alwaysBounceVertical = YES;
 
-    [self frc];
+//    [self frc];
     
     //[self loadingLikedPhoto];
     
@@ -49,9 +49,9 @@ UILabel *noPhoto;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
-    NSError *error = nil;
-    [_frc performFetch:&error];
+//
+//    NSError *error = nil;
+//    [_frc performFetch:&error];
 }
 
 - (void) reload {
