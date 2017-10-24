@@ -16,6 +16,6 @@
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinnerWhenNextPageDownload;
 
 // Model of this MVC (it can be publicly set)
-@property (nonatomic, strong) NSMutableArray <ImageModel *> *photos; // of ImageModel objects
+@property (nonatomic, strong) NSMutableArray *photosData;
 
 @end

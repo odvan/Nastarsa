@@ -120,4 +120,57 @@ NSLog(@"Running on %@ thread (saving)", [NSThread currentThread]);
     }
 }
 
++ (void)findOrCreatePhotosFrom:(NSMutableArray *)photosData inContext:(NSManagedObjectContext *)context {
+    
+    for (NSDictionary *photoDictionary in photosData) {
+        
+        // [dict objectForKey:@"nasa_id"];
+        NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nasa_id == %@", photoDictionary.nasa_id]];
+        NSError *error = nil;
+        NSArray <Photo *> *photoExisted = [context executeFetchRequest:fetchRequest error:&error];
+        
+        if (photoExisted.count > 0 && photoExisted.count < 2) {
+            break;
+        } else {
+            
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @end

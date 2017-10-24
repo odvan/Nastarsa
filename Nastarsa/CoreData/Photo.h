@@ -17,4 +17,7 @@
 + (void)saveNewLikedPhotoFrom:(ImageModel *)imageModel preview:(UIImage *)image inContext:(NSManagedObjectContext *)context;
 + (void)deleteLikedPhotoFrom:(NSString *)image_id inContext:(NSManagedObjectContext *)context;
 
++ (void)findOrCreatePhotosFrom:(NSMutableArray *)photosData inContext:(NSManagedObjectContext *)context;
+
+
 @end

@@ -73,13 +73,12 @@
     });
 }
 
-+ (void)fetchPhotos:(int)pageNumber withCompletion:(void (^)(NSMutableArray <ImageModel *> *photos))completion {
++ (void)fetchPhotos:(int)pageNumber withCompletion:(void (^)(BOOL success, NSMutableArray *photosData))completion {
     
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
     NSLog(@"page number: %d", pageNumber);
     NSString *urlWithPage = [NSString stringWithFormat:BASE_URL@"&page=%d", pageNumber];
-    NSMutableArray <ImageModel *> *tempPhotosArray = [NSMutableArray array];
     NSURL *url = [[NSURL alloc] initWithString: urlWithPage];
     // create a (non-main) queue to do fetch on
     dispatch_queue_t fetchQ = dispatch_queue_create("nasa fetcher", NULL);
@@ -96,34 +95,28 @@
         
         if (error) {
             NSLog(@"Error parsing JSON: %@", error);
+            // update the Model (and thus our UI), but do so back on the main queue
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                completion(NO, nil);
+            });
         }
         else {
             if ([propertyListResults isKindOfClass:[NSDictionary class]]) {
                 NSLog(@"it is an array!");
                 
                 // get the NSArray of photo NSDictionarys out of the results
-                NSArray *photosData = [propertyListResults valueForKeyPath: NASA_PHOTOS_ARRAY];
+                NSMutableArray *photosData = [propertyListResults valueForKeyPath: NASA_PHOTOS_ARRAY];
                 
                 if (photosData) {
-                    for (NSMutableDictionary *item in photosData) {
-                        if (item) {
-                            NSArray *photoData = [item objectForKey: NASA_PHOTO_DATA];
-                            if (photoData) {
-                                ImageModel *photo = [[ImageModel alloc] initWithJSONDictionary: photoData.firstObject];
-                                [tempPhotosArray addObject: photo];
-                                NSLog(@"%@", [photo title]);
-                                NSLog(@"%@", [photo link]);
-                            }
-                        }
-                    }
+                    // update the Model (and thus our UI), but do so back on the main queue
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                        completion(YES, photosData);
+                    });
                 }
             }
         }
-        // update the Model (and thus our UI), but do so back on the main queue
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-            completion(tempPhotosArray);
-        });
     });
 }
 @end

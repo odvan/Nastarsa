@@ -43,12 +43,11 @@ static CGFloat inset = 10;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _photos = [[NSMutableArray alloc] init];
+    _photosData = [[NSMutableArray alloc] init];
     imagesCache = [[NSCache alloc] init];
     moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     _context = appDelegate.persistentContainer.viewContext;
-//    [_context setParentContext:moc];
    
 //    _nasaCollectionView.allowsMultipleSelection = YES;
     
@@ -61,10 +60,14 @@ static CGFloat inset = 10;
     [NasaFetcher pageNumbers:^(int numbers) {
         lastPage = numbers;
         _pageNumber = numbers;
-        NSLog(@"fuck it");
+        NSLog(@"got fucking page number!");
         [NasaFetcher fetchPhotos: lastPage
-                  withCompletion:^(NSMutableArray <ImageModel *> *photos) {
-                      self.photos = photos;
+                  withCompletion:^(BOOL success, NSMutableArray *photosData) {
+                      if (success) {
+                      self.photosData = photosData;
+                      } else {
+                          // create alert
+                      }
                   }];
     }];
     
@@ -79,11 +82,12 @@ static CGFloat inset = 10;
 
 // whenever our Model is set, must update our View
 
-- (void)setPhotos:(NSMutableArray *)photos {
+- (void)setPhotosData:(NSMutableArray *)photosData {
     isPageRefreshing = NO;
-    [_photos addObjectsFromArray:photos];
-    [self checkingLoadedPhotoWasLiked];
-    [self.nasaCollectionView reloadData];
+    [_photosData addObjectsFromArray:photosData];
+//    [self checkingLoadedPhotoWasLiked];
+//    [self.nasaCollectionView reloadData];
+    [Photo findOrCreatePhotosFrom:_photosData inContext: moc];
 }
 
 - (void)refreshControlSetup {
@@ -97,10 +101,14 @@ static CGFloat inset = 10;
     _pageNumber = lastPage;
     [self.nasaCollectionView.refreshControl beginRefreshing];
     [NasaFetcher fetchPhotos: lastPage
-              withCompletion:^(NSMutableArray <ImageModel *> *photos) {
+              withCompletion:^(BOOL success, NSMutableArray *photosData) {
                   [self.nasaCollectionView.refreshControl endRefreshing];
-                  [self.photos removeAllObjects];
-                  self.photos = photos;
+                  [self.photosData removeAllObjects];
+                  if (success) {
+                      self.photosData = photosData;
+                  } else {
+                      // create alert
+                  }
               }];
 }
 
