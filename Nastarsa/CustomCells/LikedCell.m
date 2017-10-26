@@ -13,9 +13,7 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     
-//        self.contentView.frame = self.bounds;
-//        self.contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        [self makingRoundCorners:4];
+    [self makingRoundCorners:4];
 }
 
 - (void)makingRoundCorners:(CGFloat)cornerRadius {

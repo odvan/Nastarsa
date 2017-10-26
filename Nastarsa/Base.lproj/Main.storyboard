@@ -198,13 +198,16 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xyM-rw-N1C">
-                                <rect key="frame" x="16" y="627" width="28" height="24"/>
+                                <rect key="frame" x="169.5" y="610" width="36" height="31"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="28" id="GrR-u4-vF4"/>
-                                    <constraint firstAttribute="height" constant="24" id="umA-nT-l2p"/>
+                                    <constraint firstAttribute="width" constant="36" id="GrR-u4-vF4"/>
+                                    <constraint firstAttribute="width" secondItem="xyM-rw-N1C" secondAttribute="height" multiplier="7:6" id="ggR-L3-XX1"/>
                                 </constraints>
                                 <state key="normal" title="Button" image="heart_empty"/>
                                 <state key="selected" image="heart_liked"/>
+                                <connections>
+                                    <action selector="tappeLikedButton:" destination="NLZ-F1-nKb" eventType="touchUpInside" id="S1O-gY-cgr"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -212,9 +215,9 @@
                             <constraint firstItem="0id-xY-eiQ" firstAttribute="top" secondItem="5zu-PW-iWX" secondAttribute="bottom" id="4Yr-Gm-oOe"/>
                             <constraint firstItem="X5P-mv-uVJ" firstAttribute="top" secondItem="GdY-qx-Wgp" secondAttribute="top" id="9l8-GY-KMg"/>
                             <constraint firstAttribute="trailing" secondItem="5zu-PW-iWX" secondAttribute="trailing" id="Gcy-A3-ltE"/>
-                            <constraint firstItem="0id-xY-eiQ" firstAttribute="top" secondItem="xyM-rw-N1C" secondAttribute="bottom" constant="16" id="NLK-nu-q3K"/>
-                            <constraint firstItem="xyM-rw-N1C" firstAttribute="leading" secondItem="GdY-qx-Wgp" secondAttribute="leading" constant="16" id="fHc-ox-O7s"/>
+                            <constraint firstItem="0id-xY-eiQ" firstAttribute="top" secondItem="xyM-rw-N1C" secondAttribute="bottom" constant="26" id="NLK-nu-q3K"/>
                             <constraint firstItem="5zu-PW-iWX" firstAttribute="leading" secondItem="GdY-qx-Wgp" secondAttribute="leading" id="jxS-3S-qqb"/>
+                            <constraint firstItem="xyM-rw-N1C" firstAttribute="centerX" secondItem="GdY-qx-Wgp" secondAttribute="centerX" id="lsY-BK-lCT"/>
                             <constraint firstItem="5zu-PW-iWX" firstAttribute="top" secondItem="GdY-qx-Wgp" secondAttribute="top" id="r85-1y-MO4"/>
                             <constraint firstItem="X5P-mv-uVJ" firstAttribute="leading" secondItem="GdY-qx-Wgp" secondAttribute="leading" id="sYx-mv-SpV"/>
                         </constraints>
@@ -327,6 +330,13 @@
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="heart_liked" translatesAutoresizingMaskIntoConstraints="NO" id="Lne-zm-IKp">
+                                                    <rect key="frame" x="8" y="354" width="20" height="17"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="20" id="AoL-9g-QsX"/>
+                                                        <constraint firstAttribute="width" secondItem="Lne-zm-IKp" secondAttribute="height" multiplier="7:6" id="s3r-iF-hS7"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                         </view>
                                         <constraints>
@@ -336,7 +346,9 @@
                                             <constraint firstItem="vkj-xv-r7f" firstAttribute="top" secondItem="nYh-81-aYq" secondAttribute="top" id="PEk-d7-IaN"/>
                                             <constraint firstAttribute="trailing" secondItem="vkj-xv-r7f" secondAttribute="trailing" id="f15-RD-SLL"/>
                                             <constraint firstAttribute="bottom" secondItem="uHo-WK-lvI" secondAttribute="bottom" id="gOF-rI-cuT"/>
+                                            <constraint firstItem="Lne-zm-IKp" firstAttribute="leading" secondItem="nYh-81-aYq" secondAttribute="leading" constant="8" id="jMd-gM-ftP"/>
                                             <constraint firstItem="uHo-WK-lvI" firstAttribute="top" secondItem="vkj-xv-r7f" secondAttribute="bottom" constant="4" id="nJZ-TT-FKV"/>
+                                            <constraint firstItem="uHo-WK-lvI" firstAttribute="top" secondItem="Lne-zm-IKp" secondAttribute="bottom" constant="8" id="o47-be-liV"/>
                                         </constraints>
                                         <connections>
                                             <outlet property="imageTitle" destination="uHo-WK-lvI" id="m5W-M8-8V6"/>
@@ -399,7 +411,7 @@
         <image name="sharing" width="55" height="46"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="TXC-VM-7wZ"/>
         <segue reference="cG4-F8-Hc0"/>
+        <segue reference="TXC-VM-7wZ"/>
     </inferredMetricsTieBreakers>
 </document>

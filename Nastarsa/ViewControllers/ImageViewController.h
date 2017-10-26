@@ -16,11 +16,12 @@
 @interface ImageViewController : UIViewController
 
 @property (nonatomic, strong) NSURL *imageURL;
-//@property (nonatomic, strong) NSString *ID;
-@property (nonatomic, strong) Photo *model;
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) UIImage *tempImage;
 @property (nonatomic, strong) UIImageView *imageView;
+
+@property (nonatomic, strong) Photo *model;
+@property (nonatomic, strong) NSManagedObjectContext *context;
 @property (weak, nonatomic) IBOutlet UIButton *likeButton;
 
 @end

@@ -26,7 +26,6 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UILabel *title;
-//@property (weak, nonatomic) IBOutlet UILabel *imageDescription;
 @property (weak, nonatomic) IBOutlet UITextView *imageDescription;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *buttonHeightConstraint;
@@ -40,7 +39,6 @@
 
 - (IBAction)readMoreTouched:(id)sender;
 - (void)configure:(Photo *)photoModel;
-//- (void)settingLargeImage:(ImageModel *)model;
 
 @end
 

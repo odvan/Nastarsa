@@ -18,6 +18,14 @@
     super.likeButton.selected = NO;
 }
 
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    
+    super.readMoreButton.hidden = YES;
+    super.buttonHeightConstraint.constant = 0;
+//    super.buttonHeightConstraint.active = YES;
+}
+
 - (void)configureWith:(Photo *)photo {
     super.title.text = photo.title;
     super.imageDescription.text = photo.someDescription;

@@ -16,7 +16,7 @@
 static NSString * const reuseIdentifier = @"likedImageCell";
 
 static CGFloat paddingBetweenCells = 20;
-static CGFloat paddingBetweenLines = 20;
+static CGFloat paddingBetweenLines = 15;
 static CGFloat inset = 20;
 UILabel *noPhoto;
 
@@ -36,28 +36,6 @@ UILabel *noPhoto;
 
     _likedImagesCollectionView.alwaysBounceVertical = YES;
 
-//    [self frc];
-    
-    //[self loadingLikedPhoto];
-    
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(reload)
-     name:NSManagedObjectContextDidSaveNotification
-     object:nil];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-//
-//    NSError *error = nil;
-//    [_frc performFetch:&error];
-}
-
-- (void) reload {
-    NSLog(@"▶︎ ▶︎ ▶︎ NSManagedObjectContextDidSaveNotification triggered");
-//    NSError *error = nil;
-//    [_frc performFetch:&error];
 }
 
 - (NSFetchedResultsController<Photo *> *)frc {
@@ -138,7 +116,6 @@ UILabel *noPhoto;
         [noPhoto removeFromSuperview];
     }
     return [sectionInfo numberOfObjects];
-    //return _likedPhotoArray.count > 0 ? _likedPhotoArray.count : 0;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -165,7 +142,7 @@ UILabel *noPhoto;
 //    NSLog(@"size for Item called");
     
     CGSize size = self.view.frame.size;
-    size = CGSizeMake((size.width - 3 * paddingBetweenLines)/2, (size.width - 3 * paddingBetweenLines)/2 + 29);
+    size = CGSizeMake((size.width - 3 * paddingBetweenCells)/2, (size.width - 3 * paddingBetweenCells)/2 + 29);
     return size;
 }
 
@@ -195,7 +172,7 @@ UILabel *noPhoto;
                 if ([segue.destinationViewController isKindOfClass:[NastarsaSingleImageVC class]]) {
                     NastarsaSingleImageVC *nSIVC = (NastarsaSingleImageVC *)segue.destinationViewController;
                     Photo *object = [self.frc objectAtIndexPath:indexPath];
-                    nSIVC.photoSetup = object;
+                    nSIVC.photoObjSetup = object;
                 }
             }
         }

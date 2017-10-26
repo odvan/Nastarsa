@@ -9,7 +9,7 @@
 #import "Spinner.h"
 
 @interface Spinner()
-@property (strong, nonatomic) UIActivityIndicatorView *indicator;
+
 @end
 
 @implementation Spinner

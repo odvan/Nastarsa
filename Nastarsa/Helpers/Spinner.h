@@ -11,6 +11,9 @@
 
 @interface Spinner : NSObject
 
+@property (strong, nonatomic) UIActivityIndicatorView *indicator;
+
 - (void)setupWith:(UIView *)imageView;
 - (void)stop;
+
 @end

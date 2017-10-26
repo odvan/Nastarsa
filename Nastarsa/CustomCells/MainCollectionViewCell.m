@@ -21,29 +21,9 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     
-//    _downloader = [[ImageDownloader alloc] init];
-    
-//    self.contentView.frame = self.bounds;
-//    self.contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    //    [self makingRoundCorners:4];
-   // _title.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.65f];
-  //  _imageDescription.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.65f];
-    
     [_imageDescription setTextContainerInset:UIEdgeInsetsZero];
     _imageDescription.textContainer.lineFragmentPadding = 0;
-
 }
-
-//- (void)makingRoundCorners:(CGFloat)cornerRadius {
-//    
-//    _title.layer.cornerRadius = cornerRadius;
-//    _title.clipsToBounds = YES;
-//    _image.layer.cornerRadius = cornerRadius;
-//    _image.clipsToBounds = YES;
-//    _imageDescription.layer.cornerRadius = cornerRadius;
-//    _imageDescription.clipsToBounds = YES;
-//
-//}
 
 - (ImageDownloader *)downloader {
     if (!_downloader) _downloader = [[ImageDownloader alloc] init];
@@ -58,8 +38,6 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     
-//    _title.hidden = NO;
-//    _imageDescription.hidden = NO;
     _readMoreButton.hidden = NO;
     _buttonHeightConstraint.constant = 15;
     _buttonHeightConstraint.active = YES;
@@ -82,21 +60,24 @@
 - (void)configure:(Photo *)photoModel {
     _title.text = photoModel.title;
     _imageDescription.text = photoModel.someDescription;
-    [self.indicator setupWith:_imageView];
-    [self.downloader downloadingImageWithURL:[NSURL URLWithString:photoModel.link] completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
-        if (image) {
-        _imageView.image = image;
-        [self.indicator stop];
-        }
-    }];
+    if (photoModel.image_preview != nil) {
+        _imageView.image = [UIImage imageWithData:photoModel.image_preview];
+    } else {
+        [self.indicator setupWith:_imageView];
+        [self.downloader downloadingImageWithURL:[NSURL URLWithString:photoModel.link] completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
+            if (image) {
+                _imageView.image = image;
+                [self.indicator stop];
+            }
+        }];
+    }
+    if (photoModel.isLiked) {
+        _likeButton.selected = YES;
+    }
     
     if (photoModel.isExpanded) {
         _readMoreButton.hidden = YES;
         _buttonHeightConstraint.constant = 0;
-    }
-    
-    if (photoModel.isLiked) {
-        _likeButton.selected = YES;
     }
 }
 

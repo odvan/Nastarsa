@@ -40,6 +40,7 @@ static CGFloat inset = 10;
 
 @implementation NastarsaCollectionVC
 
+#pragma mark - View Controller Lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -48,7 +49,8 @@ static CGFloat inset = 10;
     imagesCache = [[NSCache alloc] init];
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     _context = appDelegate.persistentContainer.viewContext;
-    moc = appDelegate.persistentContainer.newBackgroundContext;//[[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    moc = appDelegate.persistentContainer.newBackgroundContext;
+    [Photo printDatabaseStatistics:_context];
 
 //    _nasaCollectionView.allowsMultipleSelection = YES;
     
@@ -73,16 +75,15 @@ static CGFloat inset = 10;
     }];
     
     [self refreshControlSetup];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     
-//    [[NSNotificationCenter defaultCenter]
-//     addObserver:self
-//     selector:@selector(someReactionFrom:)
-//     name:NSManagedObjectContextObjectsDidChangeNotification
-//     object:nil];
+    [self.nasaCollectionView reloadData];
 }
 
 // whenever our Model is set, must update our View
-
 - (void)setPhotosData:(NSMutableArray *)photosData {
     isPageRefreshing = NO;
     [_photosData addObjectsFromArray:photosData];
@@ -150,20 +151,14 @@ static CGFloat inset = 10;
     
     // Configure Fetched Results Controller
     aFetchedResultsController.delegate = self;
-    // Perform Fetch
-//    NSError *error = nil;
-//    [aFetchedResultsController performFetch:&error];
-//    if (error) {
-//        NSLog(@"Unable to perform fetch.");
-//        NSLog(@"%@, %@", error, error.localizedDescription);
-//    }
     _frc = aFetchedResultsController;
+    
     [moc performBlock:^{
         [Photo deletePhotoObjects:moc];
     }];
+    
     return _frc;
 }
-
 
 
 #pragma mark - Navigation
@@ -183,7 +178,9 @@ static CGFloat inset = 10;
 //                    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
                     ImageViewController *iVC = (ImageViewController *)segue.destinationViewController;
                     Photo *photoObject = [self.frc objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-                    if (photoObject.isLiked) {
+                    iVC.context = moc;
+                    iVC.model = photoObject;
+                    if (photoObject.isLiked && photoObject.image_big) {
                         iVC.image = [UIImage imageWithData:photoObject.image_big];
                         iVC.likeButton.selected = YES;
                         NSLog(@"🔴 model liked %s", iVC.model.isLiked ? "true" : "false");
@@ -191,10 +188,7 @@ static CGFloat inset = 10;
                         UIImageView *imgView = (UIImageView *)gesture.view;
                         iVC.tempImage = imgView.image;
                         iVC.imageURL = [NasaFetcher URLforPhoto:photoObject.nasa_id format:NasaPhotoFormatLarge];
-                        iVC.model = photoObject;
                         iVC.likeButton.selected = photoObject.isLiked;
-//                        NSLog(@"🔵 🔵 🔵 %@", iVC.model);
-//                        NSLog(@"🔴 model liked %s", iVC.model.isLiked ? "true" : "false");
                     }
                 }
             }
@@ -210,8 +204,8 @@ static CGFloat inset = 10;
                 // yes ... is the destination an ImageViewController?
                 if ([segue.destinationViewController isKindOfClass:[NastarsaSingleImageVC class]]) {
                     NastarsaSingleImageVC *nSIVC = (NastarsaSingleImageVC *)segue.destinationViewController;
-                    nSIVC.photoSetup = [self.frc objectAtIndexPath:indexPath];
-                    nSIVC.photoSetup.image_preview = UIImageJPEGRepresentation(cell.imageView.image, 1.0);
+                    nSIVC.photoObjSetup = [self.frc objectAtIndexPath:indexPath];
+                    nSIVC.photoObjSetup.image_preview = UIImageJPEGRepresentation(cell.imageView.image, 1.0);
                 }
             }
         }
@@ -256,7 +250,7 @@ static CGFloat inset = 10;
 
     Photo *photo = [self.frc objectAtIndexPath:indexPath];
     if (photo) {
-        NSLog(@"called");
+        NSLog(@"cell setup called");
         [cell configure:photo];
     }
     NSLog(@"cell for Item called");
@@ -266,26 +260,8 @@ static CGFloat inset = 10;
     return cell;
 }
 
-#pragma mark - <UIScrollView>
 
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    
-//    if (self.nasaCollectionView.contentOffset.y >= (self.nasaCollectionView.contentSize.height - self.nasaCollectionView.bounds.size.height)) {
-//        
-//        
-//        if ((self.pageNumber > 1) && !isPageRefreshing) {
-//            isPageRefreshing = YES;
-//            self.pageNumber -= 1;
-//            NSLog(@"fetching from page: %d", self.pageNumber);
-//            [self.spinnerWhenNextPageDownload startAnimating];
-//            [NasaFetcher fetchPhotos: self.pageNumber
-//                      withCompletion:^(NSMutableArray <ImageModel *> *photos) {
-//                          self.photos = photos;
-//                          [self.spinnerWhenNextPageDownload stopAnimating];
-//                      }];
-//        }
-//    }
-//}
+#pragma mark - <UIScrollView>
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -309,6 +285,7 @@ static CGFloat inset = 10;
         }
     }
 }
+
 
 #pragma mark <UICollectionViewDelegateFlowLayout>
 
@@ -335,7 +312,7 @@ static CGFloat inset = 10;
                                                               attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Black" size:16.0f] }
                                                                  context:nil];
     
-    CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width + 45 - 5;//different inset: delete -5? 
+    CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width + 45 - 5;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) { // Device is iPad
         size = CGSizeMake((size.width - paddingBetweenCells)/3 - inset, (size.width - paddingBetweenLines)/3 - inset + 125 + 45);
@@ -352,7 +329,6 @@ static CGFloat inset = 10;
         }
     }
     return size;
-    
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
@@ -371,103 +347,7 @@ static CGFloat inset = 10;
     return paddingBetweenLines;
 }
 
-#pragma mark - <UICollectionViewDelegate>
-
-//- (void)collectionView:(UICollectionView *)colView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-//    UICollectionViewCell* cell = [colView cellForItemAtIndexPath:indexPath];
-//    //set color with animation
-//    [UIView animateWithDuration:0.1
-//                          delay:0
-//                        options:(UIViewAnimationOptionAllowUserInteraction)
-//                     animations:^{
-////                         cell.layer.borderWidth = 4;
-////                         cell.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor colorWithRed:232/255.0f green:232/255.0f blue:232/255.0f alpha:1]);
-//                         [cell setBackgroundColor:[UIColor colorWithRed:232/255.0f green:232/255.0f blue:232/255.0f alpha:1]];
-//                     }
-//                     completion:nil];
-//}
-//
-//- (void)collectionView:(UICollectionView *)colView  didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-//    UICollectionViewCell* cell = [colView cellForItemAtIndexPath:indexPath];
-//    //set color with animation
-//    [UIView animateWithDuration:0.1
-//                          delay:0
-//                        options:(UIViewAnimationOptionAllowUserInteraction)
-//                     animations:^{
-////                         cell.layer.borderWidth = 0;
-////                         cell.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor clearColor]);
-//                         [cell setBackgroundColor:[UIColor clearColor]];
-//                     }
-//                     completion:nil ];
-//}
-
-/*
-// Uncomment this method to specify if the specified item should be highlighted during tracking
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-	return YES;
-}
-*/
-
-
-// Uncomment this method to specify if the specified item should be selected
-//- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    
-//    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
-//
-//    if (cell.isSelected) {        
-//        return NO;
-//    } else {
-//        cell.title.hidden = YES;
-//        [cell.imageDescription setHidden: YES];
-//        NSLog(@"SELECTED");
-//        return YES;
-//    }
-//
-//    return cell.isSelected;
-//}
-//
-//-(BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    
-//    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
-//    
-//    if (cell.isSelected) {
-//        [cell.title setHidden: NO];
-//        [cell.imageDescription setHidden: NO];
-//        NSLog(@"DE-SELECTED");
-//
-//        return YES;
-//    } else {
-//        return NO;
-//    }
-//
-//}
-//
-//
-//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    
-//    NSLog(@"when SELECTED");
-//    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
-//
-//    if (cell.isSelected) {
-//        NSArray *indexes = [[NSArray alloc] init];
-//        [indexes arrayByAddingObject:indexPath];
-//        [self.nasaCollectionView reloadItemsAtIndexPaths:indexes];
-//    }
-//}
-//
-//- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    
-//    NSLog(@"when DE-SELECTED");
-//
-//    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
-//    
-//    if (!cell.isSelected) {
-//        NSArray *indexes = [[NSArray alloc] init];
-//        [indexes arrayByAddingObject:indexPath];
-//        [self.nasaCollectionView reloadItemsAtIndexPaths:indexes];
-//    }
-//
-//}
+//#pragma mark - <UICollectionViewDelegate>
 
 #pragma mark - <ExpandedAndButtonsTouchedCellDelegate>
 
@@ -494,68 +374,22 @@ static CGFloat inset = 10;
                          nil; }];
 }
 
-
 - (void)likedButtonTouched:(NSIndexPath *)indexPath {
     
     Photo *photo = [self.frc objectAtIndexPath:indexPath];
     photo.isLiked = !photo.isLiked;
-    
     __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
+    cell.likeButton.selected = !cell.likeButton.selected;
     
     if (photo.isLiked) {
-        cell.likeButton.selected = YES;
-        [moc performBlock:^{
-                photo.image_preview = UIImageJPEGRepresentation(cell.imageView.image, 1.0);
-                NSData *bigSizeImage = [[NSData alloc] initWithContentsOfURL:[NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatLarge]];
-                if (bigSizeImage) {
-                    photo.image_big = bigSizeImage;
-                } else {
-                    bigSizeImage = [[NSData alloc] initWithContentsOfURL:[NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatOriginal]];
-                    if (bigSizeImage) {
-                        photo.image_big = bigSizeImage;
-                    } else {
-                        photo.image_big = nil;
-                    }
-                }
-        }];
-
-//        [Photo saveNewLikedPhotoWith:imageModel preview:cell.imageView.image inContext:moc];
+        photo.image_preview = UIImageJPEGRepresentation(cell.imageView.image, 1.0);
+        
+        [Photo saveNewLikedPhotoFrom:photo inContext:moc];
     } else {
-        cell.likeButton.selected = NO;
-//        [Photo deleteLikedPhotoFrom:imageModel.nasa_id inContext:moc];
+        [Photo deleteLikedPhotoFrom:photo inContext:moc];
     }
 }
 
-//- (void)checkingLoadedPhotoWasLiked {
-//    if (_context) {
-//        NSLog(@"🔶🔷");
-//        
-//            NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
-//            NSError *error = nil;
-//            NSArray <Photo *> *likedPhotoArray = [_context executeFetchRequest:fetchRequest error:&error];
-//            NSUInteger count = [_context countForFetchRequest:fetchRequest error:&error];
-//            NSLog(@"%lu liked images", (unsigned long) count);
-//            
-//            if (count > 0) {
-//                for (Photo *photo in likedPhotoArray) {
-//                    for (ImageModel *loadedPhoto in _photos) {
-//                        if ([photo.title isEqual:loadedPhoto.title]) {
-//                            NSLog(@"🔷");
-//                            loadedPhoto.isLiked = YES;
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//    }
-//}
-
-- (void)someReactionFrom:(NSNotification *) notification {
-    NSDictionary *userInfo = notification.userInfo;
-    for(id key in userInfo)
-        NSLog(@"key=%@ value=%@", key, [userInfo objectForKey:key]);
-//    NSLog(@"✅✅✅ @%", userInfo);
-}
 
 /*
 // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item

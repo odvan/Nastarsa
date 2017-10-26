@@ -43,5 +43,4 @@ static ImagesCache *sharedInstance;
     return [self.imagesCache objectForKey:key];
 }
 
-
 @end

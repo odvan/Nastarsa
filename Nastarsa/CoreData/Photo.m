@@ -25,109 +25,93 @@
     photo.isLiked = NO;
     photo.link = [NasaFetcher URLStringForPhoto:photo.nasa_id format:NasaPhotoFormatThumb];
     
-    //    photo.image_preview = [NSData dataWithContentsOfURL:[NSURL URLWithString:photo.link]]; // UIImageJPEGRepresentation(image, 1.0);//
-    //
-    //    NSData *bigSizeImage = [[NSData alloc] initWithContentsOfURL:[NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatLarge]];
-    //    if (bigSizeImage) {
-    //        photo.image_big = bigSizeImage;
-    //    } else {
-    //        bigSizeImage = [[NSData alloc] initWithContentsOfURL:[NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatOriginal]];
-    //        if (bigSizeImage) {
-    //            photo.image_big = bigSizeImage;
-    //        } else {
-    //            photo.image_big = nil;
-    //        }
-    //    }
     NSLog(@"%@ photo entity", photo.title);
     return photo;
 }
 
 + (void)printDatabaseStatistics:(NSManagedObjectContext *)context {
     if (context) {
-        NSLog(@"⚽️⚽️ printDatabaseStatistics");
+        NSLog(@"✅ printDatabaseStatistics");
         [context performBlock:^{
             NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
             fetchRequest.predicate = nil;
+//            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isLiked == YES"]];
+
             NSError *error = nil;
             NSUInteger count = [context countForFetchRequest:fetchRequest error:&error];
             NSLog(@"%lu fetched/liked images", (unsigned long)count);
             NSLog(@"Running on %@ thread (statistics)", [NSThread currentThread]);
-//            NSLog(@"%lu registeredObjects count", [[context registeredObjects] count]);
         }];
     } else {
         NSLog(@"💩");
     }
 }
 
-+ (void)saveNewLikedPhotoFrom:(ImageModel *)imageModel preview:(UIImage *)image inContext:(NSManagedObjectContext *)context {
++ (void)saveNewLikedPhotoFrom:(Photo *)photoObj inContext:(NSManagedObjectContext *)context {
     
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    context.parentContext = appDelegate.persistentContainer.viewContext;
-    if (context) {//(appDelegate.persistentContainer.viewContext) {
-        NSLog(@"👍🏼 saving liked photo");
-//        [appDelegate.persistentContainer performBackgroundTask:^(NSManagedObjectContext *context) {
-        [context performBlock:^{
-NSLog(@"Running on %@ thread (saving)", [NSThread currentThread]);
-            
-//            [Photo photoWithInfo:imageModel preview:image inManagedObjectContext:context];
-            
-            NSError *error = nil;
-            if (![context save:&error]) {
-                // Replace this implementation with code to handle the error appropriately.
-                // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-                abort();
-            }
-            [appDelegate.persistentContainer.viewContext performBlock:^{
-                NSError *error;
-                if (![appDelegate.persistentContainer.viewContext save:&error]) {
-                    // handle error
+    [context performBlock:^{
+        NSLog(@"Running on %@ thread (Liked)", [NSThread currentThread]);
+        NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nasa_id == %@", photoObj.nasa_id]];
+        NSError *error = nil;
+        NSArray <Photo *> *photoExisted = [context executeFetchRequest:fetchRequest error:&error];
+        
+        if (photoExisted != nil) {
+            photoExisted[0].isLiked = YES;
+            photoExisted[0].image_preview = photoObj.image_preview;
+            if (photoObj.image_big != nil) {
+                photoExisted[0].image_big = photoObj.image_big;
+            } else {
+                NSData *bigSizeImage = [[NSData alloc] initWithContentsOfURL:[NasaFetcher URLforPhoto:photoObj.nasa_id format:NasaPhotoFormatLarge]];
+                if (bigSizeImage) {
+                    photoExisted[0].image_big = bigSizeImage;
+                } else {
+                    bigSizeImage = [[NSData alloc] initWithContentsOfURL:[NasaFetcher URLforPhoto:photoObj.nasa_id format:NasaPhotoFormatOriginal]];
+                    if (bigSizeImage) {
+                        photoExisted[0].image_big = bigSizeImage;
+                    } else {
+                        photoExisted[0].image_big = nil;
+                    }
                 }
-            }];
-            [Photo printDatabaseStatistics:context];
-        }];
-    }
+            }
+        }
+        
+        if (![context save:&error]) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+            abort();
+        }
+        [Photo printDatabaseStatistics:context];
+    }];
 }
 
-+ (void)deleteLikedPhotoFrom:(NSString *)image_id inContext:(NSManagedObjectContext *)context {
-    //    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    if (context) {//(appDelegate.persistentContainer.viewContext) {
-        //        NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
-        NSLog(@"🖕🖕🖕");
-        //        [appDelegate.persistentContainer performBackgroundTask:^(NSManagedObjectContext *context) {
++ (void)deleteLikedPhotoFrom:(Photo *)photoObj inContext:(NSManagedObjectContext *)context {
+    
+    [context performBlock:^{
+        NSLog(@"Running on %@ thread (disLiked)", [NSThread currentThread]);
         
-        AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        context.parentContext = appDelegate.persistentContainer.viewContext;
-        [context performBlock:^{
-            NSLog(@"Running on %@ thread (deleting)", [NSThread currentThread]);
-            NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
-            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nasa_id == %@", image_id]];
-            NSError *error = nil;
-            NSArray *someArray = [context executeFetchRequest:fetchRequest error:&error];
-            if (someArray.count > 0) {
-                [context deleteObject:[someArray firstObject]];
-                if (![context save:&error]) {
-                    // Replace this implementation with code to handle the error appropriately.
-                    // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                    NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-                    abort();
-                }
-                [appDelegate.persistentContainer.viewContext performBlock:^{
-                    NSError *error;
-                    if (![appDelegate.persistentContainer.viewContext save:&error]) {
-                        // handle error
-                    }
-                }];
-            }
-            [Photo printDatabaseStatistics:context];
-        }];
-    }
+        NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nasa_id == %@", photoObj.nasa_id]];
+        NSError *error = nil;
+        NSArray <Photo *> *photoExisted = [context executeFetchRequest:fetchRequest error:&error];
+        if (photoExisted != nil) {
+            photoExisted[0].isLiked = NO;
+        }
+        if (![context save:&error]) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+            abort();
+        }
+        [Photo printDatabaseStatistics:context];
+    }];
 }
 
 + (void)findOrCreatePhotosFrom:(NSMutableArray *)photosData inContext:(NSManagedObjectContext *)context {
     
     for (NSMutableDictionary *photoDictionary in photosData) {
-        if (photoDictionary) {
+//        if (photoDictionary) {
             NSArray *photo = [photoDictionary objectForKey: NASA_PHOTO_DATA];
             if (photo) {
                 NSDictionary *dictionary = photo.firstObject;
@@ -138,36 +122,38 @@ NSLog(@"Running on %@ thread (saving)", [NSThread currentThread]);
                 NSArray <Photo *> *photoExisted = [context executeFetchRequest:fetchRequest error:&error];
                 
                 if (photoExisted.count > 0 && photoExisted.count < 2) {
-                    break;
+                    NSLog(@"something existed");
+                    continue;
                 } else {
                     // some mistake
                 }
-                
                 [self photoWithInfoFrom:dictionary inManagedObjectContext:context];
             }
         }
-    }
+//    }
 }
 
 + (void)deletePhotoObjects:(NSManagedObjectContext *)context {
     
-        NSLog(@"Running on %@ thread (deleting all obj)", [NSThread currentThread]);
-        NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
-        fetchRequest.predicate = nil;
-        
-        NSError *error = nil;
-        NSArray *photoObjects = [context executeFetchRequest:fetchRequest error:&error];
-        if (photoObjects.count > 0) {
-            for (Photo *photo in photoObjects) {
-                [context deleteObject:photo];
-            }
+    NSLog(@"Running on %@ thread (deleting all obj)", [NSThread currentThread]);
+    NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
+//    fetchRequest.predicate = nil;
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isLiked == NO"]];
+    
+    NSError *error = nil;
+    NSArray *photoObjects = [context executeFetchRequest:fetchRequest error:&error];
+    if (photoObjects.count > 0) {
+        NSLog(@"deleting some obj");
+        for (Photo *photo in photoObjects) {
+            [context deleteObject:photo];
         }
-        if (![context save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-            abort();
-        }
+    }
+    if (![context save:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+        abort();
+    }
     [Photo printDatabaseStatistics:context];
 }
 

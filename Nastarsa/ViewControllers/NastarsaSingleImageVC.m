@@ -16,25 +16,34 @@ static NSString * const reuseIdentifier = @"imageCell";
 
 @interface NastarsaSingleImageVC () <ExpandedAndButtonsTouchedCellDelegate>
 
-//@property (nonatomic, strong) NSArray <Photo *> *likedPhotoArray;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 @end
 
 @implementation NastarsaSingleImageVC
 
+#pragma mark - View Controller Lifecycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    _context = appDelegate.persistentContainer.newBackgroundContext;
+    
     _singleImageCV.alwaysBounceVertical = YES;
     [self.singleImageCV registerNib:[UINib nibWithNibName:@"ExampleCell" bundle:nil] forCellWithReuseIdentifier:reuseIdentifier];
-    
 }
 
-- (void)setPhotoSetup:(Photo *)photoSetup {
-    if (_photoSetup != photoSetup) {
-        _photoSetup = photoSetup;
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self.singleImageCV reloadData];
+}
+
+- (void)setPhotoSetup:(Photo *)photoObjSetup {
+    if (_photoObjSetup != photoObjSetup) {
+        _photoObjSetup = photoObjSetup;
     }
-    NSLog(@"setting photoSetup obj: %@", _photoSetup);
+    NSLog(@"setting photoSetup obj: %@", _photoObjSetup);
     [self.singleImageCV reloadData];
 }
 
@@ -45,7 +54,7 @@ static NSString * const reuseIdentifier = @"imageCell";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return _photoSetup != nil ? 1 : 0;
+    return _photoObjSetup != nil ? 1 : 0;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -57,7 +66,7 @@ static NSString * const reuseIdentifier = @"imageCell";
     cell.delegate = self;
     cell.indexPath = indexPath;
     
-    [cell configureWith:_photoSetup];
+    [cell configureWith:_photoObjSetup];
     [self settingGesturesWith:cell.imageView];
 
     return cell;
@@ -75,12 +84,12 @@ static NSString * const reuseIdentifier = @"imageCell";
     CGSize sizeForLabel = CGSizeMake(approximateWidth, CGFLOAT_MAX);
     NSDictionary *attributes = @{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Book" size:12.0f] };
     
-    CGRect estimatedSizeOfLabel = [_photoSetup.someDescription boundingRectWithSize:sizeForLabel
+    CGRect estimatedSizeOfLabel = [_photoObjSetup.someDescription boundingRectWithSize:sizeForLabel
                                                                             options:NSStringDrawingUsesLineFragmentOrigin
                                                                          attributes:attributes
                                                                             context:nil];
     
-    CGRect estimatedSizeOfTitle = [_photoSetup.title boundingRectWithSize:sizeForLabel
+    CGRect estimatedSizeOfTitle = [_photoObjSetup.title boundingRectWithSize:sizeForLabel
                                                                   options:NSStringDrawingUsesLineFragmentOrigin
                                                                attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Black" size:16.0f] }
                                                                   context:nil];
@@ -94,41 +103,16 @@ static NSString * const reuseIdentifier = @"imageCell";
 
 - (void)likedButtonTouched:(NSIndexPath *)indexPath {
     
-//    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    _context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    
-    NSLog(@"tapped liked");
+    _photoObjSetup.isLiked = !_photoObjSetup.isLiked;
     __weak ExampleCell *cell = (ExampleCell*)[self.singleImageCV cellForItemAtIndexPath:indexPath];
     cell.likeButton.selected = !cell.likeButton.selected;
-
-    if (cell.likeButton.selected) {
-        NSLog(@"❇️❇️❇️");
-        [_context performBlock:^{
-            NSLog(@"Running on %@ thread (saving)", [NSThread currentThread]);
-            
-//            Photo *photo = [NSEntityDescription insertNewObjectForEntityForName:@"Photo"
-//                                                         inManagedObjectContext:_context];
-//            photo.title = _photoSetup.title;
-//            photo.link = _photoSetup.link;
-//            photo.nasa_id = _photoSetup.nasa_id;
-//            photo.someDescription = _photoSetup.someDescription;
-//            photo.image_preview = _photoSetup.image_preview;
-//            photo.image_big = _photoSetup.image_big;
-            _photoSetup.isLiked = YES;
-            NSLog(@"photoSetup obj: %@", _photoSetup);
-            NSError *error = nil;
-            if (![_context save:&error]) {
-                // Replace this implementation with code to handle the error appropriately.
-                // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-                abort();
-            }
-            [Photo printDatabaseStatistics:_context];
-        }];
+    
+    if (_photoObjSetup.isLiked) {
+        _photoObjSetup.image_preview = UIImageJPEGRepresentation(cell.imageView.image, 1.0);
+        
+        [Photo saveNewLikedPhotoFrom:_photoObjSetup inContext:_context];
     } else {
-        _photoSetup.isLiked = NO;
-//        [Photo deleteLikedPhotoFrom:_photoSetup.nasa_id inContext:_context];
-        NSLog(@"photoSetup obj after deleting: %@", _photoSetup);
+        [Photo deleteLikedPhotoFrom:_photoObjSetup inContext:_context];
     }
 }
 
@@ -153,6 +137,7 @@ static NSString * const reuseIdentifier = @"imageCell";
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
+        UITapGestureRecognizer *gesture = (UITapGestureRecognizer *)sender;
 //        NSIndexPath *indexPath = [self.singleImageCV indexPathForCell:sender];
 //        if (indexPath) {
 //            // found it ... are we doing the Display Photo segue?
@@ -162,17 +147,21 @@ static NSString * const reuseIdentifier = @"imageCell";
                     // yes ... then we know how to prepare for that segue!
 //                    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.singleImageCV cellForItemAtIndexPath:indexPath];
                     ImageViewController *iVC = (ImageViewController *)segue.destinationViewController;
-//                    iVC.tempImage = cell.imageView.image;
-//                    iVC.imageURL = [NasaFetcher URLforPhoto:_photos[indexPath.row].nasa_id format:NasaPhotoFormatLarge];
-//                    iVC.model = _photos[indexPath.row];
-                    iVC.image = [UIImage imageWithData:_photoSetup.image_big];
-                    iVC.likeButton.selected = YES;
-                    NSLog(@"🔴 model liked %s", iVC.model.isLiked ? "true" : "false");
+                    iVC.context = _context;
+                    iVC.model = _photoObjSetup;
+                    if (_photoObjSetup.isLiked && _photoObjSetup.image_big) {
+                        iVC.image = [UIImage imageWithData:_photoObjSetup.image_big];
+                        iVC.likeButton.selected = YES;
+                        NSLog(@"🔴 model liked %s", iVC.model.isLiked ? "true" : "false");
+                    } else {
+                        UIImageView *imgView = (UIImageView *)gesture.view;
+                        iVC.tempImage = imgView.image;
+                        iVC.imageURL = [NasaFetcher URLforPhoto:_photoObjSetup.nasa_id format:NasaPhotoFormatLarge];
+                        iVC.likeButton.selected = _photoObjSetup.isLiked;
                 }
             }
         }
-//    }
+    }
 }
-
 
 @end

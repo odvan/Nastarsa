@@ -10,11 +10,12 @@
 #import "ImageDownloader.h"
 #import "NasaFetcher.h"
 #import "Spinner.h"
+#import "AppDelegate.h"
 
 @interface ImageViewController () <UIScrollViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (strong, nonatomic) Spinner *indicator;
+@property (strong, nonatomic) Spinner *spinner;
 @property (strong, nonatomic) ImageDownloader *downloader;
 @property (weak, nonatomic) IBOutlet UIButton *dismissButton;
 @end
@@ -38,12 +39,39 @@
         NSLog(@"🔴🔵🔴");
         [self updateMinZoomScaleForSize:self.view.bounds.size];
     }
-//    [self centerScrollViewContents]; // ???
+    
+    if ([self.view.subviews containsObject:self.spinner.indicator]) {
+        self.spinner.indicator.center = _imageView.center;
+    }
 }
 
 - (BOOL)prefersStatusBarHidden {
     return YES;
 }
+
+- (IBAction)tappeLikedButton:(id)sender {
+    
+    _likeButton.selected = !_likeButton.selected;
+    _model.isLiked = !_model.isLiked;
+    
+    if (_model.isLiked) {
+        if (_tempImage) {
+            _model.image_preview = UIImageJPEGRepresentation(_tempImage, 1.0);
+        }
+        if (self.image) {
+            _model.image_big = UIImageJPEGRepresentation(self.image, 1.0);
+        }
+        [Photo saveNewLikedPhotoFrom:_model inContext:_context];
+    } else {
+        [Photo deleteLikedPhotoFrom:_model inContext:_context];
+    }
+}
+
+- (IBAction)dismissVC:(id)sender {
+    [self dismissViewControllerAnimated:NO
+                             completion:nil];
+}
+
 
 #pragma mark - Properties lazy instantiation
 
@@ -52,9 +80,9 @@
     return _downloader;
 }
 
-- (Spinner *)indicator {
-    if (!_indicator) _indicator = [[Spinner alloc] init];
-    return _indicator;
+- (Spinner *)spinner {
+    if (!_spinner) _spinner = [[Spinner alloc] init];
+    return _spinner;
 }
 
 - (UIImageView *)imageView {
@@ -94,10 +122,6 @@
 
 - (void)setScrollView:(UIScrollView *)scrollView {
     _scrollView = scrollView;
-    
-    // next three lines are necessary for zooming
-//    _scrollView.minimumZoomScale = 0.2;
-//    _scrollView.maximumZoomScale = 2.0;
     _scrollView.delegate = self;
 
     // next line is necessary in case self.image gets set before self.scrollView does
@@ -109,14 +133,11 @@
 
 - (void)setImageURL:(NSURL *)imageURL {
     
-//    self.likeButton.selected = self.model.isLiked;
-//    NSLog(@"button liked selected %s", self.likeButton.selected ? "true" : "false");
-    
     _imageURL = imageURL;
-    [self.indicator setupWith:self.view];
+    [self.spinner setupWith:self.view];
     [self.downloader downloadingImageWithURL:imageURL completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
         if (image && httpResponse.statusCode != 404) {
-            [self.indicator stop];
+            [self.spinner stop];
             self.image = image;
         } else {
             NSLog(@"✅ %@", self.model.nasa_id);
@@ -124,10 +145,10 @@
             NSLog(@"⭕️ %@", _imageURL);
             [self.downloader downloadingImageWithURL:_imageURL completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
                 if (image && httpResponse.statusCode != 404) {
-                    [self.indicator stop];
+                    [self.spinner stop];
                     self.image = image;
                 } else {
-                    [self.indicator stop];
+                    [self.spinner stop];
                     self.imageView.image = nil;
                 }
             }];
@@ -228,19 +249,11 @@
 
 - (void)scrollViewSingleTapped:(id)sender {
     if (self.dismissButton.hidden && self.scrollView.zoomScale != self.scrollView.minimumZoomScale) {
-//        self.dismissButton.hidden = NO;
         [self scrollViewDoubleTapped:sender];
     } else {
         self.dismissButton.hidden = !self.dismissButton.hidden;
         self.likeButton.hidden = !self.likeButton.hidden;
     }
-}
-
-#pragma mark - Closing ImageViewController
-
-- (IBAction)dismissVC:(id)sender {
-    [self dismissViewControllerAnimated:NO
-                             completion:nil];
 }
 
 @end

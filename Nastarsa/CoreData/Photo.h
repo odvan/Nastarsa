@@ -15,8 +15,8 @@
 + (Photo *)photoWithInfoFrom:(NSDictionary *)dictionary inManagedObjectContext:(NSManagedObjectContext *)context;
 
 + (void)printDatabaseStatistics:(NSManagedObjectContext *)context;
-+ (void)saveNewLikedPhotoFrom:(ImageModel *)imageModel preview:(UIImage *)image inContext:(NSManagedObjectContext *)context;
-+ (void)deleteLikedPhotoFrom:(NSString *)image_id inContext:(NSManagedObjectContext *)context;
++ (void)saveNewLikedPhotoFrom:(Photo *)photoObj inContext:(NSManagedObjectContext *)context;
++ (void)deleteLikedPhotoFrom:(Photo *)photoObj inContext:(NSManagedObjectContext *)context;
 
 + (void)findOrCreatePhotosFrom:(NSMutableArray *)photosData inContext:(NSManagedObjectContext *)context;
 + (void)deletePhotoObjects:(NSManagedObjectContext *)context;

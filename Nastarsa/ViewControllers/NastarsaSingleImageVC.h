@@ -15,6 +15,6 @@
 
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *layout;
 @property (weak, nonatomic) IBOutlet UICollectionView *singleImageCV;
-@property (nonatomic, strong) Photo *photoSetup;
+@property (nonatomic, strong) Photo *photoObjSetup;
 
 @end
