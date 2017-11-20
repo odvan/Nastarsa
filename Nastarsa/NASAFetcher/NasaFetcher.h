@@ -12,8 +12,8 @@
 #define NASA_PHOTOS_NUMBER @"collection.metadata.total_hits"
 #define NASA_PHOTOS_ARRAY @"collection.items"
 #define NASA_PHOTO_DATA @"data"
-#define BASE_URL @"https://images-api.nasa.gov/search?year_start=2017&year_end=2017&media_type=image"
-#define DEMO_URL @"https://images-api.nasa.gov/search?q=apollo&media_type=image"
+#define DEMO_URL @"https://images-api.nasa.gov/search?year_start=2017&year_end=2017&media_type=image"
+#define BASE_URL @"https://images-api.nasa.gov/search?year_start=1920&year_end=2017&media_type=image&title="
 
 
 typedef NS_ENUM(NSInteger, NasaPhotoFormat) {
@@ -29,7 +29,11 @@ typedef NS_ENUM(NSInteger, NasaPhotoFormat) {
 
 + (NSString *)URLStringForPhoto:(NSString *)link format:(NasaPhotoFormat)format;
 + (NSURL *)URLforPhoto:(NSString *)link format:(NasaPhotoFormat)format;
-+ (void)pageNumbers:(void (^)(int numbers))completion;
-+ (void)fetchPhotos:(int)pageNumber withCompletion:(void (^)(BOOL success, NSMutableArray *photosData))completion;
+
++ (NSString *)URLforSearch:(NSString *)text withPage:(int)number;
++ (NSString *)URLforSearch:(NSString *)text;
+
++ (void)pageNumbersFrom:(NSString *)searchText withCompletion:(void (^)(BOOL success, int numbers))completion;
++ (void)fetchPhotos:(NSString *)searchText pageNumber:(int)page withCompletion:(void (^)(BOOL success, NSMutableArray *photosData))completion;
 
 @end

@@ -15,9 +15,11 @@
 #import "Photo+CoreDataProperties.h"
 #import "AppDelegate.h"
 #import "NastarsaSingleImageVC.h"
+#import "SearchHeader.h"
 
 static NSCache * imagesCache;
 static NSString * const reuseIdentifier = @"imageCell";
+static NSString * const searchHeaderIdentifier = @"searchHeader";
 int lastPage = 0;
 BOOL isPageRefreshing = NO;
 CGSize size; //?
@@ -30,11 +32,13 @@ static CGFloat paddingBetweenCells = 10;
 static CGFloat paddingBetweenLines = 10;
 static CGFloat inset = 10;
 
-@interface NastarsaCollectionVC () <ExpandedAndButtonsTouchedCellDelegate, NSFetchedResultsControllerDelegate>
+@interface NastarsaCollectionVC () <ExpandedAndButtonsTouchedCellDelegate, NSFetchedResultsControllerDelegate, UISearchBarDelegate>
 
 @property (nonatomic, assign) int pageNumber;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 @property (nonatomic, strong) NSFetchedResultsController<Photo *> *frc;
+@property (nonatomic, strong) NSString *searchText;
+@property (nonatomic, assign) BOOL searchBarHasText;
 
 @end
 
@@ -49,29 +53,37 @@ static CGFloat inset = 10;
     imagesCache = [[NSCache alloc] init];
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     _context = appDelegate.persistentContainer.viewContext;
+    _context.automaticallyMergesChangesFromParent = YES;
+    
     moc = appDelegate.persistentContainer.newBackgroundContext;
-    [Photo printDatabaseStatistics:_context];
+
+//    self.navigationController.hidesBarsOnSwipe = YES;
+
+//    [Photo printDatabaseStatistics:_context];
 
 //    _nasaCollectionView.allowsMultipleSelection = YES;
     
     // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = NO;
+//     self.clearsSelectionOnViewWillAppear = NO;
     
     // Register cell classes
     //    [self.collectionView registerClass:[MainCollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     
-    [NasaFetcher pageNumbers:^(int numbers) {
-        lastPage = numbers;
-        _pageNumber = numbers;
-        NSLog(@"got fucking page number!");
-        [NasaFetcher fetchPhotos: lastPage
-                  withCompletion:^(BOOL success, NSMutableArray *photosData) {
-                      if (success) {
-                          self.photosData = photosData;
-                      } else {
-                          // create alert
-                      }
-                  }];
+    [NasaFetcher pageNumbersFrom:_searchText withCompletion:^(BOOL success, int numbers) {
+        if (success) {
+            lastPage = numbers;
+            _pageNumber = numbers;
+            NSLog(@"got fucking page number!");
+            [NasaFetcher fetchPhotos:_searchText pageNumber:lastPage withCompletion:^(BOOL success, NSMutableArray *photosData) {
+                if (success) {
+                    self.photosData = photosData;
+                } else {
+                    [self showAlertWith:@"Error" message:@"Can't parse JSON."];
+                }
+            }];
+        } else {
+            [self showAlertWith:@"Error" message:@"Can't download initial data."];
+        }
     }];
     
     [self refreshControlSetup];
@@ -79,17 +91,23 @@ static CGFloat inset = 10;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     [self.nasaCollectionView reloadData];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+//    [self.navigationController setNavigationBarHidden:NO animated:NO];
 }
 
 // whenever our Model is set, must update our View
 - (void)setPhotosData:(NSMutableArray *)photosData {
     isPageRefreshing = NO;
     [_photosData addObjectsFromArray:photosData];
-
+    
     [moc performBlock:^{
-        [Photo findOrCreatePhotosFrom:_photosData inContext: moc];
+        [Photo findOrCreatePhotosFrom:_photosData inContext:moc withPage:_pageNumber];
         NSError *error = nil;
         if (![moc save:&error]) {
             // Replace this implementation with code to handle the error appropriately.
@@ -98,6 +116,22 @@ static CGFloat inset = 10;
             abort();
         }
         [Photo printDatabaseStatistics:_context];
+        
+        NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
+        // Add Sort Descriptors
+        if (_searchText == nil) {
+            [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"tempID" ascending:NO]]];
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isFetchable == YES"]];
+        } else {
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isFetchable == YES"]]; //  AND title contains[c] %@", _searchText
+            [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"tempID" ascending:YES]]];
+        }
+        // Initialize Fetched Results Controller
+        NSFetchedResultsController<Photo *> *newFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                                                               managedObjectContext:_context
+                                                                                                                 sectionNameKeyPath:nil
+                                                                                                                          cacheName:nil];
+        _frc = newFetchedResultsController;
         
         //    NSError *error = nil;
         [_frc performFetch:&error];
@@ -119,30 +153,50 @@ static CGFloat inset = 10;
 }
 
 - (IBAction)refreshControlAction {
-    _pageNumber = lastPage;
     [self.nasaCollectionView.refreshControl beginRefreshing];
-    [NasaFetcher fetchPhotos: lastPage
-              withCompletion:^(BOOL success, NSMutableArray *photosData) {
-                  [self.nasaCollectionView.refreshControl endRefreshing];
-                  [self.photosData removeAllObjects];
-                  if (success) {
-                      self.photosData = photosData;
-                  } else {
-                      // create alert
-                  }
-              }];
+    if (_searchBarHasText) {
+        _pageNumber = 1;
+    } else {
+        if (lastPage == 0) {
+            [NasaFetcher pageNumbersFrom:_searchText withCompletion:^(BOOL success, int numbers) {
+                if (success) {
+                    lastPage = numbers;
+                    _pageNumber = numbers;
+                    NSLog(@"got fucking page number!");
+                } else {
+                    [self showAlertWith:@"Error" message:@"Can't download initial data."];
+                }
+            }];
+        } else {
+            _pageNumber = lastPage;
+        }
+    }
+    [NasaFetcher fetchPhotos:_searchText pageNumber:_pageNumber withCompletion:^(BOOL success, NSMutableArray *photosData) {
+        [self.nasaCollectionView.refreshControl endRefreshing];
+        [self.photosData removeAllObjects];
+        if (success) {
+            self.photosData = photosData;
+        } else {
+            [self showAlertWith:@"Error" message:@"Can't download initial data."];
+//            [self.nasaCollectionView.refreshControl removeFromSuperview];
+         //   [self.nasaCollectionView setContentOffset:CGPointZero animated:NO];
+
+        }
+    }];
 }
 
 - (NSFetchedResultsController<Photo *> *)frc {
     NSLog(@"NSFetchedResultsController triggered");
     
     if (_frc != nil) {
+        NSLog(@"❇️");
         return _frc;
     }
 
     NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
     // Add Sort Descriptors
-    [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"uniqueID" ascending:YES]]];
+    [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"tempID" ascending:NO]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isFetchable == YES"]]; // ???
     // Initialize Fetched Results Controller
     NSFetchedResultsController<Photo *> *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                                                          managedObjectContext:_context
@@ -153,13 +207,41 @@ static CGFloat inset = 10;
     aFetchedResultsController.delegate = self;
     _frc = aFetchedResultsController;
     
-    [moc performBlock:^{
-        [Photo deletePhotoObjects:moc];
-    }];
-    
+    [Photo deletePhotoObjects:moc];
+    NSLog(@"🔷");
     return _frc;
 }
 
+- (void)setSearchText:(NSString *)text {
+    NSLog(@"✅ setting search text: %@", text);
+    if (_searchText != text) {
+        _searchText = text;
+//        [self.nasaCollectionView reloadData];
+        [self.spinnerWhenNextPageDownload startAnimating];
+        [NasaFetcher pageNumbersFrom:_searchText withCompletion:^(BOOL success, int numbers) {
+            if (success) {
+                lastPage = numbers;
+                if (_searchText == nil) {
+                    _pageNumber = lastPage;
+                } else {
+                    _pageNumber = 1;
+                }
+                NSLog(@"got fucking page number!");
+                [NasaFetcher fetchPhotos:_searchText pageNumber:_pageNumber withCompletion:^(BOOL success, NSMutableArray *photosData) {
+                    [self.spinnerWhenNextPageDownload stopAnimating];
+                    if (success) {
+                        self.photosData = photosData;
+                    } else {
+                        [self showAlertWith:@"Error" message:@"Can't parse JSON."];
+                    }
+                }];
+            } else {
+                [self.spinnerWhenNextPageDownload stopAnimating];
+                [self showAlertWith:@"Error" message:@"Can't download initial data."];
+            }
+        }];
+    }
+}
 
 #pragma mark - Navigation
 
@@ -206,6 +288,9 @@ static CGFloat inset = 10;
                     NastarsaSingleImageVC *nSIVC = (NastarsaSingleImageVC *)segue.destinationViewController;
                     nSIVC.photoObjSetup = [self.frc objectAtIndexPath:indexPath];
                     nSIVC.photoObjSetup.image_preview = UIImageJPEGRepresentation(cell.imageView.image, 1.0);
+                    if (self.navigationController.isNavigationBarHidden) {
+                        [self.navigationController setNavigationBarHidden:NO animated:NO];
+                    }
                 }
             }
         }
@@ -260,28 +345,57 @@ static CGFloat inset = 10;
     return cell;
 }
 
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    if (kind == UICollectionElementKindSectionHeader) {
+        SearchHeader *searchHeader = [self.nasaCollectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:searchHeaderIdentifier forIndexPath:indexPath];
+        
+        return searchHeader;
+    }
+    return [UICollectionReusableView new];
+
+}
 
 #pragma mark - <UIScrollView>
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     
+    if (indexPath.row > 1) {
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+    } else {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+    }
+
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][0];
-    if (indexPath.row == ([sectionInfo numberOfObjects] - 1)){
-        if ((self.pageNumber > 1) && !isPageRefreshing) {
-            isPageRefreshing = YES;
-            self.pageNumber -= 1;
+    if (indexPath.row == ([sectionInfo numberOfObjects] - 1)) {
+        if (_searchBarHasText) {
+            if ((self.pageNumber < lastPage) && !isPageRefreshing) {
+                isPageRefreshing = YES;
+                self.pageNumber += 1;
+            } else {
+                return;
+            }
+        } else {
+            if ((self.pageNumber > 1) && !isPageRefreshing) {
+                isPageRefreshing = YES;
+                self.pageNumber -= 1;
+            } else {
+                return;
+            }
+        }
+        
+        if (self.pageNumber <= lastPage) {
             NSLog(@"fetching from page: %d", self.pageNumber);
             [self.spinnerWhenNextPageDownload startAnimating];
-            [NasaFetcher fetchPhotos: self.pageNumber
-                      withCompletion:^(BOOL success, NSMutableArray *photosData) {
-                          if (success) {
-                              [self.photosData removeAllObjects];
-                              self.photosData = photosData;
-                          } else {
-                              // create alert
-                          }
-                          [self.spinnerWhenNextPageDownload stopAnimating];
-                      }];
+            
+            [NasaFetcher fetchPhotos:_searchText pageNumber:self.pageNumber withCompletion:^(BOOL success, NSMutableArray *photosData) {
+                if (success) {
+                    [self.photosData removeAllObjects];
+                    self.photosData = photosData;
+                } else {
+                    [self showAlertWith:@"Error" message:@"Can't download initial data."];
+                }
+                [self.spinnerWhenNextPageDownload stopAnimating];
+            }];
         }
     }
 }
@@ -390,6 +504,67 @@ static CGFloat inset = 10;
     }
 }
 
+#pragma mark - <SearchBar Methods>
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    
+    [Photo deletePhotoObjects:_context];
+    [self.photosData removeAllObjects];
+    [searchBar resignFirstResponder];
+      //    [Photo printDatabaseStatistics:_context];
+    
+    if (searchBar.text && [searchBar.text length]) {
+        _searchBarHasText = YES;
+        NSLog(@"✅✅✅ searching... %@", searchBar.text);
+        self.searchText = [SearchHeader multipleWordsSearchCheckAndProperUsage:(searchBar.text)];
+    }
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    searchBar.showsCancelButton = YES;
+}
+
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = NO;
+    [searchBar resignFirstResponder];
+    if (_searchBarHasText) {
+        NSLog(@"🔵🔴⚫️ and _searchBarHasText: %s", _searchBarHasText ? "true" : "false");
+
+        [Photo deletePhotoObjects:_context];
+        [self.photosData removeAllObjects];
+        searchBar.text = nil;
+        self.searchText = nil;
+    }
+    _searchBarHasText = NO;
+}
+
+// MARK: - Displaying alert message when error occured
+
+- (void)showAlertWith:(NSString *)title message:(NSString *)message {
+    
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:title
+                                message:message
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    //Add Button
+    
+    UIAlertAction* yesButton = [UIAlertAction
+                                actionWithTitle:@"OK"
+                                style:UIAlertActionStyleDefault
+                                handler:^(UIAlertAction * action) {
+                                    //Handle your yes please button action here
+                                    [self dismissViewControllerAnimated:YES
+                                                             completion:nil];
+                                }];
+    
+    //Add your buttons to alert controller
+    
+    [alert addAction:yesButton];
+    [self presentViewController:alert animated:YES completion:nil];
+}
 
 /*
 // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item

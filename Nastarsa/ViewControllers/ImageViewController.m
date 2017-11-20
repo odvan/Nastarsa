@@ -41,7 +41,7 @@
     }
     
     if ([self.view.subviews containsObject:self.spinner.indicator]) {
-        self.spinner.indicator.center = _imageView.center;
+        self.spinner.indicator.center = self.view.center; //_imageView.center;
     }
 }
 
@@ -55,13 +55,16 @@
     _model.isLiked = !_model.isLiked;
     
     if (_model.isLiked) {
-        if (_tempImage) {
-            _model.image_preview = UIImageJPEGRepresentation(_tempImage, 1.0);
-        }
-        if (self.image) {
-            _model.image_big = UIImageJPEGRepresentation(self.image, 1.0);
-        }
-        [Photo saveNewLikedPhotoFrom:_model inContext:_context];
+        dispatch_queue_t saveImagesQ = dispatch_queue_create("saving liked images", NULL);
+        dispatch_async(saveImagesQ, ^{
+            if (_tempImage) {
+                _model.image_preview = UIImageJPEGRepresentation(_tempImage, 1.0);
+            }
+            if (self.image) {
+                _model.image_big = UIImageJPEGRepresentation(self.image, 1.0);
+            }
+            [Photo saveNewLikedPhotoFrom:_model inContext:_context];
+        });
     } else {
         [Photo deleteLikedPhotoFrom:_model inContext:_context];
     }
@@ -149,7 +152,7 @@
                     self.image = image;
                 } else {
                     [self.spinner stop];
-                    self.imageView.image = nil;
+                    self.imageView.image = self.tempImage;
                 }
             }];
         }

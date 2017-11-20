@@ -24,10 +24,10 @@
 		C3480C9E1F37BB5800AEE088 /* ImageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C3480C9D1F37BB5800AEE088 /* ImageModel.m */; };
 		C36293731F72D182008DF3F8 /* ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C36293721F72D182008DF3F8 /* ImageViewController.m */; };
 		C36CE9BC1F8C2A1F00438CCC /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = C36CE9BB1F8C2A1F00438CCC /* Photo.m */; };
-		C3A09C9E1F9D323A0089575E /* CoreDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A09C9D1F9D323A0089575E /* CoreDataStack.m */; };
 		C3E2C0B01F44874D00A474F2 /* ImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = C3E2C0AF1F44874D00A474F2 /* ImageDownloader.m */; };
 		C3F132DE1F41DDA100AA392D /* MainCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F132DD1F41DDA100AA392D /* MainCollectionViewCell.m */; };
 		C3F132E51F41E21200AA392D /* NastarsaCollectionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F132E41F41E21200AA392D /* NastarsaCollectionVC.m */; };
+		C3FDF41F1FA38C3B00347A98 /* SearchHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FDF41E1FA38C3B00347A98 /* SearchHeader.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,14 +61,14 @@
 		C36293721F72D182008DF3F8 /* ImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageViewController.m; path = ViewControllers/ImageViewController.m; sourceTree = "<group>"; };
 		C36CE9BA1F8C2A1F00438CCC /* Photo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Photo.h; path = Nastarsa/CoreData/Photo.h; sourceTree = "<group>"; };
 		C36CE9BB1F8C2A1F00438CCC /* Photo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Photo.m; path = Nastarsa/CoreData/Photo.m; sourceTree = "<group>"; };
-		C3A09C9C1F9D323A0089575E /* CoreDataStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreDataStack.h; path = Nastarsa/CoreData/CoreDataStack.h; sourceTree = "<group>"; };
-		C3A09C9D1F9D323A0089575E /* CoreDataStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoreDataStack.m; path = Nastarsa/CoreData/CoreDataStack.m; sourceTree = "<group>"; };
 		C3E2C0AE1F44874D00A474F2 /* ImageDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDownloader.h; sourceTree = "<group>"; };
 		C3E2C0AF1F44874D00A474F2 /* ImageDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloader.m; sourceTree = "<group>"; };
 		C3F132DC1F41DDA100AA392D /* MainCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainCollectionViewCell.h; path = CustomCells/MainCollectionViewCell.h; sourceTree = "<group>"; };
 		C3F132DD1F41DDA100AA392D /* MainCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainCollectionViewCell.m; path = CustomCells/MainCollectionViewCell.m; sourceTree = "<group>"; };
 		C3F132E31F41E21200AA392D /* NastarsaCollectionVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NastarsaCollectionVC.h; path = ViewControllers/NastarsaCollectionVC.h; sourceTree = "<group>"; };
 		C3F132E41F41E21200AA392D /* NastarsaCollectionVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NastarsaCollectionVC.m; path = ViewControllers/NastarsaCollectionVC.m; sourceTree = "<group>"; };
+		C3FDF41D1FA38C3B00347A98 /* SearchHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchHeader.h; path = Helpers/SearchHeader.h; sourceTree = "<group>"; };
+		C3FDF41E1FA38C3B00347A98 /* SearchHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchHeader.m; path = Helpers/SearchHeader.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +85,8 @@
 		C334C5691F535BBA00CD599E /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				C3FDF41D1FA38C3B00347A98 /* SearchHeader.h */,
+				C3FDF41E1FA38C3B00347A98 /* SearchHeader.m */,
 				C3E2C0AE1F44874D00A474F2 /* ImageDownloader.h */,
 				C3E2C0AF1F44874D00A474F2 /* ImageDownloader.m */,
 				C334C56A1F535BFA00CD599E /* ImagesCache.h */,
@@ -162,8 +164,6 @@
 			children = (
 				C36CE9BA1F8C2A1F00438CCC /* Photo.h */,
 				C36CE9BB1F8C2A1F00438CCC /* Photo.m */,
-				C3A09C9C1F9D323A0089575E /* CoreDataStack.h */,
-				C3A09C9D1F9D323A0089575E /* CoreDataStack.m */,
 			);
 			name = CoreData;
 			path = ..;
@@ -290,10 +290,10 @@
 				C3480C831F37B5E100AEE088 /* main.m in Sources */,
 				C32709AF1F88187D00FB8F24 /* LikedImagesVC.m in Sources */,
 				C335B23C1F439A200030A22E /* NasaFetcher.m in Sources */,
+				C3FDF41F1FA38C3B00347A98 /* SearchHeader.m in Sources */,
 				C32709B21F881AC400FB8F24 /* LikedCell.m in Sources */,
 				C3E2C0B01F44874D00A474F2 /* ImageDownloader.m in Sources */,
 				C3F132DE1F41DDA100AA392D /* MainCollectionViewCell.m in Sources */,
-				C3A09C9E1F9D323A0089575E /* CoreDataStack.m in Sources */,
 				C30597711F9508D1000745FA /* NastarsaSingleImageVC.m in Sources */,
 				C334C56C1F535BFA00CD599E /* ImagesCache.m in Sources */,
 				C334A3241F79BFEF00523919 /* Spinner.m in Sources */,

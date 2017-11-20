@@ -12,13 +12,13 @@
 
 @interface Photo : NSManagedObject
 
-+ (Photo *)photoWithInfoFrom:(NSDictionary *)dictionary inManagedObjectContext:(NSManagedObjectContext *)context;
++ (Photo *)photoWithInfoFrom:(NSDictionary *)dictionary inManagedObjectContext:(NSManagedObjectContext *)context tempID:(int)temID;
 
 + (void)printDatabaseStatistics:(NSManagedObjectContext *)context;
 + (void)saveNewLikedPhotoFrom:(Photo *)photoObj inContext:(NSManagedObjectContext *)context;
 + (void)deleteLikedPhotoFrom:(Photo *)photoObj inContext:(NSManagedObjectContext *)context;
 
-+ (void)findOrCreatePhotosFrom:(NSMutableArray *)photosData inContext:(NSManagedObjectContext *)context;
++ (void)findOrCreatePhotosFrom:(NSMutableArray *)photosData inContext:(NSManagedObjectContext *)context withPage:(int)pageNumber;
 + (void)deletePhotoObjects:(NSManagedObjectContext *)context;
 
 

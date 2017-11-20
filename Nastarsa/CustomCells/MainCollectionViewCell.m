@@ -23,7 +23,19 @@
     
     [_imageDescription setTextContainerInset:UIEdgeInsetsZero];
     _imageDescription.textContainer.lineFragmentPadding = 0;
+    
 }
+
+//- (void)setHighlighted:(BOOL)highlighted {
+//    [super setHighlighted:highlighted];
+//    
+//    if (self.highlighted || (self.highlighted && self.selected)) {
+//        self.contentView.backgroundColor = [UIColor grayColor];
+//    } else {
+//        self.contentView.backgroundColor = [UIColor colorWithRed:30/255 green:30/255 blue:30/255 alpha:1.0];
+//    }
+////    [self setNeedsDisplay];
+//}
 
 - (ImageDownloader *)downloader {
     if (!_downloader) _downloader = [[ImageDownloader alloc] init];
