@@ -420,6 +420,10 @@
                         </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="NMr-R1-vHE">
+                        <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="hmF-xI-xzr"/>
                     </connections>
@@ -436,7 +440,7 @@
         <image name="sharing" width="55" height="46"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Qdl-Vu-ceg"/>
-        <segue reference="cG4-F8-Hc0"/>
+        <segue reference="TXC-VM-7wZ"/>
+        <segue reference="NWU-ab-eoS"/>
     </inferredMetricsTieBreakers>
 </document>

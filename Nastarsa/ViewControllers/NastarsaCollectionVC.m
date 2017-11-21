@@ -56,6 +56,8 @@ static CGFloat inset = 10;
     _context.automaticallyMergesChangesFromParent = YES;
     
     moc = appDelegate.persistentContainer.newBackgroundContext;
+    
+    [self settingStatusBackgroundColor];
 
 //    self.navigationController.hidesBarsOnSwipe = YES;
 
@@ -95,10 +97,10 @@ static CGFloat inset = 10;
     [self.nasaCollectionView reloadData];
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    
-//    [self.navigationController setNavigationBarHidden:NO animated:NO];
+- (void)settingStatusBackgroundColor {
+    UIView *statusBarBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 20)];
+    [statusBarBackgroundView setBackgroundColor:[UIColor blackColor]];
+    [self.view addSubview:statusBarBackgroundView];
 }
 
 // whenever our Model is set, must update our View
@@ -143,6 +145,10 @@ static CGFloat inset = 10;
             [self.nasaCollectionView reloadData];
         });
     }];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
 }
 
 - (void)refreshControlSetup {
@@ -352,7 +358,6 @@ static CGFloat inset = 10;
         return searchHeader;
     }
     return [UICollectionReusableView new];
-
 }
 
 #pragma mark - <UIScrollView>
@@ -414,17 +419,16 @@ static CGFloat inset = 10;
     
     CGFloat approximateWidth = size.width - 32;
     CGSize sizeForLabel = CGSizeMake(approximateWidth, CGFLOAT_MAX);
-    NSDictionary *attributes = @{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Book" size:12.0f] };
     
     CGRect estimatedSizeOfLabel = [photo.someDescription boundingRectWithSize:sizeForLabel
-                                                                           options:NSStringDrawingUsesLineFragmentOrigin
-                                                                        attributes:attributes
-                                                                           context:nil];
+                                                                      options:NSStringDrawingUsesLineFragmentOrigin
+                                                                   attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Book" size:12.0f] }
+                                                                      context:nil];
     
     CGRect estimatedSizeOfTitle = [photo.title boundingRectWithSize:sizeForLabel
-                                                                 options:NSStringDrawingUsesLineFragmentOrigin
-                                                              attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Black" size:16.0f] }
-                                                                 context:nil];
+                                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                                         attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Black" size:16.0f] }
+                                                            context:nil];
     
     CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width + 45 - 5;
     

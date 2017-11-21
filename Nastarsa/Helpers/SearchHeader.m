@@ -21,7 +21,7 @@
     } else {
         properMutlipleWordsSearchPhrase = text;
     }
-    NSLog(@"%@",properMutlipleWordsSearchPhrase);
+    NSLog(@"search phrase %@",properMutlipleWordsSearchPhrase);
     return properMutlipleWordsSearchPhrase;
 }
 

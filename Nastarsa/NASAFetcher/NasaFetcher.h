@@ -14,7 +14,7 @@
 #define NASA_PHOTO_DATA @"data"
 #define DEMO_URL @"https://images-api.nasa.gov/search?year_start=2017&year_end=2017&media_type=image"
 #define BASE_URL @"https://images-api.nasa.gov/search?year_start=1920&year_end=2017&media_type=image&title="
-
+#define BASE_URL_MULTIPLE_WORDS @"https://images-api.nasa.gov/search?year_start=1920&year_end=2017&media_type=image&q="
 
 typedef NS_ENUM(NSInteger, NasaPhotoFormat) {
     NasaPhotoFormatThumb,    // thumbnail

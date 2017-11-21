@@ -24,17 +24,23 @@
     [_imageDescription setTextContainerInset:UIEdgeInsetsZero];
     _imageDescription.textContainer.lineFragmentPadding = 0;
     
+    UIView *backgroundView = [[UIView alloc] initWithFrame:(CGRectZero)];
+    
+    backgroundView.backgroundColor = [UIColor darkGrayColor];
+    self.selectedBackgroundView = backgroundView;
 }
 
 //- (void)setHighlighted:(BOOL)highlighted {
 //    [super setHighlighted:highlighted];
-//    
-//    if (self.highlighted || (self.highlighted && self.selected)) {
-//        self.contentView.backgroundColor = [UIColor grayColor];
+//    NSLog(@"%@", self.contentView.backgroundColor);
+//
+//    if (self.highlighted) {
+//        self.contentView.backgroundColor = [UIColor grayColor];  //|| (self.highlighted && self.selected)
+//        NSLog(@"🔲 highlighted");
 //    } else {
-//        self.contentView.backgroundColor = [UIColor colorWithRed:30/255 green:30/255 blue:30/255 alpha:1.0];
+//        self.contentView.backgroundColor = nil;
+//        NSLog(@"⬛️ unhighlighted");
 //    }
-////    [self setNeedsDisplay];
 //}
 
 - (ImageDownloader *)downloader {

@@ -32,7 +32,13 @@
         NSLog(@"DEMO URL");
         return [NSString stringWithFormat:DEMO_URL];
     }
-    return [NSString stringWithFormat:BASE_URL@"%@", text];
+    NSString *searchWord;
+    if ([text rangeOfString:@"%20"].location != NSNotFound) {
+        searchWord = [NSString stringWithFormat:BASE_URL_MULTIPLE_WORDS@"%@", text];
+    } else {
+        searchWord = [NSString stringWithFormat:BASE_URL@"%@", text];
+    }
+    return searchWord;
 }
 
 + (NSString *)URLforSearch:(NSString *)text withPage:(int)number {
