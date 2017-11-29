@@ -18,7 +18,7 @@
     
     if (imageURL) {
         UIImage *image = [[ImagesCache sharedInstance] getCachedImageForKey:imageURL];
-
+        
         if (image) {
             NSLog(@"Picture cached");
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -49,9 +49,10 @@
                                                                             NSLog(@"Caching %@", imageURL);
                                                                             [[ImagesCache sharedInstance] cacheImage:image forKey:imageURL];
                                                                             
+                                                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                                                 completion(image, nil);
                                                                                 NSLog(@"image size: %f, %f", image.size.width, image.size.height);
-                                                                            
+                                                                            });
                                                                         } else {
                                                                             NSLog(@"⚠️ wrong picture");
                                                                         }
