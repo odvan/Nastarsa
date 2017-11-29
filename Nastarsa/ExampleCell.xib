@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NastarsaSingleImageVC"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="imageCell" id="GEe-O0-AhU" customClass="ExampleCell">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="545"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="545"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="KY7-fq-J6b">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
+                        <color key="backgroundColor" red="1" green="0.80392156859999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="KY7-fq-J6b" secondAttribute="height" multiplier="1:1" id="wkt-Dl-X72"/>
+                        </constraints>
+                    </imageView>
+                    <stackView contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="FbG-h8-izb">
+                        <rect key="frame" x="16" y="427" width="343" height="91"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Picture Title " lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aNs-Xs-Gn9">
+                                <rect key="frame" x="0.0" y="0.0" width="343" height="22"/>
+                                <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="16"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="749" bounces="NO" scrollEnabled="NO" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ln3-nE-Mqh">
+                                <rect key="frame" x="0.0" y="26" width="343" height="65"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut </string>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                    </stackView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="72B-jU-2Qy">
+                        <rect key="frame" x="272" y="520" width="87" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="LXo-G6-fTj"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
+                        <state key="normal" title="Read more ▼">
+                            <color key="titleColor" red="1" green="0.80392156859999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                        <connections>
+                            <action selector="readMoreTouched:" destination="GEe-O0-AhU" eventType="touchUpInside" id="hjC-Je-WLy"/>
+                        </connections>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ykA-zJ-XdD">
+                        <rect key="frame" x="60" y="388" width="28" height="24"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="28" id="9tY-GL-or9"/>
+                        </constraints>
+                        <state key="normal" title="Button" image="sharing"/>
+                        <connections>
+                            <action selector="shareTouched:" destination="GEe-O0-AhU" eventType="touchUpInside" id="YQA-w6-Phy"/>
+                        </connections>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HBu-X9-1Lq">
+                        <rect key="frame" x="16" y="388" width="28" height="24"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="24" id="QSb-DS-Idn"/>
+                            <constraint firstAttribute="width" constant="28" id="SPl-Rl-Z1J"/>
+                        </constraints>
+                        <state key="normal" image="heart_empty"/>
+                        <state key="selected" image="heart_liked"/>
+                        <connections>
+                            <action selector="likedTouched:" destination="GEe-O0-AhU" eventType="touchUpInside" id="nZa-rV-SQj"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <color key="backgroundColor" red="0.11764705882352941" green="0.11764705882352941" blue="0.11764705882352941" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="72B-jU-2Qy" secondAttribute="bottom" constant="10" id="0lQ-HG-58G"/>
+                <constraint firstItem="ykA-zJ-XdD" firstAttribute="bottom" secondItem="HBu-X9-1Lq" secondAttribute="bottom" id="H3m-bI-bW5"/>
+                <constraint firstItem="KY7-fq-J6b" firstAttribute="leading" secondItem="GEe-O0-AhU" secondAttribute="leading" id="HLB-7O-6yu"/>
+                <constraint firstAttribute="trailing" secondItem="FbG-h8-izb" secondAttribute="trailing" constant="16" id="L44-4A-ttH"/>
+                <constraint firstItem="HBu-X9-1Lq" firstAttribute="leading" secondItem="GEe-O0-AhU" secondAttribute="leading" constant="16" id="QZE-Ap-hCp"/>
+                <constraint firstItem="HBu-X9-1Lq" firstAttribute="top" secondItem="KY7-fq-J6b" secondAttribute="bottom" constant="13" id="UgO-mA-Ts8"/>
+                <constraint firstItem="FbG-h8-izb" firstAttribute="top" secondItem="HBu-X9-1Lq" secondAttribute="bottom" constant="15" id="cZ2-Hk-2eS"/>
+                <constraint firstAttribute="trailing" secondItem="KY7-fq-J6b" secondAttribute="trailing" id="gvg-T5-dYs"/>
+                <constraint firstItem="ykA-zJ-XdD" firstAttribute="top" secondItem="HBu-X9-1Lq" secondAttribute="top" id="i8v-vf-eA5"/>
+                <constraint firstItem="72B-jU-2Qy" firstAttribute="top" secondItem="FbG-h8-izb" secondAttribute="bottom" constant="2" id="m8x-m2-R1e"/>
+                <constraint firstItem="KY7-fq-J6b" firstAttribute="top" secondItem="GEe-O0-AhU" secondAttribute="top" id="mZn-6T-LaO"/>
+                <constraint firstItem="ykA-zJ-XdD" firstAttribute="leading" secondItem="HBu-X9-1Lq" secondAttribute="trailing" constant="16" id="nNu-ov-etm"/>
+                <constraint firstItem="FbG-h8-izb" firstAttribute="leading" secondItem="GEe-O0-AhU" secondAttribute="leading" constant="16" id="oce-Oh-KuQ"/>
+                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="FbG-h8-izb" secondAttribute="bottom" priority="750" constant="6" id="qFY-vy-gjk"/>
+                <constraint firstItem="72B-jU-2Qy" firstAttribute="trailing" secondItem="FbG-h8-izb" secondAttribute="trailing" id="r7B-aA-cnO"/>
+            </constraints>
+            <connections>
+                <outlet property="buttonHeightConstraint" destination="LXo-G6-fTj" id="GuT-sk-kHO"/>
+                <outlet property="imageDescription" destination="ln3-nE-Mqh" id="Vdm-EQ-qYI"/>
+                <outlet property="imageView" destination="KY7-fq-J6b" id="NK2-en-VJv"/>
+                <outlet property="likeButton" destination="HBu-X9-1Lq" id="Oxl-s2-7BB"/>
+                <outlet property="readMoreButton" destination="72B-jU-2Qy" id="0hj-zd-7wd"/>
+                <outlet property="shareButton" destination="ykA-zJ-XdD" id="LPL-1m-Pz7"/>
+                <outlet property="title" destination="aNs-Xs-Gn9" id="EbP-nZ-P2Z"/>
+            </connections>
+            <point key="canvasLocation" x="-421" y="-449"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="heart_empty" width="54" height="52"/>
+        <image name="heart_liked" width="54" height="52"/>
+        <image name="sharing" width="55" height="46"/>
+    </resources>
+</document>

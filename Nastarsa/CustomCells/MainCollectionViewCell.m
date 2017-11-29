@@ -8,7 +8,12 @@
 
 #import "MainCollectionViewCell.h"
 #import "NasaFetcher.h"
+#import "Spinner.h"
 
+@interface MainCollectionViewCell()
+@property (strong, nonatomic) Spinner *indicator;
+@property (strong, nonatomic) ImageDownloader *downloader;
+@end
 
 @implementation MainCollectionViewCell
 
@@ -16,35 +21,33 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     
-//    self.contentView.frame = self.bounds;
-//    self.contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    //    [self makingRoundCorners:4];
-   // _title.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.65f];
-  //  _imageDescription.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.65f];
-
+    [_imageDescription setTextContainerInset:UIEdgeInsetsZero];
+    _imageDescription.textContainer.lineFragmentPadding = 0;
+    
+    UIView *backgroundView = [[UIView alloc] initWithFrame:(CGRectZero)];
+    
+    backgroundView.backgroundColor = [UIColor darkGrayColor];
+    self.selectedBackgroundView = backgroundView;
 }
 
-//- (void)makingRoundCorners:(CGFloat)cornerRadius {
-//    
-//    _title.layer.cornerRadius = cornerRadius;
-//    _title.clipsToBounds = YES;
-//    _image.layer.cornerRadius = cornerRadius;
-//    _image.clipsToBounds = YES;
-//    _imageDescription.layer.cornerRadius = cornerRadius;
-//    _imageDescription.clipsToBounds = YES;
-//
-//}
+- (ImageDownloader *)downloader {
+    if (!_downloader) _downloader = [[ImageDownloader alloc] init];
+    return _downloader;
+}
+
+- (Spinner *)indicator {
+    if (!_indicator) _indicator = [[Spinner alloc] init];
+    return _indicator;
+}
 
 - (void)prepareForReuse {
     [super prepareForReuse];
     
-    NSLog(@"prepare %@", _title.text);
-    
-    _title.hidden = NO;
-    _imageDescription.hidden = NO;
     _readMoreButton.hidden = NO;
     _buttonHeightConstraint.constant = 15;
     _buttonHeightConstraint.active = YES;
+    _imageView.image = nil;
+    _likeButton.selected = NO;
 }
 
 - (IBAction)readMoreTouched:(id)sender {
@@ -53,20 +56,40 @@
     }
 }
 
-- (void)configure:(ImageModel *)model {
-    _title.text = model.title;
-    _imageDescription.text = model.someDescription;
-    _image.imageURL = model.link;
-    
-    if (model.isExpanded) {
-        _readMoreButton.hidden = YES;
-        _buttonHeightConstraint.constant = 0;
+- (IBAction)likedTouched:(id)sender {
+    if ([sender isKindOfClass:[UIButton class]]) {
+        [_delegate likedButtonTouched:_indexPath];
     }
 }
 
-- (void)settingLargeImage:(ImageModel *)model {
-    _image.imageURL = [NasaFetcher URLforPhoto:model.nasa_id
-                                        format:NasaPhotoFormatLarge];
+- (IBAction)shareTouched:(id)sender {
+    if ([sender isKindOfClass:[UIButton class]]) {
+        [_delegate shareButtonTouched:_indexPath];
+    }
+}
+
+- (void)configure:(Photo *)photoModel {
+    _title.text = photoModel.title;
+    _imageDescription.text = photoModel.someDescription;
+    if (photoModel.image_preview != nil) {
+        _imageView.image = [UIImage imageWithData:photoModel.image_preview];
+    } else {
+        [self.indicator setupWith:_imageView];
+        [self.downloader downloadingImageWithURL:[NSURL URLWithString:photoModel.link] completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
+            if (image) {
+                _imageView.image = image;
+                [self.indicator stop];
+            }
+        }];
+    }
+    if (photoModel.isLiked) {
+        _likeButton.selected = YES;
+    }
+    
+    if (photoModel.isExpanded) {
+        _readMoreButton.hidden = YES;
+        _buttonHeightConstraint.constant = 0;
+    }
 }
 
 @end

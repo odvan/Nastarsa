@@ -13,11 +13,8 @@
 static ImagesCache *sharedInstance;
 
 @interface ImagesCache ()
-
 @property (nonatomic, strong) NSCache *imagesCache;
-
 @end
-
 
 @implementation ImagesCache
 
@@ -45,6 +42,5 @@ static ImagesCache *sharedInstance;
 - (UIImage *)getCachedImageForKey:(NSString *)key {
     return [self.imagesCache objectForKey:key];
 }
-
 
 @end

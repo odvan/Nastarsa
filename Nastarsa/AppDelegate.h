@@ -12,11 +12,9 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-
 @property (readonly, strong) NSPersistentContainer *persistentContainer;
+@property (assign, nonatomic) BOOL shouldRotate;
 
 - (void)saveContext;
 
-
 @end
-
