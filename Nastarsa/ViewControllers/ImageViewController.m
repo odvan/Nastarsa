@@ -31,19 +31,20 @@
     [appDelegate setShouldRotate:YES];
     NSLog(@"we there, scroller bounds size: %f, %f", self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
     [self.scrollView addSubview:self.imageView];
-    
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(updateMinZoomScaleForSize:)
-     name:@"myNotificationName"
-     object:nil];
+    [self settingGestures];
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    NSLog(@"scroller bounds size: %f, %f", self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
+    NSLog(@"scroller bounds size (viewDidLayoutSubviews): %f, %f", self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
+    if (self.image) {
+        NSLog(@"🔴🔵🔴");
+        [self updateMinZoomScaleForSize:self.view.bounds.size];
+    }
     
-    [self updateMinZoomScaleForSize:self.view.bounds.size];
+    if ([self.view.subviews containsObject:self.spinner.indicator]) {
+        self.spinner.indicator.center = self.view.center; //_imageView.center;
+    }
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -91,68 +92,74 @@
 
 - (UIImageView *)imageView {
     if (!_imageView) {
-        NSLog(@"creating imageView");
-        _imageView = [[ImageDownloader alloc] init];
-        self.imageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        if (_tempImage) {
+            NSLog(@"🔵🛑 tempImage imageView");
+            _imageView = [[UIImageView alloc] initWithImage:self.tempImage];
+//            [self updateMinZoomScaleForSize:self.view.bounds.size];
+        } else {
+            _imageView = [[UIImageView alloc] init];
+        }
     }
     NSLog(@"🔵 imageView");
     return _imageView;
 }
 
+// image property does not use an _image instance variable
+// instead it just reports/sets the image in the imageView property
+// thus we don't need @synthesize even though we implement both setter and getter
+
+- (UIImage *)image {
+    return self.imageView.image;
+}
+
+- (void)setImage:(UIImage *)image {
+    NSLog(@"Running on %@ setting image in IVC", [NSThread currentThread]);
+    _scrollView.zoomScale = 1.0;
+    self.imageView.image = image; // does not change the frame of the UIImageView
+
+    self.imageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
+    NSLog(@"🎱 image size: width %f, height %f", self.imageView.image.size.width, self.imageView.image.size.height);
+    self.scrollView.contentSize = self.image ? self.image.size : CGSizeZero;
+    [self updateMinZoomScaleForSize:self.view.bounds.size];
+    NSLog(@"scrollView contentSize: width %f, height %f", self.scrollView.contentSize.width, self.scrollView.contentSize.height);
+    NSLog(@"scrollView bounds: width %f, height %f", self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
+}
+
 - (void)setScrollView:(UIScrollView *)scrollView {
     _scrollView = scrollView;
-    
-    // next three lines are necessary for zooming
-//    self.scrollView.zoomScale = _scrollView.minimumZoomScale;
-//    _scrollView.maximumZoomScale = 2.0;
     _scrollView.delegate = self;
 
     // next line is necessary in case self.image gets set before self.scrollView does
     // for example, prepareForSegue:sender: is called before outlet-setting phase
-    self.scrollView.contentSize = self.imageView.image ? self.imageView.image.size : CGSizeZero;
-    NSLog(@"scrollview content size %f", self.scrollView.contentSize.width);
+    self.scrollView.contentSize = self.image ? self.image.size : CGSizeZero;
 }
 
-- (void)updateMinZoomScaleForSize:(CGSize)size {
-    self.imageView.frame = CGRectMake(0, 0, self.imageView.image.size.width, self.imageView.image.size.height);
-    self.scrollView.contentSize = self.imageView ? self.imageView.image.size : CGSizeZero;
-    CGFloat widthScale = size.width / self.imageView.bounds.size.width;
-    CGFloat heightScale = size.height / self.imageView.bounds.size.height;
-    NSLog(@"imageView bounds size: width %f, height %f", self.imageView.bounds.size.width, self.imageView.bounds.size.height);
-    _scrollView.minimumZoomScale = MIN(widthScale, heightScale);
-    _scrollView.zoomScale = _scrollView.minimumZoomScale;
-    _scrollView.maximumZoomScale = 1.0;
-}
+#pragma mark - Setting the Image from the Image's URL
 
-- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
-    CGRect innerFrame = _imageView.frame;
-    CGRect scrollerBounds = scrollView.bounds;
+- (void)setImageURL:(NSURL *)imageURL {
     
-    if ( ( innerFrame.size.width < scrollerBounds.size.width ) || ( innerFrame.size.height < scrollerBounds.size.height ) )
-    {
-        CGFloat tempx = _imageView.center.x - ( scrollerBounds.size.width / 2 );
-        CGFloat tempy = _imageView.center.y - ( scrollerBounds.size.height / 2 );
-        CGPoint myScrollViewOffset = CGPointMake( tempx, tempy);
-        
-        scrollView.contentOffset = myScrollViewOffset;
-        
-    }
-    
-    UIEdgeInsets anEdgeInset = { 0, 0, 0, 0};
-    if ( scrollerBounds.size.width > innerFrame.size.width )
-    {
-        anEdgeInset.left = (scrollerBounds.size.width - innerFrame.size.width) / 2;
-        anEdgeInset.right = -anEdgeInset.left;  // I don't know why this needs to be negative, but that's what works
-    }
-    if ( scrollerBounds.size.height > innerFrame.size.height )
-    {
-        anEdgeInset.top = (scrollerBounds.size.height - innerFrame.size.height) / 2;
-        anEdgeInset.bottom = -anEdgeInset.top;  // I don't know why this needs to be negative, but that's what works
-    }
-    scrollView.contentInset = anEdgeInset;
+    _imageURL = imageURL;
+    [self.spinner setupWith:self.view];
+    [self.downloader downloadingImageWithURL:imageURL completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
+        if (image && httpResponse.statusCode != 404) {
+            [self.spinner stop];
+            self.image = image;
+        } else {
+            NSLog(@"✅ %@", self.model.nasa_id);
+            _imageURL = [NasaFetcher URLforPhoto:self.model.nasa_id format:NasaPhotoFormatOriginal];
+            NSLog(@"⭕️ %@", _imageURL);
+            [self.downloader downloadingImageWithURL:_imageURL completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
+                if (image && httpResponse.statusCode != 404) {
+                    [self.spinner stop];
+                    self.image = image;
+                } else {
+                    [self.spinner stop];
+                    self.imageView.image = self.tempImage;
+                }
+            }];
+        }
+    }];
 }
-
 
 #pragma mark - UIScrollViewDelegate
 

@@ -22,8 +22,7 @@
         if (image) {
             NSLog(@"Picture cached");
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.image = image;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"Image downloaded" object:nil];
+                completion(image, nil);
             });
         } else {
             
@@ -50,13 +49,9 @@
                                                                             NSLog(@"Caching %@", imageURL);
                                                                             [[ImagesCache sharedInstance] cacheImage:image forKey:imageURL];
                                                                             
-                                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                [_indicator stopAnimating];
-                                                                                [_indicator removeFromSuperview];
-                                                                                self.image = image;
-                                                                                NSLog(@"%f", self.image.size.width);
-                                                                                [[NSNotificationCenter defaultCenter] postNotificationName:@"Image downloaded" object:nil];
-                                                                            });
+                                                                                completion(image, nil);
+                                                                                NSLog(@"image size: %f, %f", image.size.width, image.size.height);
+                                                                            
                                                                         } else {
                                                                             NSLog(@"⚠️ wrong picture");
                                                                         }
