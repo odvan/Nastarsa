@@ -21,5 +21,4 @@
 + (void)findOrCreatePhotosFrom:(NSMutableArray *)photosData inContext:(NSManagedObjectContext *)context withPage:(int)pageNumber;
 + (void)deletePhotoObjects:(NSManagedObjectContext *)context;
 
-
 @end

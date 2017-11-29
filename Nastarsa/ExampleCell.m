@@ -16,6 +16,8 @@
     super.readMoreButton.hidden = YES;
     super.buttonHeightConstraint.constant = 0;
     super.likeButton.selected = NO;
+    
+    super.selectedBackgroundView = nil;
 }
 
 - (void)prepareForReuse {
@@ -41,5 +43,10 @@
     }
 }
 
+- (IBAction)shareTouched:(id)sender {
+    if ([sender isKindOfClass:[UIButton class]]) {
+        [super.delegate shareButtonTouched:super.indexPath];
+    }
+}
 
 @end

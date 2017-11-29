@@ -32,6 +32,7 @@
     return photo;
 }
 
+
 + (void)printDatabaseStatistics:(NSManagedObjectContext *)context {
     if (context) {
         NSLog(@"✅ printDatabaseStatistics");
@@ -49,6 +50,7 @@
         NSLog(@"💩");
     }
 }
+
 
 + (void)saveNewLikedPhotoFrom:(Photo *)photoObj inContext:(NSManagedObjectContext *)context {
     
@@ -90,6 +92,7 @@
     }];
 }
 
+
 + (void)deleteLikedPhotoFrom:(Photo *)photoObj inContext:(NSManagedObjectContext *)context {
     
     [context performBlock:^{
@@ -101,7 +104,7 @@
         NSArray <Photo *> *photoExisted = [context executeFetchRequest:fetchRequest error:&error];
         if (photoExisted != nil) {
             photoExisted[0].isLiked = NO;
-            photoExisted[0].isFetchable = YES; // ?
+            photoExisted[0].isFetchable = YES;
         }
         if (![context save:&error]) {
             // Replace this implementation with code to handle the error appropriately.
@@ -112,6 +115,7 @@
         [Photo printDatabaseStatistics:context];
     }];
 }
+
 
 + (void)findOrCreatePhotosFrom:(NSMutableArray *)photosData inContext:(NSManagedObjectContext *)context withPage:(int)pageNumber {
     int numberInArray = 0;
@@ -141,6 +145,7 @@
     }
 }
 
+
 + (void)deletePhotoObjects:(NSManagedObjectContext *)context {
     
     [context performBlock:^{
@@ -148,7 +153,6 @@
         NSLog(@"Running on %@ thread (deleting all obj)", [NSThread currentThread]);
         NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
             fetchRequest.predicate = nil;
-//        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isLiked == NO"]];
         
         NSError *error = nil;
         NSArray *photoObjects = [context executeFetchRequest:fetchRequest error:&error];

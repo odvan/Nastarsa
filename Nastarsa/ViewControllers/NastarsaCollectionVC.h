@@ -18,4 +18,6 @@
 // Model of this MVC (it can be publicly set)
 @property (nonatomic, strong) NSMutableArray *photosData;
 
+- (void)settingGesturesWith:(UIImageView *)imageView;
+
 @end

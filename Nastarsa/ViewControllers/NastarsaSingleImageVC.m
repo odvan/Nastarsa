@@ -13,6 +13,11 @@
 
 
 static NSString * const reuseIdentifier = @"imageCell";
+UIImageView *provisionalImageDupl;
+UIView *blackViewDupl;
+CGRect frameDupl;
+BOOL isSeguedFromImageDupl;
+__weak ExampleCell *cellForAnimationDupl;
 
 @interface NastarsaSingleImageVC () <ExpandedAndButtonsTouchedCellDelegate>
 
@@ -20,6 +25,7 @@ static NSString * const reuseIdentifier = @"imageCell";
 @end
 
 @implementation NastarsaSingleImageVC
+
 
 #pragma mark - View Controller Lifecycle
 
@@ -29,15 +35,34 @@ static NSString * const reuseIdentifier = @"imageCell";
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     _context = appDelegate.persistentContainer.newBackgroundContext;
     
-    _singleImageCV.alwaysBounceVertical = YES;
+//    _singleImageCV.alwaysBounceVertical = YES;
     [self.singleImageCV registerNib:[UINib nibWithNibName:@"ExampleCell" bundle:nil] forCellWithReuseIdentifier:reuseIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationPortrait] forKey:@"orientation"];
     [self.singleImageCV reloadData];
+    
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate setShouldRotate:NO];
 }
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    if (isSeguedFromImageDupl) {
+        [self reverseImageAnimation];
+    }
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    [self.singleImageCV.collectionViewLayout invalidateLayout];
+}
+
+
+#pragma mark - Properties lazy instantiation
 
 - (void)setPhotoSetup:(Photo *)photoObjSetup {
     if (_photoObjSetup != photoObjSetup) {
@@ -46,6 +71,7 @@ static NSString * const reuseIdentifier = @"imageCell";
     NSLog(@"setting photoSetup obj: %@", _photoObjSetup);
     [self.singleImageCV reloadData];
 }
+
 
 #pragma mark - <UICollectionViewDataSource>
 
@@ -72,6 +98,7 @@ static NSString * const reuseIdentifier = @"imageCell";
     return cell;
 }
 
+
 #pragma mark <UICollectionViewDelegateFlowLayout>
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
@@ -82,7 +109,7 @@ static NSString * const reuseIdentifier = @"imageCell";
     
     CGFloat approximateWidth = size.width - 32;
     CGSize sizeForLabel = CGSizeMake(approximateWidth, CGFLOAT_MAX);
-    NSDictionary *attributes = @{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Book" size:12.0f] };
+    NSDictionary *attributes = @{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Book" size:13.0f] };
     
     CGRect estimatedSizeOfLabel = [_photoObjSetup.someDescription boundingRectWithSize:sizeForLabel
                                                                             options:NSStringDrawingUsesLineFragmentOrigin
@@ -94,12 +121,14 @@ static NSString * const reuseIdentifier = @"imageCell";
                                                                attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Black" size:16.0f] }
                                                                   context:nil];
     
-    CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width + 45 - 5;//different inset: delete -5?
-    
+    CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width + 44;
     size = CGSizeMake(size.width, heightForItem);
     NSLog(@"setting size: height %f", heightForItem);
     return size;
 }
+
+
+#pragma mark - <ExpandedAndButtonsTouchedCellDelegate>
 
 - (void)likedButtonTouched:(NSIndexPath *)indexPath {
     
@@ -116,6 +145,30 @@ static NSString * const reuseIdentifier = @"imageCell";
     }
 }
 
+- (void)shareButtonTouched:(NSIndexPath *)indexPath {
+    
+    Photo *photo = _photoObjSetup;
+    __weak ExampleCell *cell = (ExampleCell*)[self.singleImageCV cellForItemAtIndexPath:indexPath];
+
+    UIImage *imageToShare = cell.imageView.image;
+    NSString *textToShare = photo.title;
+    NSURL *urlToShare = [NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatLarge];
+    
+    NSMutableArray *activityItems = [NSMutableArray arrayWithObjects:textToShare, imageToShare, urlToShare, nil];
+    
+    UIActivityViewController *activityViewController = [[UIActivityViewController alloc]initWithActivityItems:activityItems applicationActivities:nil];
+    activityViewController.excludedActivityTypes = @[
+                                                     UIActivityTypePrint,
+                                                     UIActivityTypeCopyToPasteboard,
+                                                     UIActivityTypeAssignToContact,
+                                                     UIActivityTypeSaveToCameraRoll,
+                                                     UIActivityTypeAddToReadingList,
+                                                     UIActivityTypeAirDrop];
+    
+    [self presentViewController:activityViewController animated:YES completion:nil];
+}
+
+
 #pragma mark - Gestures setup
 
 - (void)settingGesturesWith:(UIImageView *)imageView {
@@ -127,9 +180,66 @@ static NSString * const reuseIdentifier = @"imageCell";
     [imageView addGestureRecognizer:singleTapRecognizer];
 }
 
+//- (void)segueToImageVC:(UITapGestureRecognizer *)gestureRecognizer {
+//    [self performSegueWithIdentifier: @"showImageFromLikedVC" sender: gestureRecognizer];
+//}
+
 - (void)segueToImageVC:(UITapGestureRecognizer *)gestureRecognizer {
-    [self performSegueWithIdentifier: @"showImageFromLikedVC" sender: gestureRecognizer];
+    // there main animation image code
+    
+    UITapGestureRecognizer *gesture = gestureRecognizer;
+    NSInteger index = gesture.view.tag;
+    cellForAnimationDupl = (ExampleCell*)[self.singleImageCV cellForItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    
+    blackViewDupl = [[UIView alloc] init];
+    blackViewDupl.frame = self.view.frame;
+    blackViewDupl.backgroundColor = [UIColor blackColor];
+    blackViewDupl.alpha = 0;
+    [self.navigationController.view addSubview:blackViewDupl];
+    
+    provisionalImageDupl = [[UIImageView alloc] init];
+    
+    frameDupl = CGRectMake(0, 0, cellForAnimationDupl.imageView.frame.size.width, cellForAnimationDupl.imageView.frame.size.height);
+    frameDupl = [cellForAnimationDupl.imageView.superview convertRect:cellForAnimationDupl.imageView.frame toView:self.view];
+    provisionalImageDupl.frame = frameDupl;
+    
+    provisionalImageDupl.image = cellForAnimationDupl.imageView.image;
+    provisionalImageDupl.contentMode = UIViewContentModeScaleAspectFill;
+    provisionalImageDupl.clipsToBounds = YES;
+    [self.navigationController.view addSubview:provisionalImageDupl];
+    
+    NSLog(@" %@", provisionalImageDupl);
+    cellForAnimationDupl.imageView.alpha = 0;
+    
+    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        
+        CGFloat newImageHeight = cellForAnimationDupl.imageView.bounds.size.width / (cellForAnimationDupl.imageView.image.size.width / cellForAnimationDupl.imageView.image.size.height);
+        CGFloat y = self.view.frame.size.height/2 - newImageHeight/2;
+        blackViewDupl.alpha = 1;
+        
+        [provisionalImageDupl setFrame:CGRectMake(0, y, self.view.frame.size.width, newImageHeight)];
+        
+    } completion:^(BOOL finished){
+        provisionalImageDupl.contentMode = UIViewContentModeScaleAspectFit;
+        [self performSegueWithIdentifier: @"showImageFromLikedVC" sender: gestureRecognizer];
+    }];
 }
+
+- (void)reverseImageAnimation {
+    
+    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        provisionalImageDupl.frame = frameDupl;
+        provisionalImageDupl.contentMode = UIViewContentModeScaleAspectFill;
+        
+    } completion:^(BOOL finished){
+        cellForAnimationDupl.imageView.alpha = 1;
+        [provisionalImageDupl removeFromSuperview];
+        [blackViewDupl removeFromSuperview];
+        isSeguedFromImageDupl = NO;
+        NSLog(@"🏀 content offset: %@", NSStringFromCGPoint(self.singleImageCV.contentOffset));
+    }];
+}
+
 
 #pragma mark - Navigation
 
@@ -149,6 +259,7 @@ static NSString * const reuseIdentifier = @"imageCell";
                     ImageViewController *iVC = (ImageViewController *)segue.destinationViewController;
                     iVC.context = _context;
                     iVC.model = _photoObjSetup;
+                    isSeguedFromImageDupl = YES;
                     if (_photoObjSetup.isLiked && _photoObjSetup.image_big) {
                         iVC.image = [UIImage imageWithData:_photoObjSetup.image_big];
                         iVC.likeButton.selected = YES;

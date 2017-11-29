@@ -30,19 +30,6 @@
     self.selectedBackgroundView = backgroundView;
 }
 
-//- (void)setHighlighted:(BOOL)highlighted {
-//    [super setHighlighted:highlighted];
-//    NSLog(@"%@", self.contentView.backgroundColor);
-//
-//    if (self.highlighted) {
-//        self.contentView.backgroundColor = [UIColor grayColor];  //|| (self.highlighted && self.selected)
-//        NSLog(@"🔲 highlighted");
-//    } else {
-//        self.contentView.backgroundColor = nil;
-//        NSLog(@"⬛️ unhighlighted");
-//    }
-//}
-
 - (ImageDownloader *)downloader {
     if (!_downloader) _downloader = [[ImageDownloader alloc] init];
     return _downloader;
@@ -72,6 +59,12 @@
 - (IBAction)likedTouched:(id)sender {
     if ([sender isKindOfClass:[UIButton class]]) {
         [_delegate likedButtonTouched:_indexPath];
+    }
+}
+
+- (IBAction)shareTouched:(id)sender {
+    if ([sender isKindOfClass:[UIButton class]]) {
+        [_delegate shareButtonTouched:_indexPath];
     }
 }
 

@@ -27,7 +27,7 @@
                         </constraints>
                     </imageView>
                     <stackView contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="FbG-h8-izb">
-                        <rect key="frame" x="16" y="424" width="343" height="96"/>
+                        <rect key="frame" x="16" y="427" width="343" height="91"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Picture Title " lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aNs-Xs-Gn9">
                                 <rect key="frame" x="0.0" y="0.0" width="343" height="22"/>
@@ -36,16 +36,16 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="749" bounces="NO" scrollEnabled="NO" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ln3-nE-Mqh">
-                                <rect key="frame" x="0.0" y="26" width="343" height="70"/>
+                                <rect key="frame" x="0.0" y="26" width="343" height="65"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut </string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="12"/>
+                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
                     </stackView>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="72B-jU-2Qy">
-                        <rect key="frame" x="272" y="522" width="87" height="15"/>
+                        <rect key="frame" x="272" y="520" width="87" height="15"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="15" id="LXo-G6-fTj"/>
                         </constraints>
@@ -58,14 +58,17 @@
                         </connections>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ykA-zJ-XdD">
-                        <rect key="frame" x="60" y="385" width="28" height="24"/>
+                        <rect key="frame" x="60" y="388" width="28" height="24"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="28" id="9tY-GL-or9"/>
                         </constraints>
                         <state key="normal" title="Button" image="sharing"/>
+                        <connections>
+                            <action selector="shareTouched:" destination="GEe-O0-AhU" eventType="touchUpInside" id="YQA-w6-Phy"/>
+                        </connections>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HBu-X9-1Lq">
-                        <rect key="frame" x="16" y="385" width="28" height="24"/>
+                        <rect key="frame" x="16" y="388" width="28" height="24"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="24" id="QSb-DS-Idn"/>
                             <constraint firstAttribute="width" constant="28" id="SPl-Rl-Z1J"/>
@@ -80,12 +83,12 @@
             </view>
             <color key="backgroundColor" red="0.11764705882352941" green="0.11764705882352941" blue="0.11764705882352941" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="72B-jU-2Qy" secondAttribute="bottom" constant="8" id="0lQ-HG-58G"/>
+                <constraint firstAttribute="bottom" secondItem="72B-jU-2Qy" secondAttribute="bottom" constant="10" id="0lQ-HG-58G"/>
                 <constraint firstItem="ykA-zJ-XdD" firstAttribute="bottom" secondItem="HBu-X9-1Lq" secondAttribute="bottom" id="H3m-bI-bW5"/>
                 <constraint firstItem="KY7-fq-J6b" firstAttribute="leading" secondItem="GEe-O0-AhU" secondAttribute="leading" id="HLB-7O-6yu"/>
                 <constraint firstAttribute="trailing" secondItem="FbG-h8-izb" secondAttribute="trailing" constant="16" id="L44-4A-ttH"/>
                 <constraint firstItem="HBu-X9-1Lq" firstAttribute="leading" secondItem="GEe-O0-AhU" secondAttribute="leading" constant="16" id="QZE-Ap-hCp"/>
-                <constraint firstItem="HBu-X9-1Lq" firstAttribute="top" secondItem="KY7-fq-J6b" secondAttribute="bottom" constant="10" id="UgO-mA-Ts8"/>
+                <constraint firstItem="HBu-X9-1Lq" firstAttribute="top" secondItem="KY7-fq-J6b" secondAttribute="bottom" constant="13" id="UgO-mA-Ts8"/>
                 <constraint firstItem="FbG-h8-izb" firstAttribute="top" secondItem="HBu-X9-1Lq" secondAttribute="bottom" constant="15" id="cZ2-Hk-2eS"/>
                 <constraint firstAttribute="trailing" secondItem="KY7-fq-J6b" secondAttribute="trailing" id="gvg-T5-dYs"/>
                 <constraint firstItem="ykA-zJ-XdD" firstAttribute="top" secondItem="HBu-X9-1Lq" secondAttribute="top" id="i8v-vf-eA5"/>
@@ -93,7 +96,7 @@
                 <constraint firstItem="KY7-fq-J6b" firstAttribute="top" secondItem="GEe-O0-AhU" secondAttribute="top" id="mZn-6T-LaO"/>
                 <constraint firstItem="ykA-zJ-XdD" firstAttribute="leading" secondItem="HBu-X9-1Lq" secondAttribute="trailing" constant="16" id="nNu-ov-etm"/>
                 <constraint firstItem="FbG-h8-izb" firstAttribute="leading" secondItem="GEe-O0-AhU" secondAttribute="leading" constant="16" id="oce-Oh-KuQ"/>
-                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="FbG-h8-izb" secondAttribute="bottom" priority="750" constant="8" id="qFY-vy-gjk"/>
+                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="FbG-h8-izb" secondAttribute="bottom" priority="750" constant="6" id="qFY-vy-gjk"/>
                 <constraint firstItem="72B-jU-2Qy" firstAttribute="trailing" secondItem="FbG-h8-izb" secondAttribute="trailing" id="r7B-aA-cnO"/>
             </constraints>
             <connections>

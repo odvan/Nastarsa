@@ -33,9 +33,15 @@ UILabel *noPhoto;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     _likedImagesCollectionView.alwaysBounceVertical = YES;
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate setShouldRotate:YES];
 }
 
 - (NSFetchedResultsController<Photo *> *)frc {

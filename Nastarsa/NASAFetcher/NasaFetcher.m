@@ -23,9 +23,11 @@
     return [NSString stringWithFormat:@"http://images-assets.nasa.gov/image/%@/%@.jpg", link, formatString];
 }
 
+
 + (NSURL *)URLforPhoto:(NSString *)link format:(NasaPhotoFormat)format {
     return [NSURL URLWithString:[NasaFetcher URLStringForPhoto:link format:format]];
 }
+
 
 + (NSString *)URLforSearch:(NSString *)text {
     if (!text) {
@@ -41,6 +43,7 @@
     return searchWord;
 }
 
+
 + (NSString *)URLforSearch:(NSString *)text withPage:(int)number {
     if (!text) {
         NSLog(@"DEMO URL page number");
@@ -48,6 +51,7 @@
     }
     return [NSString stringWithFormat:BASE_URL@"%@&page=%d", text, number];
 }
+
 
 + (void)pageNumbersFrom:(NSString *)searchText withCompletion:(void (^)(BOOL success, int numbers))completion {
     
@@ -94,13 +98,14 @@
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-                NSLog(@"pages error");
+                NSLog(@"getting pages error");
                 completion(NO, numberOfPages);
             });;
         }
         
     });
 }
+
 
 + (void)fetchPhotos:(NSString *)searchText pageNumber:(int)page withCompletion:(void (^)(BOOL success, NSMutableArray *photosData))completion {
     

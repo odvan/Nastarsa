@@ -20,12 +20,18 @@
 static NSCache * imagesCache;
 static NSString * const reuseIdentifier = @"imageCell";
 static NSString * const searchHeaderIdentifier = @"searchHeader";
+__weak MainCollectionViewCell *cellForAnimation;
+
 int lastPage = 0;
 BOOL isPageRefreshing = NO;
-CGSize size; //?
+BOOL isSeguedFromImage;
+
 UIRefreshControl *refreshControl;
 NSIndexPath *selectedIndexPath;
-
+UIImageView *provisionalImage;
+UIView *blackView;
+CGRect frame;
+UILabel *noData;
 NSManagedObjectContext *moc;
 
 static CGFloat paddingBetweenCells = 10;
@@ -48,7 +54,7 @@ static CGFloat inset = 10;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     _photosData = [[NSMutableArray alloc] init];
     imagesCache = [[NSCache alloc] init];
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
@@ -58,18 +64,6 @@ static CGFloat inset = 10;
     moc = appDelegate.persistentContainer.newBackgroundContext;
     
     [self settingStatusBackgroundColor];
-
-//    self.navigationController.hidesBarsOnSwipe = YES;
-
-//    [Photo printDatabaseStatistics:_context];
-
-//    _nasaCollectionView.allowsMultipleSelection = YES;
-    
-    // Uncomment the following line to preserve selection between presentations
-//     self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Register cell classes
-    //    [self.collectionView registerClass:[MainCollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     
     [NasaFetcher pageNumbersFrom:_searchText withCompletion:^(BOOL success, int numbers) {
         if (success) {
@@ -94,7 +88,32 @@ static CGFloat inset = 10;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
+    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationPortrait] forKey:@"orientation"];
     [self.nasaCollectionView reloadData];
+    
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate setShouldRotate:NO];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    if (self.navigationController.navigationBar.isHidden) {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    if (isSeguedFromImage) {
+        [self reverseImageAnimation];
+    }
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+
+    [self.nasaCollectionView.collectionViewLayout invalidateLayout];
 }
 
 - (void)settingStatusBackgroundColor {
@@ -103,6 +122,7 @@ static CGFloat inset = 10;
     [self.view addSubview:statusBarBackgroundView];
 }
 
+#pragma mark - Properties lazy instantiation
 // whenever our Model is set, must update our View
 - (void)setPhotosData:(NSMutableArray *)photosData {
     isPageRefreshing = NO;
@@ -125,7 +145,7 @@ static CGFloat inset = 10;
             [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"tempID" ascending:NO]]];
             [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isFetchable == YES"]];
         } else {
-            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isFetchable == YES"]]; //  AND title contains[c] %@", _searchText
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isFetchable == YES"]];
             [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"tempID" ascending:YES]]];
         }
         // Initialize Fetched Results Controller
@@ -135,7 +155,6 @@ static CGFloat inset = 10;
                                                                                                                           cacheName:nil];
         _frc = newFetchedResultsController;
         
-        //    NSError *error = nil;
         [_frc performFetch:&error];
         if (error) {
             NSLog(@"Unable to perform fetch.");
@@ -184,9 +203,6 @@ static CGFloat inset = 10;
             self.photosData = photosData;
         } else {
             [self showAlertWith:@"Error" message:@"Can't download initial data."];
-//            [self.nasaCollectionView.refreshControl removeFromSuperview];
-         //   [self.nasaCollectionView setContentOffset:CGPointZero animated:NO];
-
         }
     }];
 }
@@ -202,7 +218,7 @@ static CGFloat inset = 10;
     NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
     // Add Sort Descriptors
     [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"tempID" ascending:NO]]];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isFetchable == YES"]]; // ???
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isFetchable == YES"]];
     // Initialize Fetched Results Controller
     NSFetchedResultsController<Photo *> *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                                                          managedObjectContext:_context
@@ -222,7 +238,13 @@ static CGFloat inset = 10;
     NSLog(@"✅ setting search text: %@", text);
     if (_searchText != text) {
         _searchText = text;
-//        [self.nasaCollectionView reloadData];
+        
+        blackView = [[UIView alloc] init];
+        blackView.frame = self.view.frame;
+        blackView.backgroundColor = [UIColor blackColor];
+        blackView.alpha = 0.75;
+        [self.view insertSubview:blackView atIndex:1];
+        
         [self.spinnerWhenNextPageDownload startAnimating];
         [NasaFetcher pageNumbersFrom:_searchText withCompletion:^(BOOL success, int numbers) {
             if (success) {
@@ -234,6 +256,7 @@ static CGFloat inset = 10;
                 }
                 NSLog(@"got fucking page number!");
                 [NasaFetcher fetchPhotos:_searchText pageNumber:_pageNumber withCompletion:^(BOOL success, NSMutableArray *photosData) {
+
                     [self.spinnerWhenNextPageDownload stopAnimating];
                     if (success) {
                         self.photosData = photosData;
@@ -245,6 +268,7 @@ static CGFloat inset = 10;
                 [self.spinnerWhenNextPageDownload stopAnimating];
                 [self showAlertWith:@"Error" message:@"Can't download initial data."];
             }
+            [blackView removeFromSuperview];
         }];
     }
 }
@@ -257,7 +281,7 @@ static CGFloat inset = 10;
     if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
         UITapGestureRecognizer *gesture = (UITapGestureRecognizer *)sender;
         NSInteger index = gesture.view.tag;
-        if (index > -1) {
+        if (index >= 0) {
             // found it ... are we doing the show Image segue?
             if ([segue.identifier isEqualToString:@"showImage"]) {
                 // yes ... is the destination an ImageViewController?
@@ -268,6 +292,7 @@ static CGFloat inset = 10;
                     Photo *photoObject = [self.frc objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
                     iVC.context = moc;
                     iVC.model = photoObject;
+                    isSeguedFromImage = YES;
                     if (photoObject.isLiked && photoObject.image_big) {
                         iVC.image = [UIImage imageWithData:photoObject.image_big];
                         iVC.likeButton.selected = YES;
@@ -294,9 +319,7 @@ static CGFloat inset = 10;
                     NastarsaSingleImageVC *nSIVC = (NastarsaSingleImageVC *)segue.destinationViewController;
                     nSIVC.photoObjSetup = [self.frc objectAtIndexPath:indexPath];
                     nSIVC.photoObjSetup.image_preview = UIImageJPEGRepresentation(cell.imageView.image, 1.0);
-                    if (self.navigationController.isNavigationBarHidden) {
-                        [self.navigationController setNavigationBarHidden:NO animated:NO];
-                    }
+
                 }
             }
         }
@@ -315,7 +338,60 @@ static CGFloat inset = 10;
 }
 
 - (void)segueToImageVC:(UITapGestureRecognizer *)gestureRecognizer {
-    [self performSegueWithIdentifier: @"showImage" sender: gestureRecognizer];
+    // there main animation image code
+    
+    UITapGestureRecognizer *gesture = gestureRecognizer;
+    NSInteger index = gesture.view.tag;
+    cellForAnimation = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    
+    blackView = [[UIView alloc] init];
+    blackView.frame = self.view.frame;
+    blackView.backgroundColor = [UIColor blackColor];
+    blackView.alpha = 0;
+    [self.navigationController.view addSubview:blackView];
+    
+    provisionalImage = [[UIImageView alloc] init];
+    
+    frame = CGRectMake(0, 0, cellForAnimation.imageView.frame.size.width, cellForAnimation.imageView.frame.size.height);
+    frame = [cellForAnimation.imageView.superview convertRect:cellForAnimation.imageView.frame toView:self.view];
+    provisionalImage.frame = frame;
+
+    provisionalImage.image = cellForAnimation.imageView.image;
+    provisionalImage.contentMode = UIViewContentModeScaleAspectFill;
+    provisionalImage.clipsToBounds = YES;
+    [self.navigationController.view addSubview:provisionalImage];
+    
+    NSLog(@" %@", provisionalImage);
+    cellForAnimation.imageView.alpha = 0;
+
+    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+
+        CGFloat newImageHeight = cellForAnimation.imageView.bounds.size.width / (cellForAnimation.imageView.image.size.width / cellForAnimation.imageView.image.size.height);
+        CGFloat y = self.view.frame.size.height/2 - newImageHeight/2;
+        blackView.alpha = 1;
+        
+        [provisionalImage setFrame:CGRectMake(0, y, self.view.frame.size.width, newImageHeight)];
+        
+    } completion:^(BOOL finished){
+        provisionalImage.contentMode = UIViewContentModeScaleAspectFit;
+        [self performSegueWithIdentifier: @"showImage" sender: gestureRecognizer];
+    }];
+}
+
+- (void)reverseImageAnimation {
+    
+    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        provisionalImage.frame = frame;
+        provisionalImage.contentMode = UIViewContentModeScaleAspectFill;
+        blackView.alpha = 0;
+        
+    } completion:^(BOOL finished){
+        cellForAnimation.imageView.alpha = 1;
+        [provisionalImage removeFromSuperview];
+        [blackView removeFromSuperview];
+        isSeguedFromImage = NO;
+        NSLog(@"🏀 content offset: %@", NSStringFromCGPoint(self.nasaCollectionView.contentOffset));
+    }];
 }
 
 
@@ -362,14 +438,33 @@ static CGFloat inset = 10;
 
 #pragma mark - <UIScrollView>
 
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+
+    if (velocity.y > 0) {
+        NSLog(@"🔻 velocity: %f", velocity.y);
+        //Code will work without the animation block.I am using animation block incase if you want to set any delay to it.
+//        [UIView animateWithDuration:1 delay:0 options:0 animations:^{
+            [self.navigationController setNavigationBarHidden:YES animated:YES];
+//        } completion:^(BOOL finished) {
+//            nil;
+//        }];
+        
+    } else if (velocity.y < 0){
+        NSLog(@"🔺🔺🔺 velocity: %f", velocity.y);
+//        [UIView animateWithDuration:1 delay:0 options:0 animations:^{
+            [self.navigationController setNavigationBarHidden:NO animated:YES];
+//        } completion:^(BOOL finished) {
+//            nil;
+//        }];
+    }
+}
+
+- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView {
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
+}
+
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row > 1) {
-        [self.navigationController setNavigationBarHidden:YES animated:YES];
-    } else {
-        [self.navigationController setNavigationBarHidden:NO animated:YES];
-    }
-
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][0];
     if (indexPath.row == ([sectionInfo numberOfObjects] - 1)) {
         if (_searchBarHasText) {
@@ -406,7 +501,7 @@ static CGFloat inset = 10;
 }
 
 
-#pragma mark <UICollectionViewDelegateFlowLayout>
+#pragma mark - <UICollectionViewDelegateFlowLayout>
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout *)collectionViewLayout
@@ -422,7 +517,7 @@ static CGFloat inset = 10;
     
     CGRect estimatedSizeOfLabel = [photo.someDescription boundingRectWithSize:sizeForLabel
                                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                                   attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Book" size:12.0f] }
+                                                                   attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Book" size:13.0f] }
                                                                       context:nil];
     
     CGRect estimatedSizeOfTitle = [photo.title boundingRectWithSize:sizeForLabel
@@ -430,7 +525,7 @@ static CGFloat inset = 10;
                                                          attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"Avenir-Black" size:16.0f] }
                                                             context:nil];
     
-    CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width + 45 - 5;
+    CGFloat heightForItem = ceil(estimatedSizeOfTitle.size.height) + ceil(estimatedSizeOfLabel.size.height) + 16 + 10 + size.width + 44;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) { // Device is iPad
         size = CGSizeMake((size.width - paddingBetweenCells)/3 - inset, (size.width - paddingBetweenLines)/3 - inset + 125 + 45);
@@ -465,8 +560,6 @@ static CGFloat inset = 10;
     return paddingBetweenLines;
 }
 
-//#pragma mark - <UICollectionViewDelegate>
-
 #pragma mark - <ExpandedAndButtonsTouchedCellDelegate>
 
 - (void)readMoreButtonTouched:(NSIndexPath *)indexPath {
@@ -477,7 +570,7 @@ static CGFloat inset = 10;
     __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
     cell.readMoreButton.hidden = YES;
     cell.buttonHeightConstraint.constant = 0;
-//    cell.buttonHeightConstraint.active = YES;
+
     NSArray *indexes = [[NSArray alloc] init];
     [indexes arrayByAddingObject:indexPath];
     [UIView animateWithDuration:0.8
@@ -508,6 +601,29 @@ static CGFloat inset = 10;
     }
 }
 
+- (void)shareButtonTouched:(NSIndexPath *)indexPath {
+    
+    Photo *photo = [self.frc objectAtIndexPath:indexPath];
+    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
+
+    UIImage *imageToShare = cell.imageView.image;
+    NSString *textToShare = photo.title;
+    NSURL *urlToShare = [NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatLarge];
+    
+    NSMutableArray *activityItems = [NSMutableArray arrayWithObjects:textToShare, imageToShare, urlToShare, nil];
+    
+    UIActivityViewController *activityViewController = [[UIActivityViewController alloc]initWithActivityItems:activityItems applicationActivities:nil];
+    activityViewController.excludedActivityTypes = @[
+                                                     UIActivityTypePrint,
+                                                     UIActivityTypeCopyToPasteboard,
+                                                     UIActivityTypeAssignToContact,
+                                                     UIActivityTypeSaveToCameraRoll,
+                                                     UIActivityTypeAddToReadingList,
+                                                     UIActivityTypeAirDrop];
+    
+    [self presentViewController:activityViewController animated:YES completion:nil];
+}
+
 #pragma mark - <SearchBar Methods>
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -520,6 +636,8 @@ static CGFloat inset = 10;
     if (searchBar.text && [searchBar.text length]) {
         _searchBarHasText = YES;
         NSLog(@"✅✅✅ searching... %@", searchBar.text);
+        [self.nasaCollectionView reloadData];
+
         self.searchText = [SearchHeader multipleWordsSearchCheckAndProperUsage:(searchBar.text)];
     }
 }

@@ -17,6 +17,7 @@
 @protocol ExpandedAndButtonsTouchedCellDelegate <NSObject>
 @required
 - (void)likedButtonTouched:(NSIndexPath *)indexPath;
+- (void)shareButtonTouched:(NSIndexPath *)indexPath;
 @optional
 - (void)readMoreButtonTouched:(NSIndexPath *)indexPath;
 @end
@@ -39,6 +40,7 @@
 
 - (IBAction)readMoreTouched:(id)sender;
 - (void)configure:(Photo *)photoModel;
+- (IBAction)shareTouched:(id)sender;
 
 @end
 
