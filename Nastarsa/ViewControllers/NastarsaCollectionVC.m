@@ -10,11 +10,11 @@
 #import "MainCollectionViewCell.h"
 #import "NasaFetcher.h"
 #import "ImageViewController.h"
-#import <CoreData/CoreData.h>
-#import "Photo.h"
-#import "Photo+CoreDataProperties.h"
 #import "AppDelegate.h"
-#import "NastarsaSingleImageVC.h"
+#import "ImagesCache.h"
+
+//#import "NastarsaSingleImageVC.h"
+#import "SingleCellVC.h"
 #import "SearchHeader.h"
 
 static NSCache * imagesCache;
@@ -41,8 +41,8 @@ static CGFloat inset = 10;
 @interface NastarsaCollectionVC () <ExpandedAndButtonsTouchedCellDelegate, NSFetchedResultsControllerDelegate, UISearchBarDelegate>
 
 @property (nonatomic, assign) int pageNumber;
-@property (nonatomic, strong) NSManagedObjectContext *context;
-@property (nonatomic, strong) NSFetchedResultsController<Photo *> *frc;
+//@property (nonatomic, strong) NSManagedObjectContext *context;
+//@property (nonatomic, strong) NSFetchedResultsController<Photo *> *frc;
 @property (nonatomic, strong) NSString *searchText;
 @property (nonatomic, assign) BOOL searchBarHasText;
 
@@ -313,13 +313,12 @@ static CGFloat inset = 10;
         __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
         if (indexPath) {
             // found it ... are we doing the Display Photo segue?
-            if ([segue.identifier isEqualToString:@"showSelectedCell"]) {
+            if ([segue.identifier isEqualToString:@"showSomeSingleCell"]) {  //@"showSelectedCell"]) {
                 // yes ... is the destination an ImageViewController?
-                if ([segue.destinationViewController isKindOfClass:[NastarsaSingleImageVC class]]) {
-                    NastarsaSingleImageVC *nSIVC = (NastarsaSingleImageVC *)segue.destinationViewController;
-                    nSIVC.photoObjSetup = [self.frc objectAtIndexPath:indexPath];
-                    nSIVC.photoObjSetup.image_preview = UIImageJPEGRepresentation(cell.imageView.image, 1.0);
-
+                if ([segue.destinationViewController isKindOfClass:[SingleCellVC class]]) {
+                    SingleCellVC *nSIVC = (SingleCellVC *)segue.destinationViewController;
+                    nSIVC.photoObjSetupDouble = [self.frc objectAtIndexPath:indexPath];
+                    nSIVC.photoObjSetupDouble.image_preview = UIImageJPEGRepresentation(cell.imageView.image, 1.0);
                 }
             }
         }
@@ -338,8 +337,8 @@ static CGFloat inset = 10;
 }
 
 - (void)segueToImageVC:(UITapGestureRecognizer *)gestureRecognizer {
-    // there main animation image code
     
+    // there main animation image code
     UITapGestureRecognizer *gesture = gestureRecognizer;
     NSInteger index = gesture.view.tag;
     cellForAnimation = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
@@ -606,7 +605,17 @@ static CGFloat inset = 10;
     Photo *photo = [self.frc objectAtIndexPath:indexPath];
     __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
 
-    UIImage *imageToShare = cell.imageView.image;
+    UIImage *imageToShare;
+    
+    if (photo.image_big) {
+        imageToShare = [UIImage imageWithData:(photo.image_big)];
+    } else if ([[ImagesCache sharedInstance] getCachedImageForKey:[NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatOriginal]]) {
+        imageToShare = [[ImagesCache sharedInstance] getCachedImageForKey:[NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatOriginal]];
+    } else if ([[ImagesCache sharedInstance] getCachedImageForKey:[NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatLarge]]) {
+        imageToShare = [[ImagesCache sharedInstance] getCachedImageForKey:[NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatLarge]];
+    } else {
+       imageToShare = cell.imageView.image;
+    }
     NSString *textToShare = photo.title;
     NSURL *urlToShare = [NasaFetcher URLforPhoto:photo.nasa_id format:NasaPhotoFormatLarge];
     

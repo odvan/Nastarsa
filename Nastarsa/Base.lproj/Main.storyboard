@@ -47,7 +47,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <stackView contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="xBC-ge-TOp">
-                                                    <rect key="frame" x="16" y="427" width="343" height="86"/>
+                                                    <rect key="frame" x="16" y="427" width="343" height="91"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Picture Title " lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e5X-QZ-a9K">
                                                             <rect key="frame" x="0.0" y="0.0" width="343" height="22"/>
@@ -56,7 +56,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="749" bounces="NO" scrollEnabled="NO" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z7f-8q-f9w">
-                                                            <rect key="frame" x="0.0" y="26" width="343" height="60"/>
+                                                            <rect key="frame" x="0.0" y="26" width="343" height="65"/>
                                                             <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut </string>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
@@ -65,7 +65,7 @@
                                                     </subviews>
                                                 </stackView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h1p-GB-Ewk">
-                                                    <rect key="frame" x="272" y="515" width="87" height="15"/>
+                                                    <rect key="frame" x="272" y="520" width="87" height="15"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="15" id="4Oz-kC-XAO"/>
                                                     </constraints>
@@ -127,7 +127,7 @@
                                             <outlet property="readMoreButton" destination="h1p-GB-Ewk" id="pow-jb-KdF"/>
                                             <outlet property="shareButton" destination="JXz-qg-GbZ" id="0Eh-iD-M3d"/>
                                             <outlet property="title" destination="e5X-QZ-a9K" id="pxr-ZY-OFS"/>
-                                            <segue destination="oRO-VD-l4a" kind="show" identifier="showSelectedCell" id="NWU-ab-eoS"/>
+                                            <segue destination="hzC-v5-YQG" kind="show" identifier="showSomeSingleCell" id="tsU-Nc-kgM"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -432,6 +432,162 @@
             </objects>
             <point key="canvasLocation" x="292" y="123"/>
         </scene>
+        <!--nastarsa-->
+        <scene sceneID="mOt-p0-Wp0">
+            <objects>
+                <viewController id="hzC-v5-YQG" customClass="SingleCellVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="b1d-Gd-7aw"/>
+                        <viewControllerLayoutGuide type="bottom" id="NmS-Mc-DVL"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="f5Y-nz-5ku">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" prefetchingEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QgV-Ak-FlM">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="2fW-uG-H4r">
+                                    <size key="itemSize" width="375" height="545"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="imageCell" id="qiq-E9-Mu9" customClass="ExampleCell">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="545"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="545"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uGw-nG-EAd">
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
+                                                    <color key="backgroundColor" red="1" green="0.80392156859999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="uGw-nG-EAd" secondAttribute="height" multiplier="1:1" id="BIM-CS-oIq"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <stackView contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="OIt-T5-EOg">
+                                                    <rect key="frame" x="16" y="427" width="343" height="91"/>
+                                                    <subviews>
+                                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" text="Picture Title " lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WST-rt-TaA">
+                                                            <rect key="frame" x="0.0" y="0.0" width="343" height="22"/>
+                                                            <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="16"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <textView clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="749" bounces="NO" scrollEnabled="NO" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PgE-fW-cxY">
+                                                            <rect key="frame" x="0.0" y="26" width="343" height="65"/>
+                                                            <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut </string>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
+                                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                        </textView>
+                                                    </subviews>
+                                                </stackView>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZFH-jq-MRP">
+                                                    <rect key="frame" x="272" y="520" width="87" height="15"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="15" id="RSS-Qh-uK4"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
+                                                    <state key="normal" title="Read more ▼">
+                                                        <color key="titleColor" red="1" green="0.80392156859999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="readMoreTouched:" destination="qiq-E9-Mu9" eventType="touchUpInside" id="VnL-gh-MaV"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qy5-Hs-sQO">
+                                                    <rect key="frame" x="60" y="388" width="28" height="24"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="28" id="LpI-gf-021"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Button" image="sharing"/>
+                                                    <connections>
+                                                        <action selector="shareTouched:" destination="qiq-E9-Mu9" eventType="touchUpInside" id="dUV-9v-tkc"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HI1-dw-pSq">
+                                                    <rect key="frame" x="16" y="388" width="28" height="24"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="24" id="dBO-SG-u0I"/>
+                                                        <constraint firstAttribute="width" constant="28" id="yNX-aE-kuf"/>
+                                                    </constraints>
+                                                    <state key="normal" image="heart_empty"/>
+                                                    <state key="selected" image="heart_liked"/>
+                                                    <connections>
+                                                        <action selector="likedTouched:" destination="qiq-E9-Mu9" eventType="touchUpInside" id="Ad6-eS-oES"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                        </view>
+                                        <color key="backgroundColor" red="0.1176470588" green="0.1176470588" blue="0.1176470588" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="OIt-T5-EOg" secondAttribute="bottom" priority="750" constant="6" id="1a4-AN-28j"/>
+                                            <constraint firstItem="qy5-Hs-sQO" firstAttribute="leading" secondItem="HI1-dw-pSq" secondAttribute="trailing" constant="16" id="35I-wl-IUL"/>
+                                            <constraint firstItem="HI1-dw-pSq" firstAttribute="leading" secondItem="qiq-E9-Mu9" secondAttribute="leading" constant="16" id="4IJ-Ay-LdD"/>
+                                            <constraint firstItem="qy5-Hs-sQO" firstAttribute="bottom" secondItem="HI1-dw-pSq" secondAttribute="bottom" id="5wz-4v-FV4"/>
+                                            <constraint firstItem="ZFH-jq-MRP" firstAttribute="trailing" secondItem="OIt-T5-EOg" secondAttribute="trailing" id="ABP-23-QBW"/>
+                                            <constraint firstItem="OIt-T5-EOg" firstAttribute="top" secondItem="HI1-dw-pSq" secondAttribute="bottom" constant="15" id="DIP-fx-grX"/>
+                                            <constraint firstItem="qy5-Hs-sQO" firstAttribute="top" secondItem="HI1-dw-pSq" secondAttribute="top" id="GQx-fb-d7E"/>
+                                            <constraint firstAttribute="trailing" secondItem="OIt-T5-EOg" secondAttribute="trailing" constant="16" id="JwD-Sn-oBO"/>
+                                            <constraint firstItem="uGw-nG-EAd" firstAttribute="top" secondItem="qiq-E9-Mu9" secondAttribute="top" id="PJD-yh-nDm"/>
+                                            <constraint firstAttribute="bottom" secondItem="ZFH-jq-MRP" secondAttribute="bottom" constant="10" id="Pqv-mv-p1r"/>
+                                            <constraint firstItem="OIt-T5-EOg" firstAttribute="leading" secondItem="qiq-E9-Mu9" secondAttribute="leading" constant="16" id="UPR-Fk-GPR"/>
+                                            <constraint firstAttribute="trailing" secondItem="uGw-nG-EAd" secondAttribute="trailing" id="b2Q-pD-uXC"/>
+                                            <constraint firstItem="HI1-dw-pSq" firstAttribute="top" secondItem="uGw-nG-EAd" secondAttribute="bottom" constant="13" id="mL9-lu-GsC"/>
+                                            <constraint firstItem="ZFH-jq-MRP" firstAttribute="top" secondItem="OIt-T5-EOg" secondAttribute="bottom" constant="2" id="ucq-rb-rmA"/>
+                                            <constraint firstItem="uGw-nG-EAd" firstAttribute="leading" secondItem="qiq-E9-Mu9" secondAttribute="leading" id="xot-sp-sdc"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="buttonHeightConstraint" destination="RSS-Qh-uK4" id="gAc-OB-06O"/>
+                                            <outlet property="imageDescription" destination="PgE-fW-cxY" id="b6E-TV-6Bn"/>
+                                            <outlet property="imageView" destination="uGw-nG-EAd" id="39q-WU-5Jn"/>
+                                            <outlet property="likeButton" destination="HI1-dw-pSq" id="zxJ-RE-F7x"/>
+                                            <outlet property="readMoreButton" destination="ZFH-jq-MRP" id="QZ5-us-hHZ"/>
+                                            <outlet property="shareButton" destination="qy5-Hs-sQO" id="jCs-3F-god"/>
+                                            <outlet property="title" destination="WST-rt-TaA" id="8yN-2b-NTE"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="hzC-v5-YQG" id="mqI-P3-sBj"/>
+                                    <outlet property="delegate" destination="hzC-v5-YQG" id="I67-9D-9uD"/>
+                                </connections>
+                            </collectionView>
+                            <activityIndicatorView hidden="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GzG-Qf-1Qk">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="QgV-Ak-FlM" firstAttribute="top" secondItem="f5Y-nz-5ku" secondAttribute="top" id="WAK-wb-5G0"/>
+                            <constraint firstItem="QgV-Ak-FlM" firstAttribute="bottom" secondItem="NmS-Mc-DVL" secondAttribute="top" id="rXT-AK-7If"/>
+                            <constraint firstItem="QgV-Ak-FlM" firstAttribute="leading" secondItem="f5Y-nz-5ku" secondAttribute="leading" id="uXm-2j-FhK"/>
+                            <constraint firstItem="GzG-Qf-1Qk" firstAttribute="centerY" secondItem="f5Y-nz-5ku" secondAttribute="centerY" id="vgw-yX-lkn"/>
+                            <constraint firstItem="GzG-Qf-1Qk" firstAttribute="centerX" secondItem="f5Y-nz-5ku" secondAttribute="centerX" id="xJy-TC-zDB"/>
+                            <constraint firstAttribute="trailing" secondItem="QgV-Ak-FlM" secondAttribute="trailing" id="ycz-nR-cfJ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="nastarsa" id="76j-zw-fl4">
+                        <barButtonItem key="rightBarButtonItem" image="heart_liked_navbar" id="oIj-fk-NPh">
+                            <inset key="imageInsets" minX="0.0" minY="4" maxX="0.0" maxY="4"/>
+                            <color key="tintColor" red="1" green="0.80392156859999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="layout" destination="2fW-uG-H4r" id="iHy-3J-n2l"/>
+                        <outlet property="nasaCollectionView" destination="QgV-Ak-FlM" id="QJH-Ji-mOa"/>
+                        <outlet property="spinnerWhenNextPageDownload" destination="GzG-Qf-1Qk" id="F9m-cC-Ccj"/>
+                        <segue destination="NLZ-F1-nKb" kind="presentation" identifier="showImage" animates="NO" id="5WR-Rs-Flf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8aA-AJ-fmN" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1858" y="-260"/>
+        </scene>
     </scenes>
     <resources>
         <image name="heart_empty" width="54" height="52"/>
@@ -442,7 +598,6 @@
         <image name="x-closing_symbol" width="51" height="51"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="NWU-ab-eoS"/>
-        <segue reference="Qdl-Vu-ceg"/>
+        <segue reference="5WR-Rs-Flf"/>
     </inferredMetricsTieBreakers>
 </document>

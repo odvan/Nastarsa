@@ -8,12 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "ImageModel.h"
+#import <CoreData/CoreData.h>
+#import "Photo.h"
+#import "Photo+CoreDataProperties.h"
 
 @interface NastarsaCollectionVC : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *layout;
 @property (weak, nonatomic) IBOutlet UICollectionView *nasaCollectionView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinnerWhenNextPageDownload;
+@property (nonatomic, strong) NSManagedObjectContext *context;
+@property (nonatomic, strong) NSFetchedResultsController<Photo *> *frc;
 
 // Model of this MVC (it can be publicly set)
 @property (nonatomic, strong) NSMutableArray *photosData;
