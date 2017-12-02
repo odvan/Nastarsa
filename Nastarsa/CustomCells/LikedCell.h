@@ -15,6 +15,8 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UILabel *imageTitle;
+@property (nonatomic, assign) BOOL isSelectable;
+@property (strong, nonatomic) UIImageView *checkView;
 
 - (void)configure:(Photo *)photo;
 

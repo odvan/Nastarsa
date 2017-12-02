@@ -95,7 +95,6 @@
         if (_tempImage) {
             NSLog(@"🔵🛑 tempImage imageView");
             _imageView = [[UIImageView alloc] initWithImage:self.tempImage];
-//            [self updateMinZoomScaleForSize:self.view.bounds.size];
         } else {
             _imageView = [[UIImageView alloc] init];
         }

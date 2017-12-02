@@ -22,6 +22,8 @@
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     self.context = appDelegate.persistentContainer.newBackgroundContext;
     self.context.automaticallyMergesChangesFromParent = YES;
+    
+    self.title = @"photo";
 }
 
 - (void)viewWillAppear:(BOOL)animated {

@@ -378,7 +378,6 @@
                                         <connections>
                                             <outlet property="imageTitle" destination="uHo-WK-lvI" id="m5W-M8-8V6"/>
                                             <outlet property="imageView" destination="vkj-xv-r7f" id="ypL-Pu-5OH"/>
-                                            <segue destination="oRO-VD-l4a" kind="show" identifier="showSingleCell" id="cG4-F8-Hc0"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -399,6 +398,7 @@
                     <connections>
                         <outlet property="layout" destination="5Ul-bO-ZmE" id="Jhu-DI-cIK"/>
                         <outlet property="likedImagesCollectionView" destination="NDG-NM-vMG" id="zU6-Oz-OQ4"/>
+                        <segue destination="oRO-VD-l4a" kind="show" identifier="showSingleCell" id="fKh-7a-eYb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Uvl-HS-X4C" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -593,7 +593,7 @@
         <image name="heart_empty" width="54" height="52"/>
         <image name="heart_liked" width="54" height="52"/>
         <image name="heart_liked_navbar" width="27" height="25"/>
-        <image name="heart_liked_stroke" width="52" height="48"/>
+        <image name="heart_liked_stroke" width="51" height="48"/>
         <image name="sharing" width="55" height="46"/>
         <image name="x-closing_symbol" width="51" height="51"/>
     </resources>

@@ -22,20 +22,29 @@ UILabel *noPhoto;
 
 @interface LikedImagesVC () <NSFetchedResultsControllerDelegate>
 
-@property (nonatomic, strong) NSArray <Photo *> *likedPhotoArray;
+//@property (nonatomic, strong) NSArray <Photo *> *likedPhotoArray;
 @property (nonatomic, strong) NSFetchedResultsController<Photo *> *frc;
 @property (nonatomic, strong) NSBlockOperation *blockOperation;
 @property (nonatomic, assign) BOOL shouldReloadCollectionView;
+@property (nonatomic, assign) BOOL isSelectingPhotos;
+@property (nonatomic, strong) NSMutableArray <Photo *> *addingSelectedPhotoObjects;
 
 @end
 
 @implementation LikedImagesVC
 
+UIBarButtonItem *item1;
+UIBarButtonItem *item2;
+
+#pragma mark - View Controller Lifecycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     _likedImagesCollectionView.alwaysBounceVertical = YES;
+    [self toolBarSetup];
 }
+
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -43,6 +52,9 @@ UILabel *noPhoto;
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate setShouldRotate:YES];
 }
+
+
+#pragma mark - Properties lazy instantiation
 
 - (NSFetchedResultsController<Photo *> *)frc {
     NSLog(@"NSFetchedResultsController triggered");
@@ -76,27 +88,59 @@ UILabel *noPhoto;
     return _frc;
 }
 
-- (void)loadingLikedPhoto {
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    _context = appDelegate.persistentContainer.viewContext;
-    if (_context) {
-        [_context performBlock:^{
-            NSLog(@"Running on %@ thread (liked VC)", [NSThread currentThread]);
-            NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
-            fetchRequest.predicate = nil;
-            NSError *error = nil;
-            _likedPhotoArray = [_context executeFetchRequest:fetchRequest error:&error];
-            NSUInteger count = [_context countForFetchRequest:fetchRequest error:&error];
-            NSLog(@"%lu liked images", (unsigned long) count);
-            if (count > 0) {
-                [noPhoto removeFromSuperview];
-                [self.likedImagesCollectionView reloadData];
-            } else {
-                [self noPhotoMessage];
-                [self.likedImagesCollectionView reloadData];
-            }
-        }];
+- (NSMutableArray <Photo *> *)addingSelectedPhotoObjects {
+    
+    if (_addingSelectedPhotoObjects != nil) {
+        return _addingSelectedPhotoObjects;
     }
+    NSMutableArray <Photo *> *array = [[NSMutableArray alloc] init];
+    _addingSelectedPhotoObjects = array;
+    
+    return _addingSelectedPhotoObjects;
+}
+
+#pragma mark - <Methods and Actions>
+
+- (void)selectPhotos {
+  
+    self.isSelectingPhotos = !self.isSelectingPhotos;
+    NSLog(@"🔴 selecting photos %s", self.isSelectingPhotos ? "true" : "false");
+    
+    self.navigationItem.rightBarButtonItem.title = self.isSelectingPhotos ? @"Cancel" : @"Select";
+    self.likedImagesCollectionView.allowsMultipleSelection = self.isSelectingPhotos;
+    [self.navigationController setToolbarHidden:!self.isSelectingPhotos];
+    item1.enabled = NO;
+    item2.enabled = NO;
+    [self.navigationItem setHidesBackButton:self.isSelectingPhotos animated:NO];
+    
+    [self.likedImagesCollectionView selectItemAtIndexPath:nil
+                                                 animated:NO
+                                           scrollPosition:UICollectionViewScrollPositionNone];
+    self.title = self.isSelectingPhotos ? @"Select photo" : @"liked";
+    if (!self.isSelectingPhotos) {
+        [_addingSelectedPhotoObjects removeAllObjects];
+    }
+}
+
+- (void)updateSharePhotoCount {
+    self.title = [NSString stringWithFormat:@"%lu photo selected", (unsigned long)_addingSelectedPhotoObjects.count];
+}
+
+- (void)toolBarSetup {
+    UIImage *shareImage = [UIImage imageNamed:@"sharing-50"];
+    UIBarButtonItem *flexibleItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+    item1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(removeSelectedPhoto)];
+    item2 = [[UIBarButtonItem alloc] initWithImage:shareImage style:UIBarButtonItemStylePlain target:self action:@selector(shareSelectedPhoto)];
+    [item1 setEnabled:NO];
+    [item2 setEnabled:NO];
+    NSArray *items = [NSArray arrayWithObjects:item2, flexibleItem, item1, nil];
+    self.toolbarItems = items;
+    [self.navigationController.toolbar setTintColor:[UIColor whiteColor]];
+    [self.navigationController.toolbar setBarTintColor:[UIColor blackColor]];
+    [self.navigationController.toolbar setBackgroundColor:[UIColor blackColor]];
+    [self.navigationController.toolbar setBarStyle:UIBarStyleBlack];
+    [self.navigationController.toolbar setTranslucent:NO];
+//    [self.navigationController.toolbar setUserInteractionEnabled:NO];
 }
 
 - (void)noPhotoMessage {
@@ -106,6 +150,56 @@ UILabel *noPhoto;
     [noPhoto setTextColor:[UIColor whiteColor]];
     [noPhoto setTextAlignment:NSTextAlignmentCenter];
     [self.view addSubview:noPhoto];
+}
+
+- (void)shareSelectedPhoto {
+    
+    if (_addingSelectedPhotoObjects.count > 0) {
+        NSMutableArray <UIImage *> *arrayOfImagesToShare = [[NSMutableArray alloc] init];
+        
+        for (Photo *imageToShare in _addingSelectedPhotoObjects) {
+            NSLog(@"image %@", imageToShare.image_big);
+            UIImage *image = [UIImage imageWithData:imageToShare.image_big ? imageToShare.image_big : imageToShare.image_preview];
+            [arrayOfImagesToShare addObject:image];
+        }
+        
+        NSLog(@"array %@", arrayOfImagesToShare);
+        
+        UIActivityViewController *activityViewController = [[UIActivityViewController alloc]initWithActivityItems:arrayOfImagesToShare applicationActivities:nil];
+//        activityViewController.excludedActivityTypes = @[
+//                                                         UIActivityTypePrint,
+//                                                         UIActivityTypeCopyToPasteboard,
+//                                                         UIActivityTypeAssignToContact,
+//                                                         UIActivityTypeSaveToCameraRoll,
+//                                                         UIActivityTypeAddToReadingList,
+//                                                         UIActivityTypeAirDrop];
+        
+        [self presentViewController:activityViewController animated:YES completion:nil];
+    }
+    [item1 setEnabled:NO];
+    [item2 setEnabled:NO];
+}
+
+- (void)removeSelectedPhoto {
+    NSLog(@"HUPCA");
+    if (_addingSelectedPhotoObjects.count > 0) {
+        NSLog(@"HUPCA in the nest");
+        for (Photo *liked in _addingSelectedPhotoObjects) {
+            [Photo deleteLikedPhotoFrom:liked inContext:_context];
+        }
+    }
+    [_addingSelectedPhotoObjects removeAllObjects];
+    [self updateSharePhotoCount];
+    [item1 setEnabled:NO];
+    [item2 setEnabled:NO];
+}
+
+- (void)allLikedDeleted {
+    self.isSelectingPhotos = !self.isSelectingPhotos;
+    NSLog(@"◀︎▶︎ selecting photos %s", self.isSelectingPhotos ? "true" : "false");
+    [self.navigationController setToolbarHidden:YES];
+    [self.navigationItem setHidesBackButton:NO animated:NO];
+    self.title = @"liked";
 }
 
 #pragma mark - <UICollectionViewDataSource>
@@ -118,7 +212,11 @@ UILabel *noPhoto;
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][section];
     if ([sectionInfo numberOfObjects] == 0) {
         [self noPhotoMessage];
+        self.navigationItem.rightBarButtonItem = nil;
+        [self allLikedDeleted];
     } else {
+        UIBarButtonItem *select = [[UIBarButtonItem alloc] initWithTitle:@"Select" style:UIBarButtonItemStylePlain target:self action:@selector(selectPhotos)];
+        [self.navigationItem setRightBarButtonItem:select animated:NO];
         [noPhoto removeFromSuperview];
     }
     return [sectionInfo numberOfObjects];
@@ -130,7 +228,7 @@ UILabel *noPhoto;
     cell.layer.shouldRasterize = YES;
     cell.layer.rasterizationScale = [UIScreen mainScreen].scale;
     
-    Photo *likedPhoto = [self.frc objectAtIndexPath:indexPath];//_likedPhotoArray[indexPath.row];
+    Photo *likedPhoto = [self.frc objectAtIndexPath:indexPath];
 
     if (likedPhoto != nil) {
         NSLog(@"%@", likedPhoto.title);
@@ -139,7 +237,7 @@ UILabel *noPhoto;
     return cell;
 }
 
-#pragma mark <UICollectionViewDelegateFlowLayout>
+#pragma mark - <UICollectionViewDelegateFlowLayout>
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout *)collectionViewLayout
@@ -162,6 +260,54 @@ UILabel *noPhoto;
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return paddingBetweenLines;
+}
+
+#pragma mark - <UICollectionViewDelegate>
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    __weak LikedCell *someCell = (LikedCell*)[self.likedImagesCollectionView cellForItemAtIndexPath:indexPath];
+    
+    if (self.isSelectingPhotos) {
+        someCell.isSelectable = YES;
+    }
+    return YES;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    __weak LikedCell *someCell = (LikedCell*)[self.likedImagesCollectionView cellForItemAtIndexPath:indexPath];
+    Photo *selected = [self.frc objectAtIndexPath:indexPath];
+    
+    if (!self.isSelectingPhotos) {
+        [self performSegueWithIdentifier: @"showSingleCell" sender: someCell];
+    } else {
+        [self.addingSelectedPhotoObjects addObject:selected];
+        [self updateSharePhotoCount];
+        if (self.addingSelectedPhotoObjects.count > 0) {
+            NSLog(@"hey");
+            item1.enabled = YES;
+            item2.enabled = YES;
+        }
+    }
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (self.isSelectingPhotos) {
+        __weak LikedCell *someCell = (LikedCell*)[self.likedImagesCollectionView cellForItemAtIndexPath:indexPath];
+        someCell.isSelectable = NO;
+        Photo *deSelected = [self.frc objectAtIndexPath:indexPath];
+        NSInteger index = [self.addingSelectedPhotoObjects indexOfObject:deSelected];
+        if (index >= 0) {
+            [self.addingSelectedPhotoObjects removeObjectAtIndex:index];
+            [self updateSharePhotoCount];
+        }
+//        item1.enabled = self.addingSelectedPhotoObjects.count > 0 ? YES : NO;
+//        item2.enabled = self.addingSelectedPhotoObjects.count > 0 ? YES : NO;
+    }
+    item1.enabled = self.addingSelectedPhotoObjects.count > 0 ? YES : NO;
+    item2.enabled = self.addingSelectedPhotoObjects.count > 0 ? YES : NO;
 }
 
 #pragma mark - Navigation

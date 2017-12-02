@@ -622,13 +622,13 @@ static CGFloat inset = 10;
     NSMutableArray *activityItems = [NSMutableArray arrayWithObjects:textToShare, imageToShare, urlToShare, nil];
     
     UIActivityViewController *activityViewController = [[UIActivityViewController alloc]initWithActivityItems:activityItems applicationActivities:nil];
-    activityViewController.excludedActivityTypes = @[
-                                                     UIActivityTypePrint,
-                                                     UIActivityTypeCopyToPasteboard,
-                                                     UIActivityTypeAssignToContact,
-                                                     UIActivityTypeSaveToCameraRoll,
-                                                     UIActivityTypeAddToReadingList,
-                                                     UIActivityTypeAirDrop];
+//    activityViewController.excludedActivityTypes = @[
+//                                                     UIActivityTypePrint,
+//                                                     UIActivityTypeCopyToPasteboard,
+//                                                     UIActivityTypeAssignToContact,
+//                                                     UIActivityTypeSaveToCameraRoll,
+//                                                     UIActivityTypeAddToReadingList,
+//                                                     UIActivityTypeAirDrop];
     
     [self presentViewController:activityViewController animated:YES completion:nil];
 }
