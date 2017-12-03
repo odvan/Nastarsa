@@ -68,24 +68,24 @@
 - (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
     
-        if (self.selected) {
-            NSLog(@"SELECTED");
-
-            if (_isSelectable) {
-
+    if (self.selected) {
+        NSLog(@"SELECTED");
+        
+        if (_isSelectable) {
+            
             NSLog(@"SELECTED & _isSelectable");
             self.imageView.alpha = 0.4;
             self.checkView.hidden = NO;
         }
-        } else {
-            if (_isSelectable) {
-                NSLog(@"DE-SELECTED");
-                _isSelectable = NO;
-                self.layer.borderWidth = 0;
-                self.imageView.alpha = 1.0;
-                self.checkView.hidden = YES;
-            }
+    } else {
+        if (_isSelectable) {
+            NSLog(@"DE-SELECTED");
+            _isSelectable = NO;
+            self.layer.borderWidth = 0;
+            self.imageView.alpha = 1.0;
+            self.checkView.hidden = YES;
         }
+    }
 }
 
 

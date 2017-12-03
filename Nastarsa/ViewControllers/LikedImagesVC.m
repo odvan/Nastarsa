@@ -155,6 +155,7 @@ UIBarButtonItem *item2;
 - (void)shareSelectedPhoto {
     
     if (_addingSelectedPhotoObjects.count > 0) {
+        
         NSMutableArray <UIImage *> *arrayOfImagesToShare = [[NSMutableArray alloc] init];
         
         for (Photo *imageToShare in _addingSelectedPhotoObjects) {

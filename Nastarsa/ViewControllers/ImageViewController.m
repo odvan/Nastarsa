@@ -95,6 +95,7 @@
         if (_tempImage) {
             NSLog(@"🔵🛑 tempImage imageView");
             _imageView = [[UIImageView alloc] initWithImage:self.tempImage];
+            NSLog(@"image frame %@", NSStringFromCGRect(_imageView.frame));
         } else {
             _imageView = [[UIImageView alloc] init];
         }
