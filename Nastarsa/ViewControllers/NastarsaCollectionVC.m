@@ -293,13 +293,18 @@ static CGFloat inset = 10;
                     iVC.context = moc;
                     iVC.model = photoObject;
                     isSeguedFromImage = YES;
+                    UIImageView *imgView = (UIImageView *)gesture.view;
+                    //settin temp frame for animation
+                    CGRect tempFrame = CGRectMake(0, 0, imgView.frame.size.width, imgView.frame.size.height);
+                    tempFrame = [imgView.superview convertRect:imgView.frame toView:self.view];
+                    iVC.tempImageFrame = tempFrame; // good so far
+                    iVC.tempImage = imgView.image; // provisional
                     if (photoObject.isLiked && photoObject.image_big) {
                         iVC.image = [UIImage imageWithData:photoObject.image_big];
                         iVC.likeButton.selected = YES;
                         NSLog(@"🔴 model liked %s", iVC.model.isLiked ? "true" : "false");
                     } else {
-                        UIImageView *imgView = (UIImageView *)gesture.view;
-                        iVC.tempImage = imgView.image;
+//                        iVC.tempImage = imgView.image;
                         iVC.imageURL = [NasaFetcher URLforPhoto:photoObject.nasa_id format:NasaPhotoFormatLarge];
                         iVC.likeButton.selected = photoObject.isLiked;
                     }

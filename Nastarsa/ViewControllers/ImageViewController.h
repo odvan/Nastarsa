@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) UIImage *tempImage;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, assign) CGRect tempImageFrame;
 
 @property (nonatomic, strong) Photo *model;
 @property (nonatomic, strong) NSManagedObjectContext *context;

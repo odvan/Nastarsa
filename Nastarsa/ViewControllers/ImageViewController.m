@@ -22,6 +22,8 @@
 
 @implementation ImageViewController
 
+UIImageView *animationImage;
+
 #pragma mark - View Controller Lifecycle
 
 - (void)viewDidLoad {
@@ -50,6 +52,31 @@
 - (BOOL)prefersStatusBarHidden {
     return YES;
 }
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+//    animationImage = [[UIImageView alloc] initWithImage:_tempImage];
+//    animationImage.frame = _tempImageFrame;
+//    animationImage.contentMode = UIViewContentModeScaleAspectFill;
+//    animationImage.clipsToBounds = YES;
+//    [self.view insertSubview:animationImage atIndex:1];
+//    NSLog(@"♥️ animationImage frame %@", NSStringFromCGRect(animationImage.frame));
+//    
+//    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+//        
+//        CGFloat newImageHeight = animationImage.bounds.size.width / (animationImage.image.size.width / animationImage.image.size.height);
+//        CGFloat y = self.view.frame.size.height/2 - newImageHeight/2;
+//        
+//        [animationImage setFrame:CGRectMake(0, y, self.view.frame.size.width, newImageHeight)];
+//        NSLog(@"♥️♠️ animationImage frame after %@", NSStringFromCGRect(animationImage.frame));
+//
+//    } completion:^(BOOL finished){
+//        animationImage.contentMode = UIViewContentModeScaleAspectFit;
+//    }];
+}
+
+#pragma mark - Actions
 
 - (IBAction)tappeLikedButton:(id)sender {
     
@@ -95,7 +122,7 @@
         if (_tempImage) {
             NSLog(@"🔵🛑 tempImage imageView");
             _imageView = [[UIImageView alloc] initWithImage:self.tempImage];
-            NSLog(@"image frame %@", NSStringFromCGRect(_imageView.frame));
+//            NSLog(@"image frame %@", NSStringFromCGRect(_imageView.frame));
         } else {
             _imageView = [[UIImageView alloc] init];
         }
@@ -116,7 +143,6 @@
     NSLog(@"Running on %@ setting image in IVC", [NSThread currentThread]);
     _scrollView.zoomScale = 1.0;
     self.imageView.image = image; // does not change the frame of the UIImageView
-
     self.imageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
     NSLog(@"🎱 image size: width %f, height %f", self.imageView.image.size.width, self.imageView.image.size.height);
     self.scrollView.contentSize = self.image ? self.image.size : CGSizeZero;
@@ -144,6 +170,8 @@
         if (image && httpResponse.statusCode != 404) {
             [self.spinner stop];
             self.image = image;
+            NSLog(@"⭕️ ⭕️ ⭕️ removing");
+            [animationImage removeFromSuperview]; // ???
         } else {
             NSLog(@"✅ %@", self.model.nasa_id);
             _imageURL = [NasaFetcher URLforPhoto:self.model.nasa_id format:NasaPhotoFormatOriginal];
@@ -154,8 +182,11 @@
                     self.image = image;
                 } else {
                     [self.spinner stop];
-                    self.imageView.image = self.tempImage;
+                    self.image = self.tempImage;
+//                    self.imageView.image = self.tempImage;
                 }
+                NSLog(@"✝️ ✝️ ✝️ removing");
+                [animationImage removeFromSuperview]; // ???
             }];
         }
     }];

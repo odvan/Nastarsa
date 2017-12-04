@@ -212,10 +212,10 @@
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X5P-mv-uVJ">
-                                <rect key="frame" x="20" y="20" width="20" height="20"/>
+                                <rect key="frame" x="24" y="24" width="25" height="25"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="X5P-mv-uVJ" secondAttribute="height" multiplier="1:1" id="0Qd-FX-bbr"/>
-                                    <constraint firstAttribute="width" constant="20" id="WS2-TU-9G2"/>
+                                    <constraint firstAttribute="width" constant="25" id="WS2-TU-9G2"/>
                                 </constraints>
                                 <state key="normal" image="x-closing_symbol"/>
                                 <connections>
@@ -238,13 +238,13 @@
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="0id-xY-eiQ" firstAttribute="top" secondItem="5zu-PW-iWX" secondAttribute="bottom" id="4Yr-Gm-oOe"/>
-                            <constraint firstItem="X5P-mv-uVJ" firstAttribute="top" secondItem="GdY-qx-Wgp" secondAttribute="top" constant="20" id="9l8-GY-KMg"/>
+                            <constraint firstItem="X5P-mv-uVJ" firstAttribute="top" secondItem="GdY-qx-Wgp" secondAttribute="top" constant="24" id="9l8-GY-KMg"/>
                             <constraint firstAttribute="trailing" secondItem="5zu-PW-iWX" secondAttribute="trailing" id="Gcy-A3-ltE"/>
                             <constraint firstItem="0id-xY-eiQ" firstAttribute="top" secondItem="xyM-rw-N1C" secondAttribute="bottom" constant="26" id="NLK-nu-q3K"/>
                             <constraint firstItem="5zu-PW-iWX" firstAttribute="leading" secondItem="GdY-qx-Wgp" secondAttribute="leading" id="jxS-3S-qqb"/>
                             <constraint firstItem="xyM-rw-N1C" firstAttribute="centerX" secondItem="GdY-qx-Wgp" secondAttribute="centerX" id="lsY-BK-lCT"/>
                             <constraint firstItem="5zu-PW-iWX" firstAttribute="top" secondItem="GdY-qx-Wgp" secondAttribute="top" id="r85-1y-MO4"/>
-                            <constraint firstItem="X5P-mv-uVJ" firstAttribute="leading" secondItem="GdY-qx-Wgp" secondAttribute="leading" constant="20" id="sYx-mv-SpV"/>
+                            <constraint firstItem="X5P-mv-uVJ" firstAttribute="leading" secondItem="GdY-qx-Wgp" secondAttribute="leading" constant="24" id="sYx-mv-SpV"/>
                         </constraints>
                     </view>
                     <connections>
