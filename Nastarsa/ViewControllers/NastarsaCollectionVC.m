@@ -41,8 +41,6 @@ static CGFloat inset = 10;
 @interface NastarsaCollectionVC () <ExpandedAndButtonsTouchedCellDelegate, NSFetchedResultsControllerDelegate, UISearchBarDelegate>
 
 @property (nonatomic, assign) int pageNumber;
-//@property (nonatomic, strong) NSManagedObjectContext *context;
-//@property (nonatomic, strong) NSFetchedResultsController<Photo *> *frc;
 @property (nonatomic, strong) NSString *searchText;
 @property (nonatomic, assign) BOOL searchBarHasText;
 
@@ -60,6 +58,8 @@ static CGFloat inset = 10;
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     _context = appDelegate.persistentContainer.viewContext;
     _context.automaticallyMergesChangesFromParent = YES;
+    
+    [appDelegate setShouldRotate:NO];
     
     moc = appDelegate.persistentContainer.newBackgroundContext;
     
@@ -90,9 +90,6 @@ static CGFloat inset = 10;
 
     [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationPortrait] forKey:@"orientation"];
     [self.nasaCollectionView reloadData];
-    
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [appDelegate setShouldRotate:NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -103,16 +100,16 @@ static CGFloat inset = 10;
     }
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    
-    if (isSeguedFromImage) {
-        [self reverseImageAnimation];
-    }
-}
+//- (void)viewDidAppear:(BOOL)animated {
+////    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+////    [appDelegate setShouldRotate:NO];
+//    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationPortrait] forKey:@"orientation"];
+//
+//}
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
-
+    NSLog(@"❌ ❌ ❌");
     [self.nasaCollectionView.collectionViewLayout invalidateLayout];
 }
 
@@ -289,7 +286,7 @@ static CGFloat inset = 10;
                     // yes ... then we know how to prepare for that segue!
 //                    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
                     ImageViewController *iVC = (ImageViewController *)segue.destinationViewController;
-                    Photo *photoObject = [self.frc objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+                    Photo *photoObject = [_frc objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
                     iVC.context = moc;
                     iVC.model = photoObject;
                     isSeguedFromImage = YES;
@@ -344,59 +341,59 @@ static CGFloat inset = 10;
 - (void)segueToImageVC:(UITapGestureRecognizer *)gestureRecognizer {
     
     // there main animation image code
-    UITapGestureRecognizer *gesture = gestureRecognizer;
-    NSInteger index = gesture.view.tag;
-    cellForAnimation = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    
-    blackView = [[UIView alloc] init];
-    blackView.frame = self.view.frame;
-    blackView.backgroundColor = [UIColor blackColor];
-    blackView.alpha = 0;
-    [self.navigationController.view addSubview:blackView];
-    
-    provisionalImage = [[UIImageView alloc] init];
-    
-    frame = CGRectMake(0, 0, cellForAnimation.imageView.frame.size.width, cellForAnimation.imageView.frame.size.height);
-    frame = [cellForAnimation.imageView.superview convertRect:cellForAnimation.imageView.frame toView:self.view];
-    provisionalImage.frame = frame;
-
-    provisionalImage.image = cellForAnimation.imageView.image;
-    provisionalImage.contentMode = UIViewContentModeScaleAspectFill;
-    provisionalImage.clipsToBounds = YES;
-    [self.navigationController.view addSubview:provisionalImage];
-    
-    NSLog(@" %@", provisionalImage);
-    cellForAnimation.imageView.alpha = 0;
-
-    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-
-        CGFloat newImageHeight = cellForAnimation.imageView.bounds.size.width / (cellForAnimation.imageView.image.size.width / cellForAnimation.imageView.image.size.height);
-        CGFloat y = self.view.frame.size.height/2 - newImageHeight/2;
-        blackView.alpha = 1;
-        
-        [provisionalImage setFrame:CGRectMake(0, y, self.view.frame.size.width, newImageHeight)];
-        
-    } completion:^(BOOL finished){
-        provisionalImage.contentMode = UIViewContentModeScaleAspectFit;
+//    UITapGestureRecognizer *gesture = gestureRecognizer;
+//    NSInteger index = gesture.view.tag;
+//    cellForAnimation = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+//    
+//    blackView = [[UIView alloc] init];
+//    blackView.frame = self.view.frame;
+//    blackView.backgroundColor = [UIColor blackColor];
+//    blackView.alpha = 0;
+//    [self.navigationController.view addSubview:blackView];
+//    
+//    provisionalImage = [[UIImageView alloc] init];
+//    
+//    frame = CGRectMake(0, 0, cellForAnimation.imageView.frame.size.width, cellForAnimation.imageView.frame.size.height);
+//    frame = [cellForAnimation.imageView.superview convertRect:cellForAnimation.imageView.frame toView:self.view];
+//    provisionalImage.frame = frame;
+//
+//    provisionalImage.image = cellForAnimation.imageView.image;
+//    provisionalImage.contentMode = UIViewContentModeScaleAspectFill;
+//    provisionalImage.clipsToBounds = YES;
+//    [self.navigationController.view addSubview:provisionalImage];
+//    
+//    NSLog(@" %@", provisionalImage);
+//    cellForAnimation.imageView.alpha = 0;
+//
+//    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+//
+//        CGFloat newImageHeight = cellForAnimation.imageView.bounds.size.width / (cellForAnimation.imageView.image.size.width / cellForAnimation.imageView.image.size.height);
+//        CGFloat y = self.view.frame.size.height/2 - newImageHeight/2;
+//        blackView.alpha = 1;
+//        
+//        [provisionalImage setFrame:CGRectMake(0, y, self.view.frame.size.width, newImageHeight)];
+//        
+//    } completion:^(BOOL finished){
+//        provisionalImage.contentMode = UIViewContentModeScaleAspectFit;
         [self performSegueWithIdentifier: @"showImage" sender: gestureRecognizer];
-    }];
+//    }];
 }
 
-- (void)reverseImageAnimation {
-    
-    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        provisionalImage.frame = frame;
-        provisionalImage.contentMode = UIViewContentModeScaleAspectFill;
-        blackView.alpha = 0;
-        
-    } completion:^(BOOL finished){
-        cellForAnimation.imageView.alpha = 1;
-        [provisionalImage removeFromSuperview];
-        [blackView removeFromSuperview];
-        isSeguedFromImage = NO;
-        NSLog(@"🏀 content offset: %@", NSStringFromCGPoint(self.nasaCollectionView.contentOffset));
-    }];
-}
+//- (void)reverseImageAnimation {
+//    
+//    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+//        provisionalImage.frame = frame;
+//        provisionalImage.contentMode = UIViewContentModeScaleAspectFill;
+//        blackView.alpha = 0;
+//        
+//    } completion:^(BOOL finished){
+//        cellForAnimation.imageView.alpha = 1;
+//        [provisionalImage removeFromSuperview];
+//        [blackView removeFromSuperview];
+//        isSeguedFromImage = NO;
+//        NSLog(@"🏀 content offset: %@", NSStringFromCGPoint(self.nasaCollectionView.contentOffset));
+//    }];
+//}
 
 
 #pragma mark - <UICollectionViewDataSource>

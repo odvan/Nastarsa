@@ -255,7 +255,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zrF-eE-jjV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2506" y="147"/>
+            <point key="canvasLocation" x="2532" y="126"/>
         </scene>
         <!--Nastarsa Single ImageVC-->
         <scene sceneID="IQB-qH-nN7">
@@ -575,6 +575,9 @@
                         <barButtonItem key="rightBarButtonItem" image="heart_liked_navbar" id="oIj-fk-NPh">
                             <inset key="imageInsets" minX="0.0" minY="4" maxX="0.0" maxY="4"/>
                             <color key="tintColor" red="1" green="0.80392156859999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <segue destination="yZ6-u9-XbP" kind="show" id="mrY-Te-44k"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
@@ -599,5 +602,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="5WR-Rs-Flf"/>
+        <segue reference="mrY-Te-44k"/>
     </inferredMetricsTieBreakers>
 </document>

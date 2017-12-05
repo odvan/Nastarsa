@@ -42,14 +42,19 @@ UIBarButtonItem *item2;
     
     _likedImagesCollectionView.alwaysBounceVertical = YES;
     [self toolBarSetup];
+    
 }
-
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [appDelegate setShouldRotate:YES];
+    [self allowRotation:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    NSLog(@"🎾🎾🎾🎾🎾");
+    [self allowRotation:NO];
 }
 
 
@@ -204,6 +209,11 @@ UIBarButtonItem *item2;
     [self.addingSelectedPhotoObjects removeAllObjects];
     [self updateSharePhotoCount];
     self.isSelectingPhotos = !self.isSelectingPhotos;
+}
+
+- (void)allowRotation:(BOOL)yesOrNo {
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    appDelegate.shouldRotate = yesOrNo;
 }
 
 

@@ -29,23 +29,31 @@ UIImageView *animationImage;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [appDelegate setShouldRotate:YES];
+    [self allowRotation:YES];
+    
     NSLog(@"we there, scroller bounds size: %f, %f", self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
     [self.scrollView addSubview:self.imageView];
+    self.imageView.hidden = YES;
     [self settingGestures];
+    
+    animationImage = [[UIImageView alloc] initWithImage:_tempImage];
+    animationImage.frame = _tempImageFrame;
+    animationImage.contentMode = UIViewContentModeScaleAspectFill;
+    animationImage.clipsToBounds = YES;
+    [self.view insertSubview:animationImage atIndex:1];
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    NSLog(@"scroller bounds size (viewDidLayoutSubviews): %f, %f", self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
+    
+    NSLog(@"🏈 layout subviews, scroller bounds size): %f, %f", self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
     if (self.image) {
         NSLog(@"🔴🔵🔴");
         [self updateMinZoomScaleForSize:self.view.bounds.size];
     }
     
     if ([self.view.subviews containsObject:self.spinner.indicator]) {
-        self.spinner.indicator.center = self.view.center; //_imageView.center;
+        self.spinner.indicator.center = self.view.center; //_imageView.center; ???
     }
 }
 
@@ -55,28 +63,39 @@ UIImageView *animationImage;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
+    NSLog(@"♥️ animationImage frame %@", NSStringFromCGRect(animationImage.frame));
     
-//    animationImage = [[UIImageView alloc] initWithImage:_tempImage];
-//    animationImage.frame = _tempImageFrame;
-//    animationImage.contentMode = UIViewContentModeScaleAspectFill;
-//    animationImage.clipsToBounds = YES;
-//    [self.view insertSubview:animationImage atIndex:1];
-//    NSLog(@"♥️ animationImage frame %@", NSStringFromCGRect(animationImage.frame));
-//    
-//    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-//        
-//        CGFloat newImageHeight = animationImage.bounds.size.width / (animationImage.image.size.width / animationImage.image.size.height);
-//        CGFloat y = self.view.frame.size.height/2 - newImageHeight/2;
-//        
-//        [animationImage setFrame:CGRectMake(0, y, self.view.frame.size.width, newImageHeight)];
-//        NSLog(@"♥️♠️ animationImage frame after %@", NSStringFromCGRect(animationImage.frame));
-//
-//    } completion:^(BOOL finished){
-//        animationImage.contentMode = UIViewContentModeScaleAspectFit;
-//    }];
+    if (_tempImage) {
+        [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            
+            CGFloat newImageHeight = animationImage.bounds.size.width / (animationImage.image.size.width / animationImage.image.size.height);
+            CGFloat y = self.view.frame.size.height/2 - newImageHeight/2;
+            
+            if (newImageHeight > self.view.bounds.size.height) {
+                CGFloat newImageWidth = (self.view.bounds.size.height/newImageHeight) * animationImage.bounds.size.width;
+                CGFloat x = self.view.frame.size.width/2 - newImageWidth/2;
+                [animationImage setFrame:CGRectMake(x, 0, newImageWidth, self.view.frame.size.height)];
+            } else {
+                [animationImage setFrame:CGRectMake(0, y, self.view.frame.size.width, newImageHeight)];
+                NSLog(@"♥️♠️ animationImage frame after %@", NSStringFromCGRect(animationImage.frame));
+            }
+            
+        } completion:^(BOOL finished){
+            [self.spinner setupWith:self.view];
+            animationImage.contentMode = UIViewContentModeScaleAspectFit;
+            self.imageView.hidden = NO;
+            if (self.imageView.image) {
+                animationImage.hidden = YES;
+                [self.spinner stop];
+            }
+        }];
+    } else {
+        self.imageView.hidden = NO; // provisional
+    }
 }
 
-#pragma mark - Actions
+#pragma mark - <Methods and Actions>
 
 - (IBAction)tappeLikedButton:(id)sender {
     
@@ -100,8 +119,57 @@ UIImageView *animationImage;
 }
 
 - (IBAction)dismissVC:(id)sender {
-    [self dismissViewControllerAnimated:NO
-                             completion:nil];
+    
+    self.imageView.hidden = YES;
+    animationImage.hidden = NO;
+    self.likeButton.hidden = YES;
+    self.dismissButton.hidden = YES;
+    animationImage.frame = self.imageView.frame;
+    
+    UIInterfaceOrientation screenOrientation = [UIApplication sharedApplication].statusBarOrientation;
+    
+    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        
+        switch (screenOrientation) {
+                
+            case (UIInterfaceOrientationPortrait):
+                NSLog(@"Do something if the orientation is in Portrait: %ld", (long)screenOrientation);
+                
+                animationImage.frame = _tempImageFrame;
+                break;
+            case (UIInterfaceOrientationLandscapeLeft):
+                NSLog(@"Do something if the orientation is in Landscape Left: %ld", (long)screenOrientation);
+                
+                animationImage.transform = CGAffineTransformMakeRotation(M_PI_2);
+                [animationImage setFrame:CGRectMake(self.view.frame.size.width - _tempImageFrame.origin.y - _tempImageFrame.size.height, 0, _tempImageFrame.size.height, self.view.frame.size.height)];
+                break;
+            case (UIInterfaceOrientationLandscapeRight):
+                NSLog(@"Do something if the orientation is in Landscape Right: %ld", (long)screenOrientation);
+                
+                animationImage.transform = CGAffineTransformMakeRotation(-M_PI_2);
+                [animationImage setFrame:CGRectMake(_tempImageFrame.origin.y, 0, _tempImageFrame.size.height, self.view.frame.size.height)];
+                break;
+            case (UIInterfaceOrientationPortraitUpsideDown):
+                NSLog(@"Do something if the orientation is UpsideDown: %ld", (long)screenOrientation);
+                break;
+            case (UIInterfaceOrientationUnknown):
+                NSLog(@"Default orientation unknown: %ld", (long)screenOrientation);
+                break;
+        }
+       
+        animationImage.contentMode = UIViewContentModeScaleAspectFill;
+        
+    } completion:^(BOOL finished){
+        [self allowRotation:NO];
+
+        [self dismissViewControllerAnimated:NO
+                                 completion:nil];
+    }];
+}
+
+- (void)allowRotation:(BOOL)yesOrNo {
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    appDelegate.shouldRotate = yesOrNo;
 }
 
 
@@ -120,9 +188,9 @@ UIImageView *animationImage;
 - (UIImageView *)imageView {
     if (!_imageView) {
         if (_tempImage) {
-            NSLog(@"🔵🛑 tempImage imageView");
+            NSLog(@"🛑🔵🛑 tempImage imageView");
             _imageView = [[UIImageView alloc] initWithImage:self.tempImage];
-//            NSLog(@"image frame %@", NSStringFromCGRect(_imageView.frame));
+            NSLog(@"image frame %@", NSStringFromCGRect(_imageView.frame));
         } else {
             _imageView = [[UIImageView alloc] init];
         }
@@ -165,13 +233,14 @@ UIImageView *animationImage;
 - (void)setImageURL:(NSURL *)imageURL {
     
     _imageURL = imageURL;
-    [self.spinner setupWith:self.view];
+//    [self.spinner setupWith:self.view];
     [self.downloader downloadingImageWithURL:imageURL completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
         if (image && httpResponse.statusCode != 404) {
             [self.spinner stop];
             self.image = image;
             NSLog(@"⭕️ ⭕️ ⭕️ removing");
-            [animationImage removeFromSuperview]; // ???
+//            animationImage.hidden = YES;
+//            [animationImage removeFromSuperview]; // ???
         } else {
             NSLog(@"✅ %@", self.model.nasa_id);
             _imageURL = [NasaFetcher URLforPhoto:self.model.nasa_id format:NasaPhotoFormatOriginal];
@@ -186,7 +255,10 @@ UIImageView *animationImage;
 //                    self.imageView.image = self.tempImage;
                 }
                 NSLog(@"✝️ ✝️ ✝️ removing");
-                [animationImage removeFromSuperview]; // ???
+                [self.spinner stop];
+
+//                animationImage.hidden = YES;
+//                [animationImage removeFromSuperview]; // ???
             }];
         }
     }];
