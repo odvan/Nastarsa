@@ -13,38 +13,37 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
-    super.readMoreButton.hidden = YES;
-    super.buttonHeightConstraint.constant = 0;
-    super.likeButton.selected = NO;
-    super.selectedBackgroundView = nil;
+    self.readMoreButton.hidden = YES;
+    self.buttonHeightConstraint.constant = 0;
+    self.likeButton.selected = NO;
+    self.selectedBackgroundView = nil;
 }
 
 - (void)prepareForReuse {
     [super prepareForReuse];
     
-    super.readMoreButton.hidden = YES;
-    super.buttonHeightConstraint.constant = 0;
-//    super.buttonHeightConstraint.active = YES;
+    self.readMoreButton.hidden = YES;
+    self.buttonHeightConstraint.constant = 0;
 }
 
 - (void)configureWith:(Photo *)photo {
-    super.title.text = photo.title;
-    super.imageDescription.text = photo.someDescription;
-    super.likeButton.selected = photo.isLiked;
+    self.title.text = photo.title;
+    self.imageDescription.text = photo.someDescription;
+    self.likeButton.selected = photo.isLiked;
     if (photo.image_preview) { //  && photo.image_big
-      super.imageView.image = [UIImage imageWithData:photo.image_preview];
+      self.imageView.image = [UIImage imageWithData:photo.image_preview];
     }
 }
 
 - (IBAction)likedTouched:(id)sender {
     if ([sender isKindOfClass:[UIButton class]]) {
-        [super.delegate likedButtonTouched:super.indexPath];
+        [self.delegate likedButtonTouched:self.indexPath];
     }
 }
 
 - (IBAction)shareTouched:(id)sender {
     if ([sender isKindOfClass:[UIButton class]]) {
-        [super.delegate shareButtonTouched:super.indexPath];
+        [self.delegate shareButtonTouched:self.indexPath];
     }
 }
 
