@@ -10,7 +10,8 @@
 #import "AppDelegate.h"
 #import "ExampleCell.h"
 
-@interface SingleCellVC ()
+
+@interface SingleCellVC () 
 
 @end
 
@@ -20,9 +21,10 @@
 //    [super viewDidLoad];
     
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    self.backgroundContext = appDelegate.persistentContainer.newBackgroundContext;
     self.context = appDelegate.persistentContainer.newBackgroundContext;
     self.context.automaticallyMergesChangesFromParent = YES;
-    
+        
     self.title = @"photo";
 }
 
@@ -48,7 +50,7 @@
         NSLog(@"%@, %@", error, error.localizedDescription);
     }
     
-//    [self.nasaCollectionView reloadData];
+    [self.nasaCollectionView reloadData];
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
@@ -61,8 +63,6 @@
     if (_photoObjSetupDouble != photoObjSetupDouble) {
         _photoObjSetupDouble = photoObjSetupDouble;
     }
-    NSLog(@"setting photoSetup obj: %@", _photoObjSetupDouble);
-//    [self.nasaCollectionView reloadData];
 }
 
 
@@ -76,20 +76,20 @@
     return _photoObjSetupDouble != nil ? 1 : 0;
 }
 
-//- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-//    ExampleCell *cell = [self.nasaCollectionView dequeueReusableCellWithReuseIdentifier:@"imageCell" forIndexPath:indexPath];
-//    
-//    cell.layer.shouldRasterize = YES;
-//    cell.layer.rasterizationScale = [UIScreen mainScreen].scale;
-//    
-//    cell.delegate = self;
-//    cell.indexPath = indexPath;
-//    
-//    [cell configure:_photoObjSetupDouble];
-//    [self settingGesturesWith:cell.imageView];
-//    
-//    return cell;
-//}
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    ExampleCell *cell = [self.nasaCollectionView dequeueReusableCellWithReuseIdentifier:@"imageCell" forIndexPath:indexPath];
+    
+    cell.layer.shouldRasterize = YES;
+    cell.layer.rasterizationScale = [UIScreen mainScreen].scale;
+    
+    cell.delegate = self;
+    cell.indexPath = indexPath;
+    
+    [cell configure:_photoObjSetupDouble];
+    [self settingGesturesWith:cell.imageView];
+    
+    return cell;
+}
 
 
 #pragma mark <UICollectionViewDelegateFlowLayout>

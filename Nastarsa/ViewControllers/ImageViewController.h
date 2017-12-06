@@ -24,5 +24,6 @@
 @property (nonatomic, strong) Photo *model;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 @property (weak, nonatomic) IBOutlet UIButton *likeButton;
+@property (nonatomic, assign) BOOL isNabBarHidden;
 
 @end

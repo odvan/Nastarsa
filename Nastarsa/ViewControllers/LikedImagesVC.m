@@ -11,7 +11,8 @@
 #import <CoreData/CoreData.h>
 #import "Photo+CoreDataProperties.h"
 #import "AppDelegate.h"
-#import "NastarsaSingleImageVC.h"
+//#import "NastarsaSingleImageVC.h"
+#import "SingleCellVC.h"
 
 static NSString * const reuseIdentifier = @"likedImageCell";
 
@@ -323,14 +324,15 @@ UIBarButtonItem *item2;
     
     if ([sender isKindOfClass:[LikedCell class]]) {
         NSIndexPath *indexPath = [self.likedImagesCollectionView indexPathForCell:sender];
+        __weak LikedCell *cell = (LikedCell *)[self.likedImagesCollectionView cellForItemAtIndexPath:indexPath];
         if (indexPath) {
             // found it ... are we doing the Display Photo segue?
             if ([segue.identifier isEqualToString:@"showSingleCell"]) {
                 // yes ... is the destination an ImageViewController?
-                if ([segue.destinationViewController isKindOfClass:[NastarsaSingleImageVC class]]) {
-                    NastarsaSingleImageVC *nSIVC = (NastarsaSingleImageVC *)segue.destinationViewController;
-                    Photo *object = [self.frc objectAtIndexPath:indexPath];
-                    nSIVC.photoObjSetup = object;
+                if ([segue.destinationViewController isKindOfClass:[SingleCellVC class]]) {
+                    SingleCellVC *nSIVC = (SingleCellVC *)segue.destinationViewController;
+                    nSIVC.photoObjSetupDouble = [self.frc objectAtIndexPath:indexPath];
+                    nSIVC.photoObjSetupDouble.image_preview = UIImageJPEGRepresentation(cell.imageView.image, 1.0);
                 }
             }
         }

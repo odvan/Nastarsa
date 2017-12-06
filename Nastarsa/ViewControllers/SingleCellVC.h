@@ -8,7 +8,6 @@
 
 #import "NastarsaCollectionVC.h"
 #import "Photo+CoreDataProperties.h"
-//#import <CoreData/CoreData.h>
 #import "MainCollectionViewCell.h"
 
 @interface SingleCellVC : NastarsaCollectionVC

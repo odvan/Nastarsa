@@ -53,7 +53,7 @@ UIImageView *animationImage;
     }
     
     if ([self.view.subviews containsObject:self.spinner.indicator]) {
-        self.spinner.indicator.center = self.view.center; //_imageView.center; ???
+        self.spinner.indicator.center = self.view.center;
     }
 }
 
@@ -82,11 +82,11 @@ UIImageView *animationImage;
             }
             
         } completion:^(BOOL finished){
-            [self.spinner setupWith:self.view];
             animationImage.contentMode = UIViewContentModeScaleAspectFit;
             self.imageView.hidden = NO;
-            if (self.imageView.image) {
-                animationImage.hidden = YES;
+            [self.spinner setupWith:self.view];
+            animationImage.hidden = YES;
+            if (self.imageView.image != _tempImage) {
                 [self.spinner stop];
             }
         }];
@@ -126,28 +126,35 @@ UIImageView *animationImage;
     self.dismissButton.hidden = YES;
     animationImage.frame = self.imageView.frame;
     
+    NSLog(@"🏓 🏓 🏓 nav bar visible %s", _isNabBarHidden ? "true" : "false");
+    NSLog(@"nav bar height %f", self.navigationController.navigationBar.frame.size.height);
+    
     UIInterfaceOrientation screenOrientation = [UIApplication sharedApplication].statusBarOrientation;
     
     [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         
+        // if VC rotated we need different animation properties for each case
         switch (screenOrientation) {
-                
             case (UIInterfaceOrientationPortrait):
                 NSLog(@"Do something if the orientation is in Portrait: %ld", (long)screenOrientation);
-                
-                animationImage.frame = _tempImageFrame;
+                CGRect frame;
+                frame = _tempImageFrame;
+                frame.origin.y += (_isNabBarHidden ? 44 : 0);
+                animationImage.frame = frame;
                 break;
             case (UIInterfaceOrientationLandscapeLeft):
                 NSLog(@"Do something if the orientation is in Landscape Left: %ld", (long)screenOrientation);
                 
                 animationImage.transform = CGAffineTransformMakeRotation(M_PI_2);
-                [animationImage setFrame:CGRectMake(self.view.frame.size.width - _tempImageFrame.origin.y - _tempImageFrame.size.height, 0, _tempImageFrame.size.height, self.view.frame.size.height)];
+                CGFloat xLeft = self.view.frame.size.width - _tempImageFrame.origin.y - _tempImageFrame.size.height - (_isNabBarHidden ? 44 : 0);
+                [animationImage setFrame:CGRectMake(xLeft, 0, _tempImageFrame.size.height, self.view.frame.size.height)];
                 break;
             case (UIInterfaceOrientationLandscapeRight):
                 NSLog(@"Do something if the orientation is in Landscape Right: %ld", (long)screenOrientation);
                 
                 animationImage.transform = CGAffineTransformMakeRotation(-M_PI_2);
-                [animationImage setFrame:CGRectMake(_tempImageFrame.origin.y, 0, _tempImageFrame.size.height, self.view.frame.size.height)];
+                CGFloat xRight = _tempImageFrame.origin.y + (_isNabBarHidden ? 44 : 0);
+                [animationImage setFrame:CGRectMake(xRight, 0, _tempImageFrame.size.height, self.view.frame.size.height)];
                 break;
             case (UIInterfaceOrientationPortraitUpsideDown):
                 NSLog(@"Do something if the orientation is UpsideDown: %ld", (long)screenOrientation);
@@ -161,7 +168,6 @@ UIImageView *animationImage;
         
     } completion:^(BOOL finished){
         [self allowRotation:NO];
-
         [self dismissViewControllerAnimated:NO
                                  completion:nil];
     }];

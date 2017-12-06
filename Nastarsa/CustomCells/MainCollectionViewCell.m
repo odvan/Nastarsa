@@ -24,6 +24,9 @@
     [_imageDescription setTextContainerInset:UIEdgeInsetsZero];
     _imageDescription.textContainer.lineFragmentPadding = 0;
     
+    [_title setTextContainerInset:UIEdgeInsetsZero];
+    _title.textContainer.lineFragmentPadding = 0;
+    
     UIView *backgroundView = [[UIView alloc] initWithFrame:(CGRectZero)];
     
     backgroundView.backgroundColor = [UIColor darkGrayColor];

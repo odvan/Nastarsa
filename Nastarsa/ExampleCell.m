@@ -16,7 +16,6 @@
     super.readMoreButton.hidden = YES;
     super.buttonHeightConstraint.constant = 0;
     super.likeButton.selected = NO;
-    
     super.selectedBackgroundView = nil;
 }
 

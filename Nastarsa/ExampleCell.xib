@@ -29,14 +29,14 @@
                     <stackView contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="FbG-h8-izb">
                         <rect key="frame" x="16" y="427" width="343" height="91"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Picture Title " lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aNs-Xs-Gn9">
-                                <rect key="frame" x="0.0" y="0.0" width="343" height="22"/>
-                                <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="16"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" bounces="NO" scrollEnabled="NO" editable="NO" text="Picture Title" translatesAutoresizingMaskIntoConstraints="NO" id="cG6-G2-PFs" userLabel="Title">
+                                <rect key="frame" x="0.0" y="0.0" width="343" height="38"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                                <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="16"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="749" bounces="NO" scrollEnabled="NO" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ln3-nE-Mqh">
-                                <rect key="frame" x="0.0" y="26" width="343" height="65"/>
+                                <rect key="frame" x="0.0" y="42" width="343" height="49"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut </string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
@@ -106,7 +106,7 @@
                 <outlet property="likeButton" destination="HBu-X9-1Lq" id="Oxl-s2-7BB"/>
                 <outlet property="readMoreButton" destination="72B-jU-2Qy" id="0hj-zd-7wd"/>
                 <outlet property="shareButton" destination="ykA-zJ-XdD" id="LPL-1m-Pz7"/>
-                <outlet property="title" destination="aNs-Xs-Gn9" id="EbP-nZ-P2Z"/>
+                <outlet property="title" destination="cG6-G2-PFs" id="ZjG-cQ-uot"/>
             </connections>
             <point key="canvasLocation" x="-421" y="-449"/>
         </collectionViewCell>
