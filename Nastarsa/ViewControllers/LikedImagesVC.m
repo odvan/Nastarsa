@@ -11,7 +11,6 @@
 #import <CoreData/CoreData.h>
 #import "Photo+CoreDataProperties.h"
 #import "AppDelegate.h"
-//#import "NastarsaSingleImageVC.h"
 #import "SingleCellVC.h"
 
 static NSString * const reuseIdentifier = @"likedImageCell";
@@ -189,12 +188,7 @@ UIBarButtonItem *item2;
             }
         };
 //        activityViewController.excludedActivityTypes = @[
-//                                                         UIActivityTypePrint,
-//                                                         UIActivityTypeCopyToPasteboard,
-//                                                         UIActivityTypeAssignToContact,
-//                                                         UIActivityTypeSaveToCameraRoll,
-//                                                         UIActivityTypeAddToReadingList,
-//                                                         UIActivityTypeAirDrop];
+//                                                         UIActivityTypePrint];
         
         [self presentViewController:activityViewController animated:YES completion:nil];
     }
