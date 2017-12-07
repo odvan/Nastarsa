@@ -11,6 +11,7 @@
 @implementation SearchHeader
 
 + (NSString *)multipleWordsSearchCheckAndProperUsage:(NSString *)text {
+    
     NSString *properMutlipleWordsSearchPhrase;
     NSArray *searchPhrase = [text componentsSeparatedByCharactersInSet:
                              [NSCharacterSet characterSetWithCharactersInString:@" "]

@@ -13,7 +13,7 @@
         <!--nastarsa-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="NastarsaCollectionVC" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="SearchedResultsVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -187,7 +187,7 @@
                     <connections>
                         <outlet property="layout" destination="Pho-im-Way" id="Lba-Tv-gSG"/>
                         <outlet property="nasaCollectionView" destination="LhH-1O-bcN" id="Pb8-J2-fpS"/>
-                        <outlet property="spinnerWhenNextPageDownload" destination="Qos-Dw-Vgm" id="rHw-4R-Xpz"/>
+                        <outlet property="spinnerWhenNextPageDownload" destination="Qos-Dw-Vgm" id="xK0-Vz-onU"/>
                         <segue destination="NLZ-F1-nKb" kind="presentation" identifier="showImage" animates="NO" id="TXC-VM-7wZ"/>
                     </connections>
                 </viewController>
@@ -388,7 +388,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" prefetchingEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QgV-Ak-FlM">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" prefetchingEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QgV-Ak-FlM">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="2fW-uG-H4r">
@@ -501,17 +501,12 @@
                                     <outlet property="delegate" destination="hzC-v5-YQG" id="I67-9D-9uD"/>
                                 </connections>
                             </collectionView>
-                            <activityIndicatorView hidden="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GzG-Qf-1Qk">
-                                <rect key="frame" x="169" y="315" width="37" height="37"/>
-                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="QgV-Ak-FlM" firstAttribute="top" secondItem="f5Y-nz-5ku" secondAttribute="top" id="WAK-wb-5G0"/>
                             <constraint firstItem="QgV-Ak-FlM" firstAttribute="bottom" secondItem="NmS-Mc-DVL" secondAttribute="top" id="rXT-AK-7If"/>
                             <constraint firstItem="QgV-Ak-FlM" firstAttribute="leading" secondItem="f5Y-nz-5ku" secondAttribute="leading" id="uXm-2j-FhK"/>
-                            <constraint firstItem="GzG-Qf-1Qk" firstAttribute="centerY" secondItem="f5Y-nz-5ku" secondAttribute="centerY" id="vgw-yX-lkn"/>
-                            <constraint firstItem="GzG-Qf-1Qk" firstAttribute="centerX" secondItem="f5Y-nz-5ku" secondAttribute="centerX" id="xJy-TC-zDB"/>
                             <constraint firstAttribute="trailing" secondItem="QgV-Ak-FlM" secondAttribute="trailing" id="ycz-nR-cfJ"/>
                         </constraints>
                     </view>
@@ -519,7 +514,6 @@
                     <connections>
                         <outlet property="layout" destination="2fW-uG-H4r" id="iHy-3J-n2l"/>
                         <outlet property="nasaCollectionView" destination="QgV-Ak-FlM" id="QJH-Ji-mOa"/>
-                        <outlet property="spinnerWhenNextPageDownload" destination="GzG-Qf-1Qk" id="F9m-cC-Ccj"/>
                         <segue destination="NLZ-F1-nKb" kind="presentation" identifier="showImage" animates="NO" id="5WR-Rs-Flf"/>
                     </connections>
                 </viewController>
@@ -537,7 +531,7 @@
         <image name="x-closing_symbol" width="51" height="51"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="tsU-Nc-kgM"/>
+        <segue reference="C5r-8d-Ksv"/>
         <segue reference="5WR-Rs-Flf"/>
     </inferredMetricsTieBreakers>
 </document>

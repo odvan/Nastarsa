@@ -7,8 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ImageModel.h"
-#import "ImageDownloader.h"
 #import "Photo.h"
 #import "Photo+CoreDataProperties.h"
 
@@ -23,7 +21,8 @@
 
 @property (nonatomic, strong) Photo *model;
 @property (nonatomic, strong) NSManagedObjectContext *context;
+
 @property (weak, nonatomic) IBOutlet UIButton *likeButton;
-@property (nonatomic, assign) BOOL isNabBarHidden;
+@property (nonatomic, assign) BOOL isNavBarHidden;
 
 @end

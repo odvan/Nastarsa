@@ -28,7 +28,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UITextView *title;
 @property (weak, nonatomic) IBOutlet UITextView *imageDescription;
-
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *buttonHeightConstraint;
 
 @property (weak, nonatomic) id <ExpandedAndButtonsTouchedCellDelegate> delegate;

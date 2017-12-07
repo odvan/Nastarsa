@@ -7,34 +7,20 @@
 //
 
 #import "NastarsaCollectionVC.h"
-#import "NasaFetcher.h"
 #import "ImageViewController.h"
 #import "AppDelegate.h"
 #import "ImagesCache.h"
-#import "NastarsaCollectionVC+AddAlert.h"
 #import "SingleCellVC.h"
-#import "SearchHeader.h"
+#import "NasaFetcher.h"
 
 static NSCache * imagesCache;
 static NSString * const reuseIdentifier = @"imageCell";
-static NSString * const searchHeaderIdentifier = @"searchHeader";
-
-int lastPage = 0;
-BOOL isPageRefreshing = NO;
-
-UIRefreshControl *refreshControl; ///
-UILabel *noData; ///
-
 static CGFloat paddingBetweenCells = 10;
 static CGFloat paddingBetweenLines = 10;
 static CGFloat inset = 10;
 
-@interface NastarsaCollectionVC () <NSFetchedResultsControllerDelegate, UISearchBarDelegate>
-///
-@property (nonatomic, assign) int pageNumber;
-@property (nonatomic, strong) NSString *searchText;
-@property (nonatomic, assign) BOOL searchBarHasText;
-///
+@interface NastarsaCollectionVC () //?<UISearchBarDelegate>
+
 @end
 
 @implementation NastarsaCollectionVC
@@ -44,8 +30,8 @@ static CGFloat inset = 10;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    _photosData = [[NSMutableArray alloc] init];
     imagesCache = [[NSCache alloc] init];
+    
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     _backgroundContext = appDelegate.persistentContainer.newBackgroundContext;
     _context = appDelegate.persistentContainer.viewContext;
@@ -54,26 +40,6 @@ static CGFloat inset = 10;
     [appDelegate setShouldRotate:NO];
     
     [self settingStatusBackgroundColor];
-    ///
-    [NasaFetcher pageNumbersFrom:_searchText withCompletion:^(BOOL success, int numbers) {
-        if (success) {
-            lastPage = numbers;
-            _pageNumber = numbers;
-            NSLog(@"got fucking page number!");
-            [NasaFetcher fetchPhotos:_searchText pageNumber:lastPage withCompletion:^(BOOL success, NSMutableArray *photosData) {
-                if (success) {
-                    self.photosData = photosData;
-                } else {
-                    [self showAlertWith:@"Error" message:@"Can't parse JSON."];
-                }
-            }];
-        } else {
-            [self showAlertWith:@"Error" message:@"Can't download initial data."];
-        }
-    }];
-    
-    [self refreshControlSetup];
-    ///
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -103,88 +69,6 @@ static CGFloat inset = 10;
 
 
 #pragma mark - Properties lazy instantiation
-// whenever our Model is set, must update our View
-///
-- (void)setPhotosData:(NSMutableArray *)photosData {
-    
-    isPageRefreshing = NO;
-    [_photosData addObjectsFromArray:photosData];
-    
-    [_backgroundContext performBlock:^{
-        [Photo findOrCreatePhotosFrom:_photosData inContext:_backgroundContext withPage:_pageNumber];
-        NSError *error = nil;
-        if (![_backgroundContext save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-            abort();
-        }
-        [Photo printDatabaseStatistics:_context];
-        
-        NSFetchRequest<Photo *> *fetchRequest = Photo.fetchRequest;
-        // Add Sort Descriptors
-        if (_searchText == nil) {
-            [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"tempID" ascending:NO]]];
-            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isFetchable == YES"]];
-        } else {
-            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isFetchable == YES"]];
-            [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"tempID" ascending:YES]]];
-        }
-        // Initialize Fetched Results Controller
-        NSFetchedResultsController<Photo *> *newFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                                                                               managedObjectContext:_context
-                                                                                                                 sectionNameKeyPath:nil
-                                                                                                                          cacheName:nil];
-        _frc = newFetchedResultsController;
-        
-        [_frc performFetch:&error];
-        if (error) {
-            NSLog(@"Unable to perform fetch.");
-            NSLog(@"%@, %@", error, error.localizedDescription);
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.nasaCollectionView reloadData];
-        });
-    }];
-}
-
-- (void)refreshControlSetup {
-    refreshControl = [[UIRefreshControl alloc] init];
-    refreshControl.tintColor = [UIColor grayColor];
-    [refreshControl addTarget:self action:@selector(refreshControlAction) forControlEvents:UIControlEventValueChanged];
-    self.nasaCollectionView.refreshControl = refreshControl;
-}
-
-- (IBAction)refreshControlAction {
-    [self.nasaCollectionView.refreshControl beginRefreshing];
-    if (_searchBarHasText) {
-        _pageNumber = 1;
-    } else {
-        if (lastPage == 0) {
-            [NasaFetcher pageNumbersFrom:_searchText withCompletion:^(BOOL success, int numbers) {
-                if (success) {
-                    lastPage = numbers;
-                    _pageNumber = numbers;
-                    NSLog(@"got fucking page number!");
-                } else {
-                    [self showAlertWith:@"Error" message:@"Can't download initial data."];
-                }
-            }];
-        } else {
-            _pageNumber = lastPage;
-        }
-    }
-    [NasaFetcher fetchPhotos:_searchText pageNumber:_pageNumber withCompletion:^(BOOL success, NSMutableArray *photosData) {
-        [self.nasaCollectionView.refreshControl endRefreshing];
-        [self.photosData removeAllObjects];
-        if (success) {
-            self.photosData = photosData;
-        } else {
-            [self showAlertWith:@"Error" message:@"Can't download initial data."];
-        }
-    }];
-}
-///
 
 - (NSFetchedResultsController<Photo *> *)frc {
     NSLog(@"NSFetchedResultsController triggered");
@@ -213,47 +97,6 @@ static CGFloat inset = 10;
     return _frc;
 }
 
-///
-- (void)setSearchText:(NSString *)text {
-    NSLog(@"✅ setting search text: %@", text);
-    if (_searchText != text) {
-        _searchText = text;
-        
-        UIView *blackView = [[UIView alloc] init];
-        blackView.frame = self.view.frame;
-        blackView.backgroundColor = [UIColor blackColor];
-        blackView.alpha = 0.75;
-        [self.view insertSubview:blackView atIndex:1];
-        
-        [self.spinnerWhenNextPageDownload startAnimating];
-        
-        [NasaFetcher pageNumbersFrom:_searchText withCompletion:^(BOOL success, int numbers) {
-            if (success) {
-                lastPage = numbers;
-                if (_searchText == nil) {
-                    _pageNumber = lastPage;
-                } else {
-                    _pageNumber = 1;
-                }
-                NSLog(@"got fucking page number!");
-                [NasaFetcher fetchPhotos:_searchText pageNumber:_pageNumber withCompletion:^(BOOL success, NSMutableArray *photosData) {
-                    [self.spinnerWhenNextPageDownload stopAnimating];
-                    [blackView removeFromSuperview];
-                    if (success) {
-                        self.photosData = photosData;
-                    } else {
-                        [self showAlertWith:@"Error" message:@"Can't parse JSON."];
-                    }
-                }];
-            } else {
-                [self.spinnerWhenNextPageDownload stopAnimating];
-                [blackView removeFromSuperview];
-                [self showAlertWith:@"Error" message:@"Can't download initial data."];
-            }
-        }];
-    }
-}
-///
 
 #pragma mark - Navigation
 
@@ -269,25 +112,24 @@ static CGFloat inset = 10;
                 // yes ... is the destination an ImageViewController?
                 if ([segue.destinationViewController isKindOfClass:[ImageViewController class]]) {
                     // yes ... then we know how to prepare for that segue!
-//                    __weak MainCollectionViewCell *cell = (MainCollectionViewCell*)[self.nasaCollectionView cellForItemAtIndexPath:indexPath];
-                    ImageViewController *iVC = (ImageViewController *)segue.destinationViewController;
+                    ImageViewController *iVC = (ImageViewController *)[segue destinationViewController];
                     Photo *photoObject = [_frc objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
                     iVC.context = _backgroundContext;
                     iVC.model = photoObject;
                     UIImageView *imgView = (UIImageView *)gesture.view;
-                    //settin temp frame for animation
+                    //setting temp frame for animation
                     CGRect tempFrame = CGRectMake(0, 0, imgView.frame.size.width, imgView.frame.size.height);
                     tempFrame = [imgView.superview convertRect:imgView.frame toView:self.view];
                     iVC.tempImageFrame = tempFrame;
                     iVC.tempImage = imgView.image;
-                    iVC.isNabBarHidden = self.navigationController.isNavigationBarHidden;
+                    iVC.isNavBarHidden = self.navigationController.isNavigationBarHidden;
+                    
                     if (photoObject.isLiked && photoObject.image_big) {
                         iVC.image = [UIImage imageWithData:photoObject.image_big];
-                        iVC.likeButton.selected = YES;
-                        NSLog(@"🔴 model liked %s", iVC.model.isLiked ? "true" : "false");
+
                     } else {
                         iVC.imageURL = [NasaFetcher URLforPhoto:photoObject.nasa_id format:NasaPhotoFormatLarge];
-                        iVC.likeButton.selected = photoObject.isLiked;
+
                     }
                 }
             }
@@ -309,21 +151,6 @@ static CGFloat inset = 10;
             }
         }
     }
-}
-
-
-#pragma mark - Gestures setup
-
-- (void)settingGesturesWith:(UIImageView *)imageView {
-    UITapGestureRecognizer *singleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(segueToImageVC:)];
-    singleTapRecognizer.numberOfTapsRequired = 1;
-    singleTapRecognizer.numberOfTouchesRequired = 1;
-    imageView.userInteractionEnabled = YES;
-    [imageView addGestureRecognizer:singleTapRecognizer];
-}
-
-- (void)segueToImageVC:(UITapGestureRecognizer *)gestureRecognizer {
-        [self performSegueWithIdentifier: @"showImage" sender: gestureRecognizer];
 }
 
 
@@ -359,72 +186,6 @@ static CGFloat inset = 10;
     return cell;
 }
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    if (kind == UICollectionElementKindSectionHeader) {
-        SearchHeader *searchHeader = [self.nasaCollectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:searchHeaderIdentifier forIndexPath:indexPath];
-        
-        return searchHeader;
-    }
-    return [UICollectionReusableView new];
-}
-
-///
-#pragma mark - <UIScrollView>
-
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-
-    if (velocity.y > 0) {
-        NSLog(@"🔻 velocity: %f", velocity.y);
-
-        [self.navigationController setNavigationBarHidden:YES animated:YES];
-    } else if (velocity.y < 0){
-        NSLog(@"🔺🔺🔺 velocity: %f", velocity.y);
-        
-        [self.navigationController setNavigationBarHidden:NO animated:YES];
-    }
-}
-
-- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView {
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
-}
-
-- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][0];
-    if (indexPath.row == ([sectionInfo numberOfObjects] - 1)) {
-        if (_searchBarHasText) {
-            if ((self.pageNumber < lastPage) && !isPageRefreshing) {
-                isPageRefreshing = YES;
-                self.pageNumber += 1;
-            } else {
-                return;
-            }
-        } else {
-            if ((self.pageNumber > 1) && !isPageRefreshing) {
-                isPageRefreshing = YES;
-                self.pageNumber -= 1;
-            } else {
-                return;
-            }
-        }
-        
-        if (self.pageNumber <= lastPage) {
-            NSLog(@"fetching from page: %d", self.pageNumber);
-            [self.spinnerWhenNextPageDownload startAnimating];
-            
-            [NasaFetcher fetchPhotos:_searchText pageNumber:self.pageNumber withCompletion:^(BOOL success, NSMutableArray *photosData) {
-                if (success) {
-                    [self.photosData removeAllObjects];
-                    self.photosData = photosData;
-                } else {
-                    [self showAlertWith:@"Error" message:@"Can't download initial data."];
-                }
-                [self.spinnerWhenNextPageDownload stopAnimating];
-            }];
-        }
-    }
-}
-///
 
 #pragma mark - <UICollectionViewDelegateFlowLayout>
 
@@ -484,6 +245,22 @@ static CGFloat inset = 10;
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return paddingBetweenLines;
 }
+
+
+#pragma mark - Gestures setup
+
+- (void)settingGesturesWith:(UIImageView *)imageView {
+    UITapGestureRecognizer *singleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(segueToImageVC:)];
+    singleTapRecognizer.numberOfTapsRequired = 1;
+    singleTapRecognizer.numberOfTouchesRequired = 1;
+    imageView.userInteractionEnabled = YES;
+    [imageView addGestureRecognizer:singleTapRecognizer];
+}
+
+- (void)segueToImageVC:(UITapGestureRecognizer *)gestureRecognizer {
+    [self performSegueWithIdentifier: @"showImage" sender: gestureRecognizer];
+}
+
 
 #pragma mark - <ExpandedAndButtonsTouchedCellDelegate>
 
@@ -554,43 +331,5 @@ static CGFloat inset = 10;
     [self presentViewController:activityViewController animated:YES completion:nil];
 }
 
-///
-#pragma mark - <SearchBar Methods>
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    
-    [Photo deletePhotoObjects:_context];
-    [self.photosData removeAllObjects];
-    [searchBar resignFirstResponder];
-      //    [Photo printDatabaseStatistics:_context];
-    
-    if (searchBar.text && [searchBar.text length]) {
-        _searchBarHasText = YES;
-        NSLog(@"✅✅✅ searching... %@", searchBar.text);
-        [self.nasaCollectionView reloadData];
-
-        self.searchText = [SearchHeader multipleWordsSearchCheckAndProperUsage:(searchBar.text)];
-    }
-}
-
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    searchBar.showsCancelButton = YES;
-}
-
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    
-    searchBar.showsCancelButton = NO;
-    [searchBar resignFirstResponder];
-    if (_searchBarHasText) {
-        NSLog(@"🔵🔴⚫️ and _searchBarHasText: %s", _searchBarHasText ? "true" : "false");
-
-        [Photo deletePhotoObjects:_context];
-        [self.photosData removeAllObjects];
-        searchBar.text = nil;
-        self.searchText = nil;
-    }
-    _searchBarHasText = NO;
-}
 
 @end

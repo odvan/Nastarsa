@@ -41,6 +41,8 @@ UIImageView *animationImage;
     animationImage.contentMode = UIViewContentModeScaleAspectFill;
     animationImage.clipsToBounds = YES;
     [self.view insertSubview:animationImage atIndex:1];
+    
+    _likeButton.selected = _model.isLiked;
 }
 
 - (void)viewDidLayoutSubviews {
@@ -91,11 +93,11 @@ UIImageView *animationImage;
             }
         }];
     } else {
-        self.imageView.hidden = NO; // provisional
+        self.imageView.hidden = NO;
     }
 }
 
-#pragma mark - <Methods and Actions>
+#pragma mark - Methods and Actions
 
 - (IBAction)tappeLikedButton:(id)sender {
     
@@ -126,7 +128,7 @@ UIImageView *animationImage;
     self.dismissButton.hidden = YES;
     animationImage.frame = self.imageView.frame;
     
-    NSLog(@"🏓 🏓 🏓 nav bar visible %s", _isNabBarHidden ? "true" : "false");
+    NSLog(@"🏓 🏓 🏓 nav bar visible %s", _isNavBarHidden ? "true" : "false");
     NSLog(@"nav bar height %f", self.navigationController.navigationBar.frame.size.height);
     
     UIInterfaceOrientation screenOrientation = [UIApplication sharedApplication].statusBarOrientation;
@@ -139,21 +141,21 @@ UIImageView *animationImage;
                 NSLog(@"Do something if the orientation is in Portrait: %ld", (long)screenOrientation);
                 CGRect frame;
                 frame = _tempImageFrame;
-                frame.origin.y += (_isNabBarHidden ? 44 : 0);
+                frame.origin.y += (_isNavBarHidden ? 44 : 0);
                 animationImage.frame = frame;
                 break;
             case (UIInterfaceOrientationLandscapeLeft):
                 NSLog(@"Do something if the orientation is in Landscape Left: %ld", (long)screenOrientation);
                 
                 animationImage.transform = CGAffineTransformMakeRotation(M_PI_2);
-                CGFloat xLeft = self.view.frame.size.width - _tempImageFrame.origin.y - _tempImageFrame.size.height - (_isNabBarHidden ? 44 : 0);
+                CGFloat xLeft = self.view.frame.size.width - _tempImageFrame.origin.y - _tempImageFrame.size.height - (_isNavBarHidden ? 44 : 0);
                 [animationImage setFrame:CGRectMake(xLeft, 0, _tempImageFrame.size.height, self.view.frame.size.height)];
                 break;
             case (UIInterfaceOrientationLandscapeRight):
                 NSLog(@"Do something if the orientation is in Landscape Right: %ld", (long)screenOrientation);
                 
                 animationImage.transform = CGAffineTransformMakeRotation(-M_PI_2);
-                CGFloat xRight = _tempImageFrame.origin.y + (_isNabBarHidden ? 44 : 0);
+                CGFloat xRight = _tempImageFrame.origin.y + (_isNavBarHidden ? 44 : 0);
                 [animationImage setFrame:CGRectMake(xRight, 0, _tempImageFrame.size.height, self.view.frame.size.height)];
                 break;
             case (UIInterfaceOrientationPortraitUpsideDown):
@@ -239,14 +241,12 @@ UIImageView *animationImage;
 - (void)setImageURL:(NSURL *)imageURL {
     
     _imageURL = imageURL;
-//    [self.spinner setupWith:self.view];
+
     [self.downloader downloadingImageWithURL:imageURL completion:^(UIImage *image, NSHTTPURLResponse *httpResponse) {
         if (image && httpResponse.statusCode != 404) {
             [self.spinner stop];
             self.image = image;
             NSLog(@"⭕️ ⭕️ ⭕️ removing");
-//            animationImage.hidden = YES;
-//            [animationImage removeFromSuperview]; // ???
         } else {
             NSLog(@"✅ %@", self.model.nasa_id);
             _imageURL = [NasaFetcher URLforPhoto:self.model.nasa_id format:NasaPhotoFormatOriginal];
@@ -256,21 +256,19 @@ UIImageView *animationImage;
                     [self.spinner stop];
                     self.image = image;
                 } else {
-                    [self.spinner stop];
-                    self.image = self.tempImage;
+//                    [self.spinner stop];
+//                    self.image = self.tempImage;
 //                    self.imageView.image = self.tempImage;
                 }
                 NSLog(@"✝️ ✝️ ✝️ removing");
                 [self.spinner stop];
-
-//                animationImage.hidden = YES;
-//                [animationImage removeFromSuperview]; // ???
             }];
         }
     }];
 }
 
-#pragma mark - UIScrollViewDelegate
+
+#pragma mark - <UIScrollViewDelegate>
 
 // mandatory zooming method in UIScrollViewDelegate protocol
 

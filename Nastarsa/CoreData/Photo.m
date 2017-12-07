@@ -8,7 +8,8 @@
 
 #import "Photo.h"
 #import "Photo+CoreDataProperties.h"
-#import "AppDelegate.h"
+//#import "AppDelegate.h"
+#import "NasaFetcher.h"
 
 @implementation Photo
 
@@ -76,7 +77,7 @@
                     if (bigSizeImage) {
                         photoExisted[0].image_big = bigSizeImage;
                     } else {
-                        photoExisted[0].image_big = nil;
+                        photoExisted[0].image_big = photoExisted[0].image_preview;
                     }
                 }
             }

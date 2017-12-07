@@ -24,6 +24,7 @@
 		C36293731F72D182008DF3F8 /* ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C36293721F72D182008DF3F8 /* ImageViewController.m */; };
 		C36CE9BC1F8C2A1F00438CCC /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = C36CE9BB1F8C2A1F00438CCC /* Photo.m */; };
 		C36FCFB11FCF32B5005CC2F0 /* SingleCellVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C36FCFB01FCF32B5005CC2F0 /* SingleCellVC.m */; };
+		C378ACCB1FD8760600E2794F /* SearchedResultsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C378ACCA1FD8760600E2794F /* SearchedResultsVC.m */; };
 		C3AD689E1FD821550062776B /* NastarsaCollectionVC+AddAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = C3AD689D1FD821550062776B /* NastarsaCollectionVC+AddAlert.m */; };
 		C3E2C0B01F44874D00A474F2 /* ImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = C3E2C0AF1F44874D00A474F2 /* ImageDownloader.m */; };
 		C3F132DE1F41DDA100AA392D /* MainCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F132DD1F41DDA100AA392D /* MainCollectionViewCell.m */; };
@@ -62,6 +63,8 @@
 		C36CE9BB1F8C2A1F00438CCC /* Photo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Photo.m; path = Nastarsa/CoreData/Photo.m; sourceTree = "<group>"; };
 		C36FCFAF1FCF32B5005CC2F0 /* SingleCellVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleCellVC.h; path = ViewControllers/SingleCellVC.h; sourceTree = "<group>"; };
 		C36FCFB01FCF32B5005CC2F0 /* SingleCellVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SingleCellVC.m; path = ViewControllers/SingleCellVC.m; sourceTree = "<group>"; };
+		C378ACC91FD8760600E2794F /* SearchedResultsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchedResultsVC.h; path = ViewControllers/SearchedResultsVC.h; sourceTree = "<group>"; };
+		C378ACCA1FD8760600E2794F /* SearchedResultsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchedResultsVC.m; path = ViewControllers/SearchedResultsVC.m; sourceTree = "<group>"; };
 		C3AD689C1FD821550062776B /* NastarsaCollectionVC+AddAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NastarsaCollectionVC+AddAlert.h"; path = "Helpers/NastarsaCollectionVC+AddAlert.h"; sourceTree = "<group>"; };
 		C3AD689D1FD821550062776B /* NastarsaCollectionVC+AddAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NastarsaCollectionVC+AddAlert.m"; path = "Helpers/NastarsaCollectionVC+AddAlert.m"; sourceTree = "<group>"; };
 		C3E2C0AE1F44874D00A474F2 /* ImageDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDownloader.h; sourceTree = "<group>"; };
@@ -202,6 +205,8 @@
 			children = (
 				C3F132E31F41E21200AA392D /* NastarsaCollectionVC.h */,
 				C3F132E41F41E21200AA392D /* NastarsaCollectionVC.m */,
+				C378ACC91FD8760600E2794F /* SearchedResultsVC.h */,
+				C378ACCA1FD8760600E2794F /* SearchedResultsVC.m */,
 				C36293711F72D182008DF3F8 /* ImageViewController.h */,
 				C36293721F72D182008DF3F8 /* ImageViewController.m */,
 				C32709AD1F88187D00FB8F24 /* LikedImagesVC.h */,
@@ -297,6 +302,7 @@
 				C335B23C1F439A200030A22E /* NasaFetcher.m in Sources */,
 				C3FDF41F1FA38C3B00347A98 /* SearchHeader.m in Sources */,
 				C32709B21F881AC400FB8F24 /* LikedCell.m in Sources */,
+				C378ACCB1FD8760600E2794F /* SearchedResultsVC.m in Sources */,
 				C3E2C0B01F44874D00A474F2 /* ImageDownloader.m in Sources */,
 				C3F132DE1F41DDA100AA392D /* MainCollectionViewCell.m in Sources */,
 				C36FCFB11FCF32B5005CC2F0 /* SingleCellVC.m in Sources */,

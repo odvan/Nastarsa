@@ -18,12 +18,7 @@
 @implementation SingleCellVC
 
 - (void)viewDidLoad {
-//    [super viewDidLoad];
-    
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    self.backgroundContext = appDelegate.persistentContainer.newBackgroundContext;
-    self.context = appDelegate.persistentContainer.newBackgroundContext;
-    self.context.automaticallyMergesChangesFromParent = YES;
+    [super viewDidLoad];
         
     self.title = @"photo";
 }
@@ -53,9 +48,6 @@
     [self.nasaCollectionView reloadData];
 }
 
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    
-}
 
 #pragma mark - Properties lazy instantiation
 
