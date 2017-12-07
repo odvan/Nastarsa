@@ -50,14 +50,8 @@
         NSLog(@"DEMO URL page number");
         return [NSString stringWithFormat:DEMO_URL@"&page=%d", number];
     }
-    NSString *searchURL;
-    if ([text rangeOfString:@"%20"].location != NSNotFound) {
-        searchURL = [NSString stringWithFormat:BASE_URL_MULTIPLE_WORDS@"%@&page=%d", text, number];
-    } else {
-        searchURL = [NSString stringWithFormat:BASE_URL@"%@&page=%d", text, number];
-    }
-    NSLog(@"😈💩😈 searchURL: %@", searchURL);
-    return searchURL;
+    NSString *searchURL = [NasaFetcher URLforSearch:text];
+    return [NSString stringWithFormat:@"%@&page=%d", searchURL, number];
 }
 
 
