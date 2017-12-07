@@ -267,7 +267,7 @@ static NSString * const searchHeaderIdentifier = @"searchHeader";
     if (searchBar.text && [searchBar.text length]) {
         _searchBarHasText = YES;
         NSLog(@"✅✅✅ searching... %@", searchBar.text);
-        [self.nasaCollectionView reloadData];
+//        [self.nasaCollectionView reloadData];
         
         self.searchText = [SearchHeader multipleWordsSearchCheckAndProperUsage:(searchBar.text)];
     }

@@ -34,13 +34,14 @@
         NSLog(@"DEMO URL");
         return [NSString stringWithFormat:DEMO_URL];
     }
-    NSString *searchWord;
+    NSString *searchURL;
     if ([text rangeOfString:@"%20"].location != NSNotFound) {
-        searchWord = [NSString stringWithFormat:BASE_URL_MULTIPLE_WORDS@"%@", text];
+        searchURL = [NSString stringWithFormat:BASE_URL_MULTIPLE_WORDS@"%@", text];
     } else {
-        searchWord = [NSString stringWithFormat:BASE_URL@"%@", text];
+        searchURL = [NSString stringWithFormat:BASE_URL@"%@", text];
     }
-    return searchWord;
+    NSLog(@"😈 searchURL: %@", searchURL);
+    return searchURL;
 }
 
 
@@ -49,7 +50,14 @@
         NSLog(@"DEMO URL page number");
         return [NSString stringWithFormat:DEMO_URL@"&page=%d", number];
     }
-    return [NSString stringWithFormat:BASE_URL@"%@&page=%d", text, number];
+    NSString *searchURL;
+    if ([text rangeOfString:@"%20"].location != NSNotFound) {
+        searchURL = [NSString stringWithFormat:BASE_URL_MULTIPLE_WORDS@"%@&page=%d", text, number];
+    } else {
+        searchURL = [NSString stringWithFormat:BASE_URL@"%@&page=%d", text, number];
+    }
+    NSLog(@"😈💩😈 searchURL: %@", searchURL);
+    return searchURL;
 }
 
 
