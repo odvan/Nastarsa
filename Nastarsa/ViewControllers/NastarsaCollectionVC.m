@@ -19,7 +19,7 @@ static CGFloat paddingBetweenCells = 10;
 static CGFloat paddingBetweenLines = 10;
 static CGFloat inset = 10;
 
-@interface NastarsaCollectionVC () //?<UISearchBarDelegate>
+@interface NastarsaCollectionVC ()
 
 @end
 
@@ -68,7 +68,7 @@ static CGFloat inset = 10;
 }
 
 
-#pragma mark - Properties lazy instantiation
+#pragma mark - <NSFetchedResultsController> lazy instantiation
 
 - (NSFetchedResultsController<Photo *> *)frc {
     NSLog(@"NSFetchedResultsController triggered");
@@ -126,7 +126,6 @@ static CGFloat inset = 10;
                     
                     if (photoObject.isLiked && photoObject.image_big) {
                         iVC.image = [UIImage imageWithData:photoObject.image_big];
-
                     } else {
                         iVC.imageURL = [NasaFetcher URLforPhoto:photoObject.nasa_id format:NasaPhotoFormatLarge];
 

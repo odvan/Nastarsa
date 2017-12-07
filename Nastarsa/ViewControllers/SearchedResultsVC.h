@@ -9,6 +9,8 @@
 #import "NastarsaCollectionVC.h"
 #import "NastarsaCollectionVC+AddAlert.h"
 
+// Subclass from basic VC
+
 @interface SearchedResultsVC : NastarsaCollectionVC
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinnerWhenNextPageDownload;

@@ -29,8 +29,6 @@ static NSString * const searchHeaderIdentifier = @"searchHeader";
 
 #pragma mark - View Controller Lifecycle
 
-// Additional setups to parents viewDidLoad method
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     

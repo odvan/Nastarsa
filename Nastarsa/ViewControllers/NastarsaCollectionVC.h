@@ -11,6 +11,8 @@
 
 @class Photo;
 
+// Basic VC
+
 @interface NastarsaCollectionVC : UIViewController <ExpandedAndButtonsTouchedCellDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *layout;
