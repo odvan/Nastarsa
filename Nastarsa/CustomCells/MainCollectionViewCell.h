@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ImageModel.h"
 #import "ImageDownloader.h"
 #import "Photo.h"
 #import "Photo+CoreDataProperties.h"
