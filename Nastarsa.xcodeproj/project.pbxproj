@@ -11,6 +11,7 @@
 		C305976B1F950642000745FA /* ExampleCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C30597691F950642000745FA /* ExampleCell.xib */; };
 		C32709AF1F88187D00FB8F24 /* LikedImagesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C32709AE1F88187D00FB8F24 /* LikedImagesVC.m */; };
 		C32709B21F881AC400FB8F24 /* LikedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C32709B11F881AC400FB8F24 /* LikedCell.m */; };
+		C32AD1201FDC32C600BE5CAB /* CellButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C32AD11F1FDC32C600BE5CAB /* CellButton.m */; };
 		C334A3241F79BFEF00523919 /* Spinner.m in Sources */ = {isa = PBXBuildFile; fileRef = C334A3231F79BFEF00523919 /* Spinner.m */; };
 		C334C56C1F535BFA00CD599E /* ImagesCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C334C56B1F535BFA00CD599E /* ImagesCache.m */; };
 		C335B23C1F439A200030A22E /* NasaFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = C335B23B1F439A200030A22E /* NasaFetcher.m */; };
@@ -39,6 +40,8 @@
 		C32709AE1F88187D00FB8F24 /* LikedImagesVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LikedImagesVC.m; path = ViewControllers/LikedImagesVC.m; sourceTree = "<group>"; };
 		C32709B01F881AC400FB8F24 /* LikedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LikedCell.h; path = CustomCells/LikedCell.h; sourceTree = "<group>"; };
 		C32709B11F881AC400FB8F24 /* LikedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LikedCell.m; path = CustomCells/LikedCell.m; sourceTree = "<group>"; };
+		C32AD11E1FDC32C600BE5CAB /* CellButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellButton.h; path = Helpers/CellButton.h; sourceTree = "<group>"; };
+		C32AD11F1FDC32C600BE5CAB /* CellButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellButton.m; path = Helpers/CellButton.m; sourceTree = "<group>"; };
 		C334A3221F79BFEF00523919 /* Spinner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spinner.h; path = Helpers/Spinner.h; sourceTree = "<group>"; };
 		C334A3231F79BFEF00523919 /* Spinner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Spinner.m; path = Helpers/Spinner.m; sourceTree = "<group>"; };
 		C334C56A1F535BFA00CD599E /* ImagesCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImagesCache.h; path = Helpers/ImagesCache.h; sourceTree = "<group>"; };
@@ -98,6 +101,8 @@
 				C334A3231F79BFEF00523919 /* Spinner.m */,
 				C3AD689C1FD821550062776B /* NastarsaCollectionVC+AddAlert.h */,
 				C3AD689D1FD821550062776B /* NastarsaCollectionVC+AddAlert.m */,
+				C32AD11E1FDC32C600BE5CAB /* CellButton.h */,
+				C32AD11F1FDC32C600BE5CAB /* CellButton.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -285,6 +290,7 @@
 				C3F132E51F41E21200AA392D /* NastarsaCollectionVC.m in Sources */,
 				C3480C831F37B5E100AEE088 /* main.m in Sources */,
 				C32709AF1F88187D00FB8F24 /* LikedImagesVC.m in Sources */,
+				C32AD1201FDC32C600BE5CAB /* CellButton.m in Sources */,
 				C335B23C1F439A200030A22E /* NasaFetcher.m in Sources */,
 				C3FDF41F1FA38C3B00347A98 /* SearchHeader.m in Sources */,
 				C32709B21F881AC400FB8F24 /* LikedCell.m in Sources */,

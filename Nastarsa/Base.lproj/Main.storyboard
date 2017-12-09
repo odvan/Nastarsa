@@ -77,7 +77,7 @@
                                                         <action selector="readMoreTouched:" destination="tdu-tG-Zew" eventType="touchUpInside" id="g2T-5a-9J8"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JXz-qg-GbZ">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JXz-qg-GbZ" customClass="CellButton">
                                                     <rect key="frame" x="60" y="388" width="28" height="24"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="28" id="7yu-du-AFu"/>
@@ -531,7 +531,7 @@
         <image name="x-closing_symbol" width="51" height="51"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="tsU-Nc-kgM"/>
         <segue reference="TXC-VM-7wZ"/>
+        <segue reference="tsU-Nc-kgM"/>
     </inferredMetricsTieBreakers>
 </document>

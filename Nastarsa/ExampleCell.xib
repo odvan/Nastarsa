@@ -57,7 +57,7 @@
                             <action selector="readMoreTouched:" destination="GEe-O0-AhU" eventType="touchUpInside" id="hjC-Je-WLy"/>
                         </connections>
                     </button>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ykA-zJ-XdD">
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ykA-zJ-XdD" customClass="CellButton">
                         <rect key="frame" x="60" y="388" width="28" height="24"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="28" id="9tY-GL-or9"/>
