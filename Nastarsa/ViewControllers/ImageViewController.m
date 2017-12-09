@@ -78,16 +78,18 @@ UIImageView *animationImage;
                 CGFloat newImageWidth = (self.view.bounds.size.height/newImageHeight) * animationImage.bounds.size.width;
                 CGFloat x = self.view.frame.size.width/2 - newImageWidth/2;
                 [animationImage setFrame:CGRectMake(x, 0, newImageWidth, self.view.frame.size.height)];
+                self.imageView.frame = animationImage.frame;
             } else {
                 [animationImage setFrame:CGRectMake(0, y, self.view.frame.size.width, newImageHeight)];
-                NSLog(@"♥️♠️ animationImage frame after %@", NSStringFromCGRect(animationImage.frame));
             }
-            
+            NSLog(@"self frame size: %@", NSStringFromCGRect(self.view.frame));
+            NSLog(@"♥️♠️ animationImage frame after %@", NSStringFromCGRect(animationImage.frame));
         } completion:^(BOOL finished){
             animationImage.contentMode = UIViewContentModeScaleAspectFit;
             self.imageView.hidden = NO;
-            [self.spinner setupWith:self.view];
             animationImage.hidden = YES;
+            [self.spinner setupWith:self.view];
+            NSLog(@"imageView frame after %@", NSStringFromCGRect(self.imageView.frame));
             if (self.imageView.image != _tempImage) {
                 [self.spinner stop];
             }

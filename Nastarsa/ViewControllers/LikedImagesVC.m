@@ -43,13 +43,14 @@ UIBarButtonItem *item2;
     
     _likedImagesCollectionView.alwaysBounceVertical = YES;
     [self toolBarSetup];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
     [self allowRotation:YES];
+    
+//    [self.navigationController.navigationBar setTintColor:[UIColor colorWithRed:255.0/255.0 green:205.0/255.0 blue:0 alpha:1.0]];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -115,9 +116,9 @@ UIBarButtonItem *item2;
     self.navigationItem.rightBarButtonItem.style = self.isSelectingPhotos ? UIBarButtonItemStyleDone : UIBarButtonItemStylePlain;
     
     self.likedImagesCollectionView.allowsMultipleSelection = self.isSelectingPhotos;
-    [self.navigationController setToolbarHidden:!self.isSelectingPhotos];
     item1.enabled = NO;
     item2.enabled = NO;
+    self.navigationController.toolbarHidden = !self.isSelectingPhotos;
     [self.navigationItem setHidesBackButton:self.isSelectingPhotos animated:NO];
     
     [self.likedImagesCollectionView selectItemAtIndexPath:nil

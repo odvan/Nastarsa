@@ -294,7 +294,9 @@ static CGFloat inset = 10;
     cell.likeButton.selected = !cell.likeButton.selected;
     
     if (photo.isLiked) {
+        if (cell.imageView.image != nil) {
         photo.image_preview = UIImageJPEGRepresentation(cell.imageView.image, 1.0);
+        }
         
         [Photo saveNewLikedPhotoFrom:photo inContext:_backgroundContext];
     } else {

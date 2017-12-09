@@ -64,8 +64,13 @@
         
         if (photoExisted != nil) {
             photoExisted[0].isLiked = YES;
-            photoExisted[0].isFetchable = NO; // ?
-            photoExisted[0].image_preview = photoObj.image_preview;
+            photoExisted[0].isFetchable = NO;
+            if (photoObj.image_preview != nil) {
+                photoExisted[0].image_preview = photoObj.image_preview;
+            } else {
+                NSData *previewImage = [[NSData alloc] initWithContentsOfURL:[NasaFetcher URLforPhoto:photoObj.nasa_id format:NasaPhotoFormatThumb]];
+                photoExisted[0].image_preview = previewImage;
+            }
             if (photoObj.image_big != nil) {
                 photoExisted[0].image_big = photoObj.image_big;
             } else {
