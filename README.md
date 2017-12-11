@@ -20,7 +20,8 @@ Technologies:
 - data sharing via UIActivityViewController;
 - custom UICollectionViewCell selection and deleting.
 
-
+Demo:
+https://youtu.be/ZE1jGK4j6Ws
 
 ![ns-01](https://user-images.githubusercontent.com/23110283/33844771-07c3b6a2-deaa-11e7-8cd4-f8894f57f066.png)
 ![ns-02](https://user-images.githubusercontent.com/23110283/33844772-0809d1d2-deaa-11e7-8454-9e8a664c75a7.png)
