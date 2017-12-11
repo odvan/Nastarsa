@@ -21,7 +21,7 @@ Technologies:
 - custom UICollectionViewCell selection and deleting.
 
 Demo on youtube:
-![Play demo](https://user-images.githubusercontent.com/23110283/33853694-8463b28a-dec7-11e7-9f36-f91f595b12d5.png)](https://youtu.be/ZE1jGK4j6Ws)
+[![Play demo](https://user-images.githubusercontent.com/23110283/33853694-8463b28a-dec7-11e7-9f36-f91f595b12d5.png)](https://youtu.be/ZE1jGK4j6Ws)
 
 
 Screenshots:
