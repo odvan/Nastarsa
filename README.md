@@ -35,5 +35,3 @@ Screenshots:
 ![ns-06](https://user-images.githubusercontent.com/23110283/33844776-0898a678-deaa-11e7-94a0-e5cad263038a.png)
 ![ns-07](https://user-images.githubusercontent.com/23110283/33844777-08b4b250-deaa-11e7-9bcb-96eb196cffc6.png)
 ![ns-08](https://user-images.githubusercontent.com/23110283/33844778-08dcd938-deaa-11e7-93ee-6ee56df4a470.png)
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/ZE1jGK4j6Ws" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
